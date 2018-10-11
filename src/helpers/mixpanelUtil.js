@@ -1,16 +1,12 @@
 import mixpanel from 'mixpanel-browser/src/loader-module';
 import _ from 'lodash';
 
-const MIXPANEL_TOKEN = '5c13e6b02fc222c0adae2f1f8cd923b0';
+const MIXPANEL_TOKEN = '8ca400334e04c69fa1c47187a4be3074';
 
 let initialized = false;
 
 export default class Tracking {
   static track(eventName) {
-    if (process.env && process.env.NODE_ENV !== 'production') {
-      return;
-    }
-
     if (_.isEmpty(eventName)) {
       console.error('Mixpanel eventName cannot be empty'); // eslint-disable-line
       return;

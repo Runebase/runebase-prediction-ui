@@ -1,168 +1,98 @@
-import { observable, action, reaction, runInAction, toJS } from 'mobx';
-import { orderBy, omit, values, isEmpty, each, merge } from 'lodash';
+import { observable, action, reaction, computed } from 'mobx';
+import _ from 'lodash';
 import { TransactionType, SortBy, Routes } from 'constants';
+import { Transaction, Oracle } from 'models';
 
 import { getDetailPagePath } from '../../../helpers/utility';
 import { queryAllTransactions, queryAllOracles } from '../../../network/graphql/queries';
 
-const QUERY_LIMIT = 500;
 const INIT_VALUES = {
   transactions: [],
-  displayedTxs: [],
-  tableOrder: SortBy.DESCENDING.toLowerCase(),
-  tableOrderBy: 'createdTime',
-  tablePerPage: 10,
-  tablePage: 0,
-  querySkip: 0,
-  queryPage: 0,
-  loaded: false,
+  order: SortBy.DESCENDING.toLowerCase(),
+  orderBy: 'createdTime',
+  perPage: 10,
+  page: 0,
+  limit: 50,
 };
 
 export default class {
-  @observable transactions = INIT_VALUES.transactions; // Full txs list fetched by batches
-  @observable displayedTxs = INIT_VALUES.displayedTxs; // Txs for the current table page, sliced from transactions
-  @observable tableOrder = INIT_VALUES.tableOrder; // UI table order
-  @observable tableOrderBy = INIT_VALUES.tableOrderBy; // UI table order by
-  @observable tablePerPage = INIT_VALUES.tablePerPage; // UI table per page
-  @observable tablePage = INIT_VALUES.tablePage; // UI table page
-  querySkip = INIT_VALUES.querySkip; // Tx query skip
-  queryPage = INIT_VALUES.queryPage; // Tx query page
-  @observable loaded = INIT_VALUES.loaded;
+  @observable transactions = INIT_VALUES.transactions
+  @observable order = INIT_VALUES.order
+  @observable orderBy = INIT_VALUES.orderBy
+  @observable perPage = INIT_VALUES.perPage
+  @observable page = INIT_VALUES.page
+  @observable limit = INIT_VALUES.limit
 
   constructor(app) {
     this.app = app;
-
-    // Sort order changed
-    reaction(
-      () => this.tableOrder + this.tableOrderBy,
-      () => {
-        this.transactions = orderBy(this.transactions, [this.tableOrderBy], [this.tableOrder]);
-        this.setDisplayedTxs();
-      },
+    reaction( // Try to fetch more when need more data OR got new block
+      () => this.app.global.syncBlockNum,
+      () => this.getMoreData()
     );
-    // Page or per page changed
-    reaction(
-      () => this.tablePage + this.tablePerPage,
+    reaction( // Sort while order changes - may be different from the reaction with syncBlockNum in future
+      () => this.order + this.orderBy,
+      () => this.transactions = _.orderBy(this.transactions, [this.orderBy], [this.order])
+    );
+    reaction( // Try to fetch more when need more data OR got new block
+      () => this.page + this.perPage,
       () => {
-        this.setDisplayedTxs();
-
-        // Fetch more batches if needed
-        const txCount = this.transactions.length;
-        const lastPage = Math.ceil(txCount / this.tablePerPage);
-        if (txCount > 0 && this.tablePage + 1 === lastPage && lastPage * this.tablePerPage === txCount) {
-          this.loadMore();
+        // Set skip to fetch more txs if last page is reached
+        const needMoreFetch = (this.perPage * (this.page + 1)) >= this.transactions.length;
+        if (needMoreFetch) {
+          this.limit = this.perPage;
+          this.getMoreData();
         }
       }
     );
-    // New block
-    reaction(
-      () => this.app.global.syncBlockNum,
-      async () => {
-        if (this.transactions.length > 0) {
-          const txs = await this.fetchHistory((this.queryPage + 1) * QUERY_LIMIT, 0);
-          this.transactions = orderBy(txs, [this.tableOrderBy], [this.tableOrder]);
-          this.setDisplayedTxs();
-        }
-      },
-    );
-    // Wallet addresses changed
-    reaction(
-      () => toJS(this.app.wallet.addresses),
-      () => this.loadFirst(),
-    );
+  }
+
+  @action
+  getMoreData = async () => {
+    const moreData = await this.fetchHistory(this.transactions.length);
+    this.transactions = [...this.transactions, ...moreData];
+    this.transactions = _.orderBy(this.transactions, [this.orderBy], [this.order]);
+  }
+
+  @computed
+  get displayedTxs() {
+    const start = this.page * this.perPage;
+    const end = (this.page * this.perPage) + this.perPage;
+    return this.transactions.slice(start, end);
+  }
+
+  @action
+  getOracleAddress = async (topicAddress) => {
+    const orderBy = { field: 'endTime', direction: SortBy.DESCENDING };
+    const filters = [{ topicAddress }];
+
+    if (topicAddress) {
+      const targetoracle = await queryAllOracles(filters, orderBy);
+      const path = getDetailPagePath(_.map(targetoracle, (oracle) => new Oracle(oracle, this.app)));
+      if (path) return path;
+    }
   }
 
   @action
   init = async () => {
-    this.app.ui.location = Routes.ACTIVITY_HISTORY;
-    await this.loadFirst();
-  }
-
-  /**
-   * Slices the current page of txs (out of the full tx list) based on the page and perPage.
-   */
-  @action
-  setDisplayedTxs() {
-    const start = this.tablePage === 0 ? 0 : this.tablePage * this.tablePerPage;
-    const end = (this.tablePage * this.tablePerPage) + this.tablePerPage;
-    this.displayedTxs = this.transactions.slice(start, end);
-  }
-
-  /**
-   * It is necessary to fetch a big batch of txs for the purposes of pagination. We need to know the total count
-   * of all the txs for the table footer. This implementation goes like this:
-   * 1. Fetch big batch of txs (500)
-   * 2. Slice the txs per page (based on how many perPage is selected)
-   * 3. If there are more than the first batch of txs (> 500), then fetch the second batch when the user is on the last
-   *    page of the first batch. And so on for any further batches.
-   */
-  @action
-  loadFirst = async () => {
+    // reset to initial values
     Object.assign(this, INIT_VALUES);
-    const txs = await this.fetchHistory();
-    this.transactions = orderBy(txs, [this.tableOrderBy], [this.tableOrder]);
-    this.setDisplayedTxs();
-
-    runInAction(() => {
-      this.batches = 1;
-      this.loaded = true;
-    });
+    this.app.ui.location = Routes.ACTIVITY_HISTORY;
+    this.transactions = await this.fetchHistory();
   }
 
-  /**
-   * Queries another batches of txs and appends it to the full list.
-   */
-  @action
-  loadMore = async () => {
-    this.querySkip += QUERY_LIMIT;
-    const moreTxs = await this.fetchHistory();
-    this.transactions = [...this.transactions, ...moreTxs];
-    this.transactions = orderBy(this.transactions, [this.tableOrderBy], [this.tableOrder]);
-    this.setDisplayedTxs();
+  fetchHistory = async (skip = 0, limit = this.limit, orderBy = 'createdTime', order = SortBy.DESCENDING.toLowerCase()) => {
+    // order default by DESC
+    const direction = order === SortBy.ASCENDING.toLowerCase() ? SortBy.ASCENDING : SortBy.DESCENDING;
+    const filters = _.values(_.omit(TransactionType, 'TRANSFER')).map(field => ({ type: field }));
+    const orderBySect = { field: orderBy, direction };
+    const result = await queryAllTransactions(filters, orderBySect, limit, skip);
+    return _.map(result, (tx) => new Transaction(tx));
   }
 
-  /**
-   * Gets the tx history via API call.
-   * @return {[Transaction]} Tx array of the query.
-   */
-  fetchHistory = async (limit = QUERY_LIMIT, skip = this.querySkip) => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      return [];
-    }
-
-    const txTypes = values(omit(TransactionType, 'TRANSFER'));
-    const filters = [];
-    each(this.app.wallet.addresses, (walletAddress) => {
-      merge(filters, txTypes.map(field => ({ type: field, senderAddress: walletAddress.address })));
-    });
-    return queryAllTransactions(filters, { field: 'createdTime', direction: SortBy.DESCENDING }, limit, skip);
-  }
-
-  /**
-   * Changes the orderBy and order.
-   * @param {string} columnName Field name of the column.
-   */
   @action
   sort = (columnName) => {
     const [ascending, descending] = [SortBy.ASCENDING.toLowerCase(), SortBy.DESCENDING.toLowerCase()];
-    this.tableOrderBy = columnName;
-    this.tableOrder = this.tableOrder === descending ? ascending : descending;
-  }
-
-  /**
-   * Queries and finds the newest Oracle to direct to for the purposes of clicking on the event name.
-   * @param {string} topicAddress Topic address for the Oracle.
-   * @return {string} URL path for the newest Oracle.
-   */
-  @action
-  getOracleAddress = async (topicAddress) => {
-    if (topicAddress) {
-      const filters = [{ topicAddress }];
-      const order = { field: 'endTime', direction: SortBy.DESCENDING };
-      const targetOracle = await queryAllOracles(this.app, filters, order);
-      const path = getDetailPagePath(targetOracle);
-      if (path) return path;
-    }
+    this.orderBy = columnName;
+    this.order = this.order === descending ? ascending : descending;
   }
 }

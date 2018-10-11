@@ -1,19 +1,13 @@
 import { observable, action, reaction } from 'mobx';
 import moment from 'moment';
-import momentDurationFormat from 'moment-duration-format';
 import { Routes } from 'constants';
-
 import locales from '../languageProvider';
-import { faqUrls } from '../config/app';
-import Tracking from '../helpers/mixpanelUtil';
+
 
 export default class UiStore {
-  @observable location = Routes.QTUM_PREDICTION
-  @observable locale = localStorage.getItem('bodhi_dapp_lang') || this.defaultLocale
-  @observable searchBarMode = false
-  @observable dropdownMenuOpen = false;
-  @observable currentTimeUnix = 0;
-  counterInterval = null;
+  @observable location = Routes.RUNES_PREDICTION
+  @observable locale = localStorage.getItem('lang') || this.defaultLocale
+  @observable error = null
 
   get localeMessages() {
     return locales[this.locale].messages;
@@ -31,71 +25,29 @@ export default class UiStore {
     return locale;
   }
 
-  constructor(app) {
-    this.app = app;
-
-    // For eventcard countdown
-    this.counterInterval = setInterval(() => this.currentTimeUnix = moment().unix());
-
-    // Extend Moment with DurationFormat here to avoid overwritting of the moment locale
-    momentDurationFormat(moment);
-    moment.updateLocale('en', {
-      longDateFormat: {
-        LLL: 'M/D/YY H:mm:ss',
-        LLLL: 'MMM Do, YYYY H:mm:ss',
-      },
-    });
-    moment.updateLocale('ko', {
-      longDateFormat: {
-        LLL: 'YY/M/D H:mm:ss',
-        LLLL: 'YYYY년 M월D일 H:mm:ss',
-      },
-    });
-    moment.updateLocale('zh-cn', {
-      longDateFormat: {
-        LLL: 'YY/M/D H:mm:ss',
-        LLLL: 'YYYY年M月D日 H:mm:ss',
-      },
-    });
-
+  constructor() {
     reaction( // whenever the locale changes, update locale in local storage and moment
       () => this.locale,
       () => {
         moment.locale(locales[this.locale].momentlocale);
-        localStorage.setItem('bodhi_dapp_lang', this.locale);
+        localStorage.setItem('lang', this.locale);
       },
       { fireImmediately: true }
     );
   }
 
-  getMomentLocale = () => moment.locale();
-
-  // this setter is only here so we don't have to import `locales` into other files
-  @action
+  @action // this setter is only here so we don't have to import `locales` into other files
   changeLocale = (newLocale) => {
     this.locale = locales[newLocale].locale;
   }
 
   @action
-  enableSearchBarMode = () => {
-    this.searchBarMode = true;
-    document.body.style.overflow = 'hidden';
-    document.getElementById('searchEventInput').focus();
+  setError = (message, route) => {
+    this.error = { message, route };
   }
 
   @action
-  disableSearchBarMode = () => {
-    this.searchBarMode = false;
-    document.body.style.overflow = null;
-  }
-
-  @action
-  toggleDropdownMenu = () => this.dropdownMenuOpen = !this.dropdownMenuOpen
-
-  @action
-  onHelpButtonClick = () => {
-    window.open(faqUrls[this.locale], '_blank');
-    Tracking.track('navBar-helpClick');
-    this.toggleDropdownMenu();
+  clearError = () => {
+    this.error = null;
   }
 }

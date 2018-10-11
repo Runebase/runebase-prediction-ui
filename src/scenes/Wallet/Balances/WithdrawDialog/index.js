@@ -35,6 +35,10 @@ const messages = defineMessages({
     id: 'withdrawDialog.youCanWithdraw',
     defaultMessage: 'You can withdraw up to:',
   },
+  confirmSendMsg: {
+    id: 'txConfirmMsg.send',
+    defaultMessage: 'send to address {address}',
+  },
 });
 
 @injectIntl
@@ -47,14 +51,14 @@ export default class WithdrawDialog extends Component {
     classes: PropTypes.object.isRequired,
     dialogVisible: PropTypes.bool.isRequired,
     walletAddress: PropTypes.string,
-    botAmount: PropTypes.string,
+    predAmount: PropTypes.string,
     onClose: PropTypes.func.isRequired,
     onWithdraw: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     walletAddress: undefined,
-    botAmount: undefined,
+    predAmount: undefined,
   };
 
   render() {
@@ -71,7 +75,7 @@ export default class WithdrawDialog extends Component {
         onClose={onClose}
       >
         <DialogTitle>
-          <FormattedMessage id="withdrawDialog.title" defaultMessage="Withdraw QTUM/BOT" />
+          <FormattedMessage id="withdrawDialog.title" defaultMessage="Withdraw RUNES/PRED" />
         </DialogTitle>
         <DialogContent>
           <FromToField walletAddress={walletAddress} />
@@ -81,7 +85,7 @@ export default class WithdrawDialog extends Component {
           <Button onClick={onClose}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
-          <Button color="primary" onClick={() => wallet.withdraw(walletAddress)} disabled={wallet.withdrawDialogHasError}>
+          <Button color="primary" onClick={wallet.prepareWithdraw.bind(this, walletAddress)} disabled={wallet.withdrawDialogHasError}>
             <FormattedMessage id="withdrawDialog.send" defaultMessage="Send" />
           </Button>
         </DialogActions>
@@ -161,8 +165,8 @@ class AmountField extends Component {
             onBlur={wallet.validateWithdrawDialogAmount}
             inputProps={{ name: 'selectedToken', id: 'selectedToken' }}
           >
-            <MenuItem value={Token.QTUM}>QTUM</MenuItem>
-            <MenuItem value={Token.BOT}>BOT</MenuItem>
+            <MenuItem value={Token.RUNES}>RUNES</MenuItem>
+            <MenuItem value={Token.PRED}>PRED</MenuItem>
           </Select>
           {!!wallet.withdrawDialogError.withdrawAmount && <FormHelperText error>{intl.formatMessage({ id: wallet.withdrawDialogError.withdrawAmount })}</FormHelperText>}
         </div>

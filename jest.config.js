@@ -3,7 +3,7 @@
 
 module.exports = {
   // package name
-  name: 'bodhi-ui',
+  name: 'runebase-prediction-ui',
 
   // Indicates whether each individual test should be reported during the run
   verbose: true,

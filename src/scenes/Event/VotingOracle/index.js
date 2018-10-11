@@ -1,11 +1,10 @@
 import React from 'react';
+import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
-import { Grid, withStyles } from '@material-ui/core';
-import { EventWarning, ImportantNote, CurrentAllowanceNote } from 'components';
-
-import styles from './styles';
-import { Sidebar, Row, Content, Title, Button, Option, HistoryTable } from '../components';
+import { Grid } from '@material-ui/core';
+import { EventWarning, ImportantNote } from 'components';
+import { Sidebar, Row, Content, Title, Button, Option, ResultHistory, TransactionHistory, OracleTxConfirmDialog } from '../components';
 
 const messages = defineMessages({
   oracleConsensusThresholdMsg: {
@@ -16,9 +15,13 @@ const messages = defineMessages({
     id: 'oracle.setResultExplanation',
     defaultMessage: 'Setting the result requires staking the Consensus Threshold amount.',
   },
+  txConfirmMsgVoteMsg: {
+    id: 'txConfirmMsg.vote',
+    defaultMessage: 'vote on {option}',
+  },
 });
 
-const VotingOracle = ({ store: { eventPage, eventPage: { oracle, amountDecimal } } }) => (
+const VotingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
@@ -27,40 +30,38 @@ const VotingOracle = ({ store: { eventPage, eventPage: { oracle, amountDecimal }
       )}
       <Options oracle={oracle} />
       <ConsensusThresholdNote consensusThreshold={oracle.consensusThreshold} />
-      <CurrentAllowanceNote allowance={amountDecimal} />
       <VoteButton eventpage={eventPage} />
-      <HistoryTable resultHistory transactionHistory />
+      <ResultHistory oracles={eventPage.oracles} currentEvent={oracle} />
+      <TransactionHistory options={oracle.options} />
     </Content>
     <Sidebar />
+    <OracleTxConfirmDialog id={messages.txConfirmMsgVoteMsg.id} />
   </Row>
-);
+));
 
 const ConsensusThresholdNote = injectIntl(({ intl, consensusThreshold }) => {
-  const heading = `${intl.formatMessage(messages.oracleConsensusThresholdMsg)} ${consensusThreshold} BOT`;
+  const heading = `${intl.formatMessage(messages.oracleConsensusThresholdMsg)} ${consensusThreshold} PRED`;
   const message = intl.formatMessage(messages.oracleSetResultExplanationMsg);
   return <ImportantNote heading={heading} message={message} />;
 });
 
-const Options = withStyles(styles)(observer(({ classes, oracle: { options, isArchived, consensusThreshold } }) => (
-  <Grid className={classes.optionGrid}>
-    {options.map((option, i) => (
-      <Option
-        key={i}
-        disabled={isArchived}
-        option={option}
-        amountPlaceholder={(consensusThreshold - option.amount).toFixed(2).toString()}
-      />
-    ))}
-  </Grid>
-)));
+const Options = observer(({ oracle: { options, isArchived } }) => (
+  <Container>
+    {options.map((option, i) => <Option key={i} disabled={isArchived} option={option} />)}
+  </Container>
+));
+
+const Container = styled(Grid)`
+  min-width: 75%;
+`;
 
 const VoteButton = props => {
-  const { oracle, vote, isPending, buttonDisabled } = props.eventpage;
+  const { oracle, prepareVote, isPending, buttonDisabled } = props.eventpage;
   return !oracle.isArchived && (
-    <Button {...props} onClick={vote} disabled={isPending || buttonDisabled}>
+    <Button {...props} onClick={prepareVote} disabled={isPending || buttonDisabled}>
       <FormattedMessage id="bottomButtonText.arbitrate" defaultMessage="Arbitrate" />
     </Button>
   );
 };
 
-export default injectIntl(inject('store')(observer(VotingOracle)));
+export default injectIntl(inject('store')(VotingOracle));

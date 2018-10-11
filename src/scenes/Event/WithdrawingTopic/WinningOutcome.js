@@ -9,7 +9,7 @@ import { i18nToUpperCase } from '../../../helpers/i18nUtil';
 const messages = defineMessages({
   withdrawDetailYouBetYouVoteMsg: {
     id: 'withdrawDetail.youBetYouVote',
-    defaultMessage: 'You bet {qtum} QTUM. You voted {bot} BOT.',
+    defaultMessage: 'You bet {runebase} RUNES. You voted {pred} PRED.',
   },
 });
 
@@ -20,7 +20,7 @@ const WinningOutcome = injectIntl(({ eventPage, intl }) => (
     <OutcomeOption>{eventPage.selectedOption === 'Invalid' ? eventPage.topic.localizedInvalid.parse(intl.locale) : eventPage.selectedOption}</OutcomeOption>
     {(eventPage.resultBetAmount || eventPage.resultVoteAmount) ? (
       <Typography variant="caption">
-        {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { qtum: eventPage.resultBetAmount, bot: eventPage.resultVoteAmount })}
+        {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { runebase: eventPage.resultBetAmount, pred: eventPage.resultVoteAmount })}
       </Typography>
     ) : (
       <Typography variant="caption">

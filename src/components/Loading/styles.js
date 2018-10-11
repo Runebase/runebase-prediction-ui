@@ -15,12 +15,7 @@ const styles = ({ palette: { primary } }) => ({
     width: '3rem',
     height: '3rem',
     display: 'inline-flex',
-    '&.event': {
-      marginTop: '10rem',
-    },
-    marginRight: '20px',
-    marginBottom: '25px',
-    marginLeft: '20px',
+    margin: '10px 20px',
     borderRadius: '100%',
     background: `linear-gradient(${primary.main}, #fff)`,
     animation: 'loading 2s linear infinite',

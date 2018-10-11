@@ -14,7 +14,7 @@ const RestoreWalletDialog = injectIntl(({ dialogVisible, onClose }) => (
       <FormattedMessage id="wallet.restoreWallet" defaultMessage="Restore Your Wallet" />
     </DialogTitle>
     <DialogContent>
-      <FormattedMessage id="wallet.restoreWalletDescription" defaultMessage="Please select Launch Qtum Wallet in the menu and restore your wallet in QT Wallet." />
+      <FormattedMessage id="wallet.restoreWalletDescription" defaultMessage="Please select Launch Runebase Wallet in the menu and restore your wallet in QT Wallet." />
     </DialogContent>
     <DialogActions>
       <Button onClick={onClose}>

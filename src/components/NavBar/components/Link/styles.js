@@ -3,7 +3,7 @@
 const styles = () => ({
   navBarLink: {
     display: 'flex',
-    justifyContent: 'center',
+    'justify-content': 'center',
   },
   navArrow: {
     position: 'absolute',

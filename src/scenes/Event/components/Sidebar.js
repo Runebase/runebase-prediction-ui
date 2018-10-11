@@ -1,12 +1,11 @@
 import React from 'react';
-import moment from 'moment';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
 import { Typography, Grid } from '@material-ui/core';
 import _ from 'lodash';
 import { StepperVertRight } from 'components';
-import { getEndTimeCountDownString } from '../../../helpers';
+import { getShortLocalDateTimeString, getEndTimeCountDownString } from '../../../helpers';
 
 const message = defineMessages({
   eventInfoEndDateMsg: {
@@ -41,16 +40,16 @@ const SidebarContainer = styled(Grid).attrs({ item: true, xs: 12, md: 4 })`
   text-align: right;
 `;
 
-const EndDate = inject('store')(observer(injectIntl(({ oracle: { endTime }, store: { ui: { currentTimeUnix } }, intl: { locale, messages } }) => (
-  <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={moment.unix(endTime).format('LLL')} highlight={getEndTimeCountDownString(endTime - currentTimeUnix, locale, messages)} />
-))));
+const EndDate = injectIntl(({ oracle: { endTime }, intl: { locale, messages } }) => (
+  <EventInfoBlock id={message.eventInfoEndDateMsg.id} content={getShortLocalDateTimeString(endTime)} highlight={getEndTimeCountDownString(endTime, locale, messages)} />
+));
 
 const Funding = ({ oracle: { amounts, token } }) => (
   <EventInfoBlock id={message.eventInfoFundMsg.id} content={`${parseFloat(_.sum(amounts).toFixed(5)).toString()} ${token}`} />
 );
 
 const ResultSetter = ({ oracle }) => (
-  <EventInfoBlock id={message.strResultSetterMsg.id} content={oracle.resultSetterAddress} />
+  <EventInfoBlock id={message.strResultSetterMsg.id} content={oracle.resultSetterQAddress} />
 );
 
 const EventInfo = styled.div`
@@ -81,7 +80,7 @@ const Content = styled(Typography).attrs({ variant: 'title' })`
   font-size: ${props => props.theme.typography.fontSize} !important;
 `;
 
-const Container = styled(Grid).attrs({ item: true, xs: 12, sm: 6, md: 12 })`
+const Container = styled(Grid).attrs({ item: true, xs: 6, md: 12 })`
   margin-bottom: 36px !important;
 `;
 

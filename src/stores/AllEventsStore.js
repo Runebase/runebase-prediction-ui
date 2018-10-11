@@ -1,10 +1,12 @@
-import { observable, action, runInAction, computed, reaction, toJS } from 'mobx';
+import { observable, action, runInAction, computed, reaction } from 'mobx';
 import _ from 'lodash';
 import { OracleStatus, Routes } from 'constants';
 import { queryAllTopics, queryAllOracles } from '../network/graphql/queries';
+import Topic from './models/Topic';
+import Oracle from './models/Oracle';
 
 const INIT_VALUES = {
-  loaded: false, // INIT_VALUESial loaded state
+  loaded: true, // INIT_VALUESial loaded state
   loadingMore: false, // for scroll laoding animation
   list: [], // data list
   hasMoreTopics: true, // has more topics to fetch?
@@ -23,12 +25,12 @@ export default class {
     return this.hasMoreOracles || this.hasMoreTopics;
   }
   @observable skip = INIT_VALUES.skip
-  @observable limit = 24
+  limit = 24
 
   constructor(app) {
     this.app = app;
     reaction(
-      () => this.app.sortBy + toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum + this.app.refreshing,
+      () => this.app.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing,
       () => {
         if (this.app.ui.location === Routes.ALL_EVENTS) {
           this.init();
@@ -43,7 +45,7 @@ export default class {
     this.app.ui.location = Routes.ALL_EVENTS;
     this.list = await this.fetchAllEvents(limit);
     runInAction(() => {
-      this.loaded = true;
+      this.loading = false;
     });
   }
 
@@ -65,12 +67,14 @@ export default class {
     let topics = [];
     if (this.hasMoreTopics) {
       const topicFilters = [{ status: OracleStatus.WITHDRAW }];
-      topics = await queryAllTopics(this.app, topicFilters, orderBy, limit, skip);
+      topics = await queryAllTopics(topicFilters, orderBy, limit, skip);
+      topics = _.uniqBy(topics, 'txid').map((topic) => new Topic(topic, this.app));
       if (topics.length < limit) this.hasMoreTopics = false;
     }
     let oracles = [];
     if (this.hasMoreOracles) {
-      oracles = await queryAllOracles(this.app, undefined, orderBy, limit, skip);
+      oracles = await queryAllOracles(undefined, orderBy, limit, skip);
+      oracles = _.uniqBy(oracles, 'txid').map((oracle) => new Oracle(oracle, this.app));
       if (oracles.length < limit) this.hasMoreOracles = false;
     }
     const allEvents = _.orderBy([...topics, ...oracles], ['blockNum'], this.app.sortBy.toLowerCase());

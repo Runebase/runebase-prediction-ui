@@ -8,9 +8,9 @@ const strings = defineMessages({
     id: 'tx.resetApproval',
     defaultMessage: 'Reset Approval',
   },
-  approveBotTransfer: {
-    id: 'tx.approveBotTransfer',
-    defaultMessage: 'Approve BOT Transfer',
+  approvePredTransfer: {
+    id: 'tx.approvePredTransfer',
+    defaultMessage: 'Approve PRED Transfer',
   },
   createEvent: {
     id: 'str.createEvent',
@@ -46,14 +46,14 @@ const strings = defineMessages({
   },
 });
 
-export function getTxTypeString(txType, intl) {
-  const { formatMessage } = getIntlProvider(intl.locale, intl.messages);
+export function getTxTypeString(txType, locale, localeMessages) {
+  const { formatMessage } = getIntlProvider(locale, localeMessages);
 
   switch (txType) {
     case TransactionType.APPROVE_CREATE_EVENT:
     case TransactionType.APPROVE_SET_RESULT:
     case TransactionType.APPROVE_VOTE: {
-      return formatMessage(strings.approveBotTransfer);
+      return formatMessage(strings.approvePredTransfer);
     }
     case TransactionType.CREATE_EVENT: {
       return formatMessage(strings.createEvent);

@@ -30,7 +30,7 @@ export class DateTimePickerDialogTab extends Component {
     const { pickerView, date, classes } = this.props;
     return (
       <Tabs
-        indicatorColor="primary"
+        color="primary"
         fullWidth
         value={this.pickerViewToIndex(pickerView)}
         onChange={this.handleChange}

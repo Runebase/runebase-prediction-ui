@@ -13,14 +13,18 @@ import styles from './styles';
 @observer
 export default class TransactionHistory extends Component {
   static propTypes = {
+    classes: PropTypes.object.isRequired,
     options: PropTypes.array.isRequired,
   };
 
   render() {
-    const { options, store: { eventPage, wallet } } = this.props;
+    const { classes, options, store: { eventPage } } = this.props;
     const { transactions } = eventPage;
     return (
-      <div>
+      <div className={classes.detailTxWrapper}>
+        <Typography variant="headline" className={classes.detailTxTitle}>
+          <FormattedMessage id="str.transaction" defaultMessage="TRANSACTIONS" />
+        </Typography>
         {transactions.length && options.length ? (
           <Table>
             <TableHead>
@@ -46,22 +50,16 @@ export default class TransactionHistory extends Component {
             </TableHead>
             <TableBody>
               {transactions.map((transaction) => (
-                (!(this.props.myTransactions && (wallet.addresses.findIndex(x => x.address === transaction.senderAddress) === -1))) && <TxRow key={transaction.txid} transaction={transaction} />
+                <TxRow key={transaction.txid} transaction={transaction} />
               ))}
             </TableBody>
           </Table>
         ) : (
-          <CenteredDiv>
-            <Typography variant="body1">
-              <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
-            </Typography>
-          </CenteredDiv>
+          <Typography variant="body1">
+            <FormattedMessage id="str.emptyTxHistory" defaultMessage="You do not have any transactions right now." />
+          </Typography>
         )}
       </div>
     );
   }
 }
-
-export const CenteredDiv = withStyles(styles)(({ classes, ...props }) => (
-  <div className={classes.centeredDiv} {...props} />
-));

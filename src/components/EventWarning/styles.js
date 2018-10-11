@@ -3,11 +3,9 @@ import { EventWarningType } from 'constants';
 const styles = (theme) => ({
   warningWrapper: {
     borderRadius: theme.borderRadius,
-    padding: theme.padding.unit.px,
+    overflow: 'hidden',
+    padding: `${theme.padding.unit.px} ${theme.padding.xs.px}`,
     marginBottom: theme.padding.sm.px,
-    [theme.breakpoints.down('xs')]: {
-      margin: 0,
-    },
   },
   [EventWarningType.INFO]: {
     background: theme.palette.primary.light,
@@ -21,9 +19,13 @@ const styles = (theme) => ({
     background: theme.palette.secondary.light,
     border: `solid 1px ${theme.palette.secondary.main}`,
   },
-  [EventWarningType.ORANGE]: {
-    background: `${theme.palette.extra.orange}1A`,
-    border: `solid 1px ${theme.palette.extra.orange}`,
+  pending: {
+    background: '#E9FEFE',
+    border: 'solid 1px #23DAE0',
+  },
+  upcoming: {
+    background: '#F5A6231A',
+    border: 'solid 1px #F5A623',
   },
 });
 

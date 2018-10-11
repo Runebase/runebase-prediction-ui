@@ -22,18 +22,6 @@ const styles = (theme) => ({
     paddingLeft: 0,
     paddingRight: 0,
   },
-  createEventSectionTitle: {
-    fontSize: theme.sizes.font.textSm,
-    [theme.breakpoints.down('xs')]: {
-      marginTop: 4,
-    },
-  },
-  createEventTextField: {
-    [theme.breakpoints.down('xs')]: {
-      fontSize: 12,
-      height: 20,
-    },
-  },
 });
 
 export default styles;

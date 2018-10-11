@@ -1,10 +1,8 @@
-import React from 'react';
-import { Typography, withStyles } from '@material-ui/core';
+import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
 
-import styles from './styles';
 
-export const Title = withStyles(styles)(({ children, classes }) => (
-  <Typography variant="display1" className={classes.title}>
-    {children}
-  </Typography>
-));
+export const Title = styled(Typography).attrs({ variant: 'display1' })`
+  margin-bottom: ${props => props.theme.padding.md.px} !important;
+`;
+

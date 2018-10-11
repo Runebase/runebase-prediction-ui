@@ -14,9 +14,14 @@ const styles = (theme) => ({
     color: theme.palette.secondary.main,
     fontSize: theme.sizes.font.meta,
   },
-  [EventWarningType.ORANGE]: {
-    fontWeight: theme.typography.fontWeightBold,
-    color: theme.palette.extra.orange,
+  pending: {
+    color: '#23DAE0',
+    fontSize: theme.sizes.font.meta,
+  },
+  upcoming: {
+    fontFamily: 'Lato',
+    fontWeight: 'bold',
+    color: '#F5A623',
   },
 });
 

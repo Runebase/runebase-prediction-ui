@@ -35,7 +35,7 @@ export default class EncryptStatusDialog extends Component {
           <FormattedMessage id="encrypt.success" defaultMessage="Encrypt Wallet Successful." />
         </DialogTitle>
         <DialogContent>
-          <FormattedMessage id="encrypt.restart" defaultMessage="You need to restart Bodhi applciation after successfully encrypt the wallet" />
+          <FormattedMessage id="encrypt.restart" defaultMessage="You need to restart RunebasePrediction applciation after successfully encrypt the wallet" />
         </DialogContent>
         <DialogActions>
           <Button onClick={clearEncryptResult}>

@@ -1,4 +1,4 @@
-import { computed } from 'mobx';
+import { observable, computed } from 'mobx';
 import { OracleStatus, TransactionType, TransactionStatus, Phases, Token } from 'constants';
 
 import { satoshiToDecimal } from '../../helpers/utility';
@@ -17,8 +17,8 @@ export default class Oracle {
   topicAddress = '' // TopicEvent address that created this Oracle
   txid = '' // Transaction ID that this Oracle was created
   status = '' // Stage the Oracle is in. One of: [BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING]
-  token = '' // BOT or QTUM
-  amounts = [] // QTUM or BOT amounts array for each result index
+  token = '' // PRED or RUNES
+  amounts = [] // RUNES or PRED amounts array for each result index
   blockNum // Block number when this Oracle was created
   consensusThreshold = '' // Amount needed to validate a result
   startTime = '' // Depends on the type of Oracle. CentralizedOracle = betting start time. DecentralizedOracle = arbitration start time.
@@ -29,41 +29,43 @@ export default class Oracle {
   resultIdx // Result index of current result
   resultSetStartTime = '' // Only for CentralizedOracle. Result setting start time.
   resultSetEndTime = '' // Only for CentralizedOracle. Result setting end time.
-  resultSetterAddress = '' // Result setter's Qtum address.
+  resultSetterAddress = '' // Result setter's encoded hex address. Runebase address encoded to hex.
+  resultSetterQAddress = '' // Result setters Runebase address.
   transactions = [] // Transaction objects tied to this Event.
   version // Current version of the contract. To manage deprecations later.
 
   // for UI
   url = '' // Internal URL for routing within UI.
+  @observable txFees = [] // For TxConfirmDialog to show the transactions needed to do when executing.
 
   // for invalid option
   localizedInvalid = {};
   // BETTING, VOTING, RESULT_SETTING, FINALIZING, WITHDRAWING
   @computed get phase() {
     const { token, status } = this;
-    const [BOT, QTUM] = [token === Token.BOT, token === Token.QTUM];
-    if (QTUM && ['PENDING', 'WITHDRAW', 'CREATED', 'VOTING'].includes(status)) return BETTING;
-    if (BOT && ['PENDING', 'VOTING', 'WITHDRAW'].includes(status)) return VOTING;
-    if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
-    if (BOT && status === 'WAITRESULT') return FINALIZING;
+    const [PRED, RUNES] = [token === Token.PRED, token === Token.RUNES];
+    if (RUNES && ['PENDING', 'WITHDRAW', 'CREATED', 'VOTING'].includes(status)) return BETTING;
+    if (PRED && ['PENDING', 'VOTING', 'WITHDRAW'].includes(status)) return VOTING;
+    if (RUNES && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
+    if (PRED && status === 'WAITRESULT') return FINALIZING;
     return WITHDRAWING; // only for topic
   }
   // OpenResultSetting means the Result Setter did not set the result in time so anyone can set the result now.
   @computed get isOpenResultSetting() {
-    return this.token === Token.QTUM && this.status === 'OPENRESULTSET';
+    return this.token === Token.RUNES && this.status === 'OPENRESULTSET';
   }
   // Archived Oracles mean their purpose has been served. eg. Betting Oracle finished betting round.
   @computed get isArchived() {
     const { token, status } = this;
-    const [BOT, QTUM] = [token === Token.BOT, token === Token.QTUM];
-    if (QTUM && ['PENDING', 'WITHDRAW'].includes(status)) return true; // BETTING
-    if (BOT && ['PENDING', 'WITHDRAW'].includes(status)) return true; // VOTING
+    const [PRED, RUNES] = [token === Token.PRED, token === Token.RUNES];
+    if (RUNES && ['PENDING', 'WITHDRAW'].includes(status)) return true; // BETTING
+    if (PRED && ['PENDING', 'WITHDRAW'].includes(status)) return true; // VOTING
     return false;
   }
   // Pending if there is a tx waiting to be accepted by the blockchain. Users can only do one tx at a time.
   @computed get isPending() {
     const { token, status, transactions } = this;
-    const [QTUM] = [token === Token.QTUM];
+    const [RUNES] = [token === Token.RUNES];
     const { APPROVE_SET_RESULT, SET_RESULT, APPROVE_VOTE, VOTE, FINALIZE_RESULT, BET } = TransactionType;
     const pendingTypes = {
       BETTING: [BET],
@@ -77,7 +79,7 @@ export default class Oracle {
     if (isPending) return true;
 
     // Include unconfirmed Oracle
-    if (QTUM && status === 'CREATED') {
+    if (RUNES && status === 'CREATED') {
       return true;
     }
 
@@ -87,12 +89,12 @@ export default class Oracle {
   @computed get unconfirmed() {
     return !this.topicAddress && !this.address;
   }
-  // Upcoming is for showing upcoming Events in BOT Court so users don't lose track of an Event while it is in the Result Setting phase.
+  // Upcoming is for showing upcoming Events in PRED Court so users don't lose track of an Event while it is in the Result Setting phase.
   @computed get isUpcoming() {
     return (
       this.phase === RESULT_SETTING
       && this.status === OracleStatus.WAIT_RESULT
-      && (this.app.wallet.addresses.filter(({ address }) => (address === this.resultSetterAddress)).length === 0)
+      && (this.app.wallet.addresses.filter(({ address }) => (address === this.resultSetterQAddress)).length === 0)
     );
   }
 
@@ -101,7 +103,7 @@ export default class Oracle {
     this.app = app;
     this.amounts = oracle.amounts.map(satoshiToDecimal);
     this.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
-    this.url = this.unconfirmed ? `/oracle/${oracle.hashId}` : `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`;
+    this.url = `/oracle/${oracle.topicAddress}/${oracle.address}/${oracle.txid}`;
     this.endTime = this.phase === RESULT_SETTING ? oracle.resultSetEndTime : oracle.endTime;
     this.options = oracle.options.map((option, i) => new Option(option, i, this, app));
     this.localizedInvalid = {

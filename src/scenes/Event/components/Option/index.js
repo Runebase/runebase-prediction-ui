@@ -1,7 +1,20 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { Collapse, withStyles, MenuItem, Select, Typography, FormControl, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Input, InputLabel, InputAdornment } from '@material-ui/core';
+import {
+  Collapse,
+  withStyles,
+  MenuItem,
+  Select,
+  Typography,
+  FormControl,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  Input,
+  InputLabel,
+  InputAdornment,
+} from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import cx from 'classnames';
 import { injectIntl, defineMessages } from 'react-intl';
@@ -44,7 +57,6 @@ export default class Option extends Component {
       option,
       intl,
       disabled,
-      amountPlaceholder,
     } = this.props;
 
     const name = option.name === 'Invalid' ? intl.formatMessage(messages.invalidMsg) : option.name;
@@ -91,12 +103,13 @@ export default class Option extends Component {
                   value={eventPage.amount}
                   onChange={({ target }) => eventPage.amount = target.value}
                   onBlur={eventPage.fixAmount}
-                  amountPlaceholder={amountPlaceholder}
                 />
                 <AddressSelect
+                  wallet={wallet}
+                  token={token}
                   classes={classes}
-                  value={wallet.currentAddress}
-                  onChange={e => wallet.setCurrentWalletAddress(e.target.value)}
+                  value={wallet.lastUsedAddress}
+                  onChange={e => wallet.lastUsedAddress = e.target.value}
                 />
               </div>
             )}
@@ -107,21 +120,23 @@ export default class Option extends Component {
   }
 }
 
-const AmountInput = ({ classes, token, phase, amountPlaceholder, ...props }) => (
+const AmountInput = ({ classes, token, phase, ...props }) => (
   <ExpansionPanelDetails>
     <div className={cx(classes.eventOptionWrapper, 'noMargin')}>
       <div className={classes.eventOptionIcon}>
         <i className="icon iconfont icon-ic_token"></i>
       </div>
       <FormControl fullWidth>
-        <InputLabel htmlFor="amount" shrink>AMOUNT</InputLabel>
+        <InputLabel htmlFor="amount" shrink>
+          AMOUNT
+        </InputLabel>
         <Input
           id="vote-amount"
           type="number"
-          placeholder={amountPlaceholder || '0.00'}
+          placeholder="0.00"
           className={classes.eventOptionInput}
           endAdornment={
-            <InputAdornment position="end">{phase === Phases.RESULT_SETTING ? Token.BOT : token}</InputAdornment>
+            <InputAdornment position="end">{phase === Phases.RESULT_SETTING ? Token.PRED : token}</InputAdornment>
           }
           {...props}
         />
@@ -130,22 +145,24 @@ const AmountInput = ({ classes, token, phase, amountPlaceholder, ...props }) => 
   </ExpansionPanelDetails>
 );
 
-const AddressSelect = inject('store')(observer(({ classes, store: { wallet: { addresses } }, ...props }) => (
+const AddressSelect = observer(({ classes, wallet, ...props }) => (
   <ExpansionPanelDetails>
     <div className={cx(classes.eventOptionWrapper, 'noMargin', 'last')}>
       <div className={classes.eventOptionIcon}>
         <i className="icon iconfont icon-ic_wallet"></i>
       </div>
       <FormControl fullWidth>
-        <InputLabel htmlFor="address" shrink>ADDRESS</InputLabel>
+        <InputLabel htmlFor="address" shrink>
+          ADDRESS
+        </InputLabel>
         <Select inputProps={{ id: 'address' }} {...props}>
-          {addresses.map(({ address, bot, qtum }) => (
+          {wallet.addresses.map(({ address, pred, runebase }) => (
             <MenuItem key={address} value={address}>
-              {`${address} (${qtum ? Number(qtum).toFixed(2) : 0} QTUM, ${bot ? Number(bot).toFixed(2) : 0} BOT)`}
+              {`${address} (${runebase ? Number(runebase).toFixed(2) : 0} RUNES, ${pred ? Number(pred).toFixed(2) : 0} PRED)`}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
     </div>
   </ExpansionPanelDetails>
-)));
+));

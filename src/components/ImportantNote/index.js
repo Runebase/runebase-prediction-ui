@@ -1,22 +1,34 @@
 import React from 'react';
-import { withStyles, IconButton, Tooltip, Typography } from '@material-ui/core';
-import cx from 'classnames';
+import styled, { css } from 'styled-components';
 
-import styles from './styles';
 
-const ImportantNote = ({ classes, heading, message, ...props }) => (
-  heading && message && (
-    <div {...props}>
-      <div className={classes.iconHeadingContainer}>
-        <Tooltip title={<span>{message}</span>}>
-          <IconButton className={classes.iconButton} disableRipple>
-            <i className={cx('icon iconfont icon-ic_info', classes.icon)} />
-          </IconButton>
-        </Tooltip>
-        <Typography className={classes.heading}>{heading}</Typography>
-      </div>
-    </div>
-  )
+export const ImportantNote = ({ heading, message, ...props }) => !!(heading && message) && (
+  <Wrapper {...props}>
+    <Icon />
+    <Heading>{heading}</Heading>
+    <Message>{message}</Message>
+  </Wrapper>
 );
 
-export default withStyles(styles)((ImportantNote));
+const Wrapper = styled.div`
+  ${({ theme: { padding } }) => css`
+    margin: ${padding.xs.px} ${padding.xs.px} 0px ${padding.xs.px};
+  `}
+`;
+
+const Heading = styled.span`
+  font-size: ${props => props.theme.sizes.font.textMd};
+  font-weight: ${props => props.theme.typography.fontWeightBold};
+  color: ${props => props.theme.palette.text.primary};
+`;
+
+const Message = styled.p`
+  font-size: ${props => props.theme.sizes.font.textSm};
+  color: ${props => props.theme.palette.text.secondary};
+`;
+
+const Icon = styled.i.attrs({ className: 'icon iconfont icon-ic_info' })`
+  font-size: ${props => props.theme.sizes.font.textMd};
+  color: ${props => props.theme.palette.primary.main};
+  margin-right: ${props => props.theme.padding.unit.px};
+`;

@@ -1,19 +1,42 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tooltip, Button, Snackbar, withStyles, Grid, Paper, Typography, IconButton } from '@material-ui/core';
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Tooltip,
+  Button,
+  Snackbar,
+  withStyles,
+  Grid,
+  Paper,
+  Typography,
+  IconButton,
+} from '@material-ui/core';
+import { SortBy } from 'constants';
 import { Close as CloseIcon, ContentCopy } from '@material-ui/icons';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import _ from 'lodash';
-import { SortBy } from 'constants';
 
 import styles from './styles';
 import DepositDialog from './DepositDialog';
 import WithdrawDialog from './WithdrawDialog';
+import WithdrawTxConfirmDialog from './WithdrawTxConfirmDialog';
 import Config from '../../../config/app';
 import Tracking from '../../../helpers/mixpanelUtil';
 
+const messages = defineMessages({
+  txConfirmMsgSendMsg: {
+    id: 'txConfirmMsg.send',
+    defaultMessage: 'send to address {address}',
+  },
+});
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -32,8 +55,8 @@ export default class MyBalances extends Component {
       orderBy: 'address',
       addrCopiedSnackbarVisible: false,
       selectedAddress: undefined,
-      selectedAddressQtum: undefined,
-      selectedAddressBot: undefined,
+      selectedAddressRunebase: undefined,
+      selectedAddressPred: undefined,
       depositDialogVisible: false,
       withdrawDialogVisible: false,
     };
@@ -56,8 +79,8 @@ export default class MyBalances extends Component {
     const { classes } = this.props;
     const {
       selectedAddress,
-      selectedAddressQtum,
-      selectedAddressBot,
+      selectedAddressRunebase,
+      selectedAddressPred,
       depositDialogVisible,
       withdrawDialogVisible,
     } = this.state;
@@ -79,17 +102,18 @@ export default class MyBalances extends Component {
             onClose={this.handleDepositDialogClose}
             onCopyClicked={this.onCopyClicked}
             walletAddress={selectedAddress}
-            qtumAmount={selectedAddressQtum}
-            botAmount={selectedAddressBot}
+            runebaseAmount={selectedAddressRunebase}
+            predAmount={selectedAddressPred}
           />
           <WithdrawDialog
             dialogVisible={withdrawDialogVisible}
             onClose={this.handleWithdrawDialogClose}
             onWithdraw={this.onWithdraw}
             walletAddress={selectedAddress}
-            qtumAmount={selectedAddressQtum}
-            botAmount={selectedAddressBot}
+            runebaseAmount={selectedAddressRunebase}
+            predAmount={selectedAddressPred}
           />
+          <WithdrawTxConfirmDialog onWithdraw={this.onWithdraw} id={messages.txConfirmMsgSendMsg.id} />
         </Grid>
       </Paper>
     );
@@ -98,26 +122,26 @@ export default class MyBalances extends Component {
   getTotalsGrid() {
     const { classes, store: { wallet } } = this.props;
 
-    let totalQtum = 0;
-    let totalBot = 0;
+    let totalRunebase = 0;
+    let totalPred = 0;
     const walletAddresses = wallet.addresses;
     if (walletAddresses && walletAddresses.length) {
-      totalQtum = _.sumBy(walletAddresses, (address) => address.qtum ? address.qtum : 0);
-      totalBot = _.sumBy(walletAddresses, (address) => address.bot ? address.bot : 0);
+      totalRunebase = _.sumBy(walletAddresses, (address) => address.runebase ? address.runebase : 0);
+      totalPred = _.sumBy(walletAddresses, (address) => address.pred ? address.pred : 0);
     }
 
     const items = [
       {
-        id: 'qtum',
-        name: 'str.qtum',
-        nameDefault: 'QTUM',
-        total: totalQtum,
+        id: 'runebase',
+        name: 'str.runebase',
+        nameDefault: 'RUNES',
+        total: totalRunebase,
       },
       {
-        id: 'bot',
-        name: 'str.bot',
-        nameDefault: 'BOT',
-        total: totalBot,
+        id: 'pred',
+        name: 'str.pred',
+        nameDefault: 'PRED',
+        total: totalPred,
       },
     ];
 
@@ -152,16 +176,16 @@ export default class MyBalances extends Component {
         sortable: false,
       },
       {
-        id: 'qtum',
-        name: 'str.qtum',
-        nameDefault: 'QTUM',
+        id: 'runebase',
+        name: 'str.runebase',
+        nameDefault: 'RUNES',
         numeric: true,
         sortable: true,
       },
       {
-        id: 'bot',
-        name: 'str.bot',
-        nameDefault: 'BOT',
+        id: 'pred',
+        name: 'str.pred',
+        nameDefault: 'PRED',
         numeric: true,
         sortable: true,
       },
@@ -269,10 +293,10 @@ export default class MyBalances extends Component {
               </CopyToClipboard>
             </TableCell>
             <TableCell numeric>
-              <Typography variant="body1">{item.qtum}</Typography>
+              <Typography variant="body1">{item.runebase}</Typography>
             </TableCell>
             <TableCell numeric>
-              <Typography variant="body1">{item.bot}</Typography>
+              <Typography variant="body1">{item.pred}</Typography>
             </TableCell>
             <TableCell>
               <Button
@@ -282,8 +306,8 @@ export default class MyBalances extends Component {
                 className={classes.tableRowActionButton}
                 onClick={this.onDepositClicked}
                 data-address={item.address}
-                data-qtum={item.qtum}
-                data-bot={item.bot}
+                data-runebase={item.runebase}
+                data-pred={item.pred}
               >
                 <FormattedMessage id="myBalances.deposit" defaultMessage="Deposit" />
               </Button>
@@ -294,8 +318,8 @@ export default class MyBalances extends Component {
                 className={classes.tableRowActionButton}
                 onClick={this.onWithdrawClicked}
                 data-address={item.address}
-                data-qtum={item.qtum}
-                data-bot={item.bot}
+                data-runebase={item.runebase}
+                data-pred={item.pred}
               >
                 <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
               </Button>
@@ -337,8 +361,8 @@ export default class MyBalances extends Component {
   onDepositClicked(event) {
     this.setState({
       selectedAddress: event.currentTarget.getAttribute('data-address'),
-      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
-      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
+      selectedAddressRunebase: event.currentTarget.getAttribute('data-runebase'),
+      selectedAddressPred: event.currentTarget.getAttribute('data-pred'),
       depositDialogVisible: true,
     });
 
@@ -348,8 +372,8 @@ export default class MyBalances extends Component {
   handleDepositDialogClose = () => {
     this.setState({
       selectedAddress: undefined,
-      selectedAddressQtum: undefined,
-      selectedAddressBot: undefined,
+      selectedAddressRunebase: undefined,
+      selectedAddressPred: undefined,
       depositDialogVisible: false,
     });
   };
@@ -359,11 +383,11 @@ export default class MyBalances extends Component {
 
     this.setState({
       selectedAddress: event.currentTarget.getAttribute('data-address'),
-      selectedAddressQtum: event.currentTarget.getAttribute('data-qtum'),
-      selectedAddressBot: event.currentTarget.getAttribute('data-bot'),
+      selectedAddressRunebase: event.currentTarget.getAttribute('data-runebase'),
+      selectedAddressPred: event.currentTarget.getAttribute('data-pred'),
       withdrawDialogVisible: true,
     });
-    wallet.setCurrentWalletAddress(event.currentTarget.getAttribute('data-address'));
+    wallet.lastUsedAddress = event.currentTarget.getAttribute('data-address');
 
     Tracking.track('myWallet-withdrawDialogOpen');
   }
@@ -371,8 +395,8 @@ export default class MyBalances extends Component {
   handleWithdrawDialogClose = () => {
     this.setState({
       selectedAddress: undefined,
-      selectedAddressQtum: undefined,
-      selectedAddressBot: undefined,
+      selectedAddressRunebase: undefined,
+      selectedAddressPred: undefined,
       withdrawDialogVisible: false,
     });
   };

@@ -25,13 +25,13 @@ const messages = defineMessages({
   },
   tutorial5Content4Msg: {
     id: 'tutorial5.content4',
-    defaultMessage: 'When you see your balance on Bodhi Dapp, the Qtum Wallet, or view your transactions on the Qtum Explorer, you are seeing data on the blockchain, not in our personal systems.',
+    defaultMessage: 'When you see your balance on RunebasePrediction Dapp, the Runebase Wallet, or view your transactions on the Runebase Explorer, you are seeing data on the blockchain, not in our personal systems.',
   },
 });
 
 const Tutorial5 = ({ classes }) => (
   <div>
-    <Typography variant="display1" classes={{ display1: classes.tutorialDialogContentTitle }}>
+    <Typography variant="display1">
       <FormattedMessage id="tutorial5.title" defaultMessage="What Is Blockchain" />
     </Typography>
     <ul className={classes.contentList}>

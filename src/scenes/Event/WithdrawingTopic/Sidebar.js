@@ -19,27 +19,27 @@ const getEventInfoObjs = (topic) => {
     return [];
   }
 
-  const qtumTotal = _.sum(topic.qtumAmount);
-  const botTotal = _.sum(topic.botAmount);
+  const runebaseTotal = _.sum(topic.runebaseAmount);
+  const predTotal = _.sum(topic.predAmount);
 
-  let resultSetterAddress;
+  let resultSetterQAddress;
   _.map(topic.oracles, (o) => {
-    const setterAddress = o.resultSetterAddress;
+    const setterAddress = o.resultSetterQAddress;
     if (setterAddress) {
-      resultSetterAddress = setterAddress;
+      resultSetterQAddress = setterAddress;
     }
   });
 
   return [
     {
       label: <FormattedMessage id="eventInfo.predictionFund" defaultMessage="Prediction Fund" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
-      content: `${qtumTotal} QTUM`,
+      content: `${runebaseTotal} RUNES`,
     }, {
       label: <FormattedMessage id="eventInfo.voteVolume" defaultMessage="Voting Volume" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
-      content: `${botTotal} BOT`,
+      content: `${predTotal} PRED`,
     }, {
       label: <FormattedMessage id="str.resultSetter" defaultMessage="Result Setter" >{(txt) => i18nToUpperCase(txt)}</FormattedMessage>,
-      content: resultSetterAddress,
+      content: resultSetterQAddress,
     },
   ];
 };

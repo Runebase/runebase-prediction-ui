@@ -1,7 +1,18 @@
 language: node_js
 
 node_js:
-  - "10"
+  - "9"
+
+env:
+  - CXX=g++-4.8
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
 
 cache:
   directories:
@@ -9,4 +20,3 @@ cache:
 
 script:
   - npm run lint
-  - npm test

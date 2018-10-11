@@ -7,11 +7,11 @@ import { Typography } from '@material-ui/core';
 const messages = defineMessages({
   withdrawDetailTotalBetTotalVoteMsg: {
     id: 'withdrawDetail.totalBetTotalVote',
-    defaultMessage: 'Total bet amount {qtum} QTUM. Total voted amount {bot} BOT.',
+    defaultMessage: 'Total bet amount {runebase} RUNES. Total voted amount {pred} PRED.',
   },
   withdrawDetailYouBetYouVoteMsg: {
     id: 'withdrawDetail.youBetYouVote',
-    defaultMessage: 'You bet {qtum} QTUM. You voted {bot} BOT.',
+    defaultMessage: 'You bet {runebase} RUNES. You voted {pred} PRED.',
   },
 });
 
@@ -29,13 +29,13 @@ const Option = injectIntl(({ option, eventPage, index, intl, eventPage: { topic 
     </Typog>
     <Typography variant="caption">
       {intl.formatMessage(messages.withdrawDetailTotalBetTotalVoteMsg, {
-        qtum: topic.qtumAmount[index], bot: topic.botAmount[index],
+        runebase: topic.runebaseAmount[index], pred: topic.predAmount[index],
       })}
     </Typography>
     {!!(eventPage.betBalances[index] || eventPage.voteBalances[index]) && (
       <div>
         <Typography variant="caption">
-          {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { qtum: eventPage.betBalances[index], bot: eventPage.voteBalances[index] })}
+          {intl.formatMessage(messages.withdrawDetailYouBetYouVoteMsg, { runebase: eventPage.betBalances[index], pred: eventPage.voteBalances[index] })}
         </Typography>
       </div>
     )}
@@ -51,10 +51,10 @@ const Typog = styled(Typography)`
 const OptionNumber = styled.div`
   ${({ theme }) => css`
     background: ${theme.palette.background.grey};
-    height: ${theme.sizes.icon.large};
-    width: ${theme.sizes.icon.large};
-    line-height: ${theme.sizes.icon.large};
-    border-radius: ${theme.sizes.icon.large};
+    height: ${theme.sizes.icon};
+    width: ${theme.sizes.icon};
+    line-height: ${theme.sizes.icon};
+    border-radius: ${theme.sizes.icon};
     overflow: hidden;
     text-align: center;
     font-size: ${theme.sizes.font.meta};

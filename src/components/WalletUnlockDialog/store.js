@@ -24,15 +24,15 @@ export default class WalletUnlockDialogStore {
       });
 
       // Get the unlocked_until timestamp
-      const { data } = await axios.get(Routes.api.getWalletInfo);
-      const unlockedUntil = data.unlocked_until;
+      const { data: { result } } = await axios.get(Routes.api.getWalletInfo);
+      const unlockedUntil = result.unlocked_until;
 
       runInAction(() => {
         this.app.wallet.walletUnlockedUntil = unlockedUntil;
       });
     } catch (error) {
       runInAction(() => {
-        this.app.components.globalDialog.setError(`${error.message} : ${error.response.data.error}`, Routes.api.unlockWallet);
+        this.app.ui.setError(error.message, Routes.api.unlockWallet);
       });
     }
   }

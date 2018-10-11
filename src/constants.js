@@ -1,15 +1,13 @@
 module.exports = {
   Routes: {
-    QTUM_PREDICTION: '/',
-    BOT_COURT: '/bot-court',
+    RUNES_PREDICTION: '/',
+    PRED_COURT: '/pred-court',
     WALLET: '/wallet',
     SET: '/activities/set',
     FINALIZE: '/activities/finalize',
     WITHDRAW: '/activities/withdraw',
     ACTIVITY_HISTORY: '/activities/history',
-    FAVORITE: '/activities/favorite',
     ALL_EVENTS: '/all-events',
-    SETTINGS: '/settings',
   },
 
   EventType: {
@@ -40,18 +38,12 @@ module.exports = {
     INFO: 'INFO',
     ERROR: 'ERROR',
     HIGHLIGHT: 'HIGHLIGHT',
-    ORANGE: 'ORANGE',
-  },
-
-  WalletProvider: {
-    QRYPTO: 'QRYPTO',
-    QT_WALLET: 'QT_WALLET',
   },
 
   /* GraphQL Constants */
   Token: {
-    QTUM: 'QTUM',
-    BOT: 'BOT',
+    RUNES: 'RUNES',
+    PRED: 'PRED',
   },
 
   OracleStatus: {
@@ -59,7 +51,7 @@ module.exports = {
     VOTING: 'VOTING',
     WAIT_RESULT: 'WAITRESULT',
     OPEN_RESULT_SET: 'OPENRESULTSET',
-    PENDING: 'PENDING',
+    PENDING: 'PENDING', // not used
     WITHDRAW: 'WITHDRAW',
   },
 
@@ -81,17 +73,12 @@ module.exports = {
   TransactionStatus: {
     PENDING: 'PENDING',
     SUCCESS: 'SUCCESS',
-    FAIL: 'FAIL',
+    FAIL: 'FAIL', // not used
   },
 
   SortBy: {
     DEFAULT: 'DESC',
     ASCENDING: 'ASC',
     DESCENDING: 'DESC',
-  },
-
-  TransactionGas: {
-    CREATE_EVENT: 3500000,
-    DORACLE_CREATE: 1500000,
   },
 };

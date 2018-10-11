@@ -9,7 +9,7 @@ import { ContentItem } from './contentItem';
 const messages = defineMessages({
   tutorial0Content0Msg: {
     id: 'tutorial0.content0',
-    defaultMessage: 'Bodhi Dapp is a free, open-source, client-side interface.',
+    defaultMessage: 'RunebasePrediction Dapp is a free, open-source, client-side interface.',
   },
   tutorial0Content1Msg: {
     id: 'tutorial0.content1',
@@ -17,7 +17,7 @@ const messages = defineMessages({
   },
   tutorial0Content2Msg: {
     id: 'tutorial0.content2',
-    defaultMessage: 'Bodhi Dapp is NOT a standalone wallet. We use the Qtum Core Wallet to handle all transactions and interactions with the Qtum blockchain.',
+    defaultMessage: 'RunebasePrediction Dapp is NOT a standalone wallet. We use the Runebase Core Wallet to handle all transactions and interactions with the Runebase blockchain.',
   },
   tutorial0Content3Msg: {
     id: 'tutorial0.content3',
@@ -27,8 +27,8 @@ const messages = defineMessages({
 
 const Tutorial0 = ({ classes }) => (
   <div>
-    <Typography variant="display1" classes={{ display1: classes.tutorialDialogContentTitle }}>
-      <FormattedMessage id="tutorial0.title" defaultMessage="What Is The Bodhi App" />
+    <Typography variant="display1">
+      <FormattedMessage id="tutorial0.title" defaultMessage="What Is The RunebasePrediction App" />
     </Typography>
     <ul className={classes.contentList}>
       <ContentItem id={messages.tutorial0Content0Msg.id} defaultMessage={messages.tutorial0Content0Msg.defaultMessage} />

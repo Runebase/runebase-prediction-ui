@@ -21,22 +21,17 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${Routes.QTUM_PREDICTION}`}
-        component={asyncComponent(() => import('../QtumPrediction'))}
+        path={`${url}${Routes.RUNES_PREDICTION}`}
+        component={asyncComponent(() => import('../RunebasePrediction'))}
       />
       <Route
         exact
-        path={`${url}${Routes.BOT_COURT}`}
-        component={asyncComponent(() => import('../BotCourt'))}
+        path={`${url}${Routes.PRED_COURT}`}
+        component={asyncComponent(() => import('../PredCourt'))}
       />
       <Route
         exact
         path={`${url}/oracle/:topicAddress/:address/:txid`}
-        component={asyncComponent(() => import('../Event'))}
-      />
-      <Route
-        exact
-        path={`${url}/oracle/:hashId`}
         component={asyncComponent(() => import('../Event'))}
       />
       <Route
@@ -48,11 +43,6 @@ const AppRouter = ({ url }) => {
         exact
         path={`${url}${Routes.WALLET}`}
         component={asyncComponent(() => import('../Wallet'))}
-      />
-      <Route
-        exact
-        path={`${url}${Routes.SETTINGS}`}
-        component={asyncComponent(() => import('../Settings'))}
       />
       <Route
         exact
@@ -72,11 +62,6 @@ const AppRouter = ({ url }) => {
       <Route
         exact
         path={`${url}${Routes.ACTIVITY_HISTORY}`}
-        component={asyncComponent(() => import('../Activities'))}
-      />
-      <Route
-        exact
-        path={`${url}${Routes.FAVORITE}`}
         component={asyncComponent(() => import('../Activities'))}
       />
     </Switch>

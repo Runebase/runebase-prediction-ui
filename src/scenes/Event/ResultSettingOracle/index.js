@@ -1,11 +1,10 @@
 import React from 'react';
+import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
-import { Grid, withStyles } from '@material-ui/core';
-import { EventWarning, ImportantNote, CurrentAllowanceNote } from 'components';
-
-import styles from './styles';
-import { Sidebar, Row, Content, Title, Button, Option, HistoryTable } from '../components';
+import { Grid } from '@material-ui/core';
+import { EventWarning, ImportantNote } from 'components';
+import { Sidebar, Row, Content, Title, Button, Option, TransactionHistory, OracleTxConfirmDialog } from '../components';
 
 const messages = defineMessages({
   consensusThreshold: {
@@ -16,9 +15,13 @@ const messages = defineMessages({
     id: 'oracle.setResultExplanation',
     defaultMessage: 'Setting the result requires staking the Consensus Threshold amount.',
   },
+  txConfirmMsgSetMsg: {
+    id: 'txConfirmMsg.set',
+    defaultMessage: 'set the result as {option}',
+  },
 });
 
-const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle, amountDecimal } } }) => (
+const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle } } }) => (
   <Row>
     <Content>
       <Title>{oracle.name}</Title>
@@ -27,30 +30,34 @@ const ResultSettingOracle = observer(({ store: { eventPage, eventPage: { oracle,
       )}
       <Options oracle={oracle} />
       <MustStakeConsensusThresold consensusThreshold={oracle.consensusThreshold} />
-      <CurrentAllowanceNote allowance={amountDecimal} />
       <SetResultButton eventpage={eventPage} />
-      <HistoryTable transactionHistory />
+      <TransactionHistory options={oracle.options} />
     </Content>
     <Sidebar />
+    <OracleTxConfirmDialog id={messages.txConfirmMsgSetMsg.id} />
   </Row>
 ));
 
 const MustStakeConsensusThresold = injectIntl(({ intl, consensusThreshold }) => {
-  const heading = `${intl.formatMessage(messages.consensusThreshold)} ${consensusThreshold} BOT`;
+  const heading = `${intl.formatMessage(messages.consensusThreshold)} ${consensusThreshold} PRED`;
   const message = intl.formatMessage(messages.setResultExplanation);
   return <ImportantNote heading={heading} message={message} />;
 });
 
-const Options = withStyles(styles)(observer(({ classes, oracle: { options } }) => (
-  <Grid className={classes.optionGrid}>
-    {options.map((option, i) => <Option key={i} option={option} amountInputDisabled />)}
-  </Grid>
-)));
+const Options = observer(({ oracle }) => (
+  <Container>
+    {oracle.options.map((option, i) => <Option key={i} option={option} amountInputDisabled />)}
+  </Container>
+));
+
+const Container = styled(Grid)`
+  min-width: 75%;
+`;
 
 const SetResultButton = props => {
-  const { oracle, setResult, isPending, buttonDisabled } = props.eventpage;
+  const { oracle, prepareSetResult, isPending, buttonDisabled } = props.eventpage;
   return !oracle.isArchived && (
-    <Button {...props} onClick={setResult} disabled={isPending || buttonDisabled}>
+    <Button {...props} onClick={prepareSetResult} disabled={isPending || buttonDisabled}>
       <FormattedMessage id="str.setResult" defaultMessage="Set Result" />
     </Button>
   );

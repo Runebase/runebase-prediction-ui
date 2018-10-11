@@ -5,10 +5,13 @@ import { defineMessages } from 'react-intl';
 
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy, Phases } from '../constants';
-
 const { BETTING, VOTING, RESULT_SETTING, PENDING, FINALIZING, WITHDRAWING, UNCONFIRMED } = Phases;
+
 const SATOSHI_CONVERSION = 10 ** 8;
+const PRED_MIN_VALUE = 0.01; // eslint-disable-line
 const GAS_COST = 0.0000004;
+const FORMAT_DATE_TIME = 'MMM Do, YYYY H:mm:ss';
+const FORMAT_SHORT_DATE_TIME = 'M/D/YY H:mm:ss';
 const messages = defineMessages({
   end: {
     id: 'str.end',
@@ -48,9 +51,9 @@ export function calculateBlock(currentBlock, futureDate, averageBlockTime) {
 }
 
 /**
- * Converts a decimal number to Satoshi/Botoshi 10^8.
+ * Converts a decimal number to Satoshi/Predoshi 10^8.
  * @param number {String/Number} The decimal number to convert.
- * @return {String} The converted Satoshi/Botoshi number.
+ * @return {String} The converted Satoshi/Predoshi number.
  */
 export function decimalToSatoshi(number) {
   if (!number) {
@@ -62,8 +65,8 @@ export function decimalToSatoshi(number) {
 }
 
 /**
- * Converts Satoshi/Botoshi to a decimal number.
- * @param number {String} The Satoshi/Botoshi string (or hex string) to convert.
+ * Converts Satoshi/Predoshi to a decimal number.
+ * @param number {String} The Satoshi/Predoshi string (or hex string) to convert.
  * @return {String} The converted decimal number.
  */
 export function satoshiToDecimal(number) {
@@ -83,11 +86,11 @@ export function satoshiToDecimal(number) {
 }
 
 /**
- * Converts the gas number to QTUM cost.
+ * Converts the gas number to RUNES cost.
  * @param gas {Number} The gas number to convert.
- * @return {Number} The gas amount represented as QTUM.
+ * @return {Number} The gas amount represented as RUNES.
  */
-export function gasToQtum(gas) {
+export function gasToRunebase(gas) {
   if (!gas || !_.isFinite(gas)) {
     return undefined;
   }
@@ -96,15 +99,25 @@ export function gasToQtum(gas) {
   return new BigNumber(gas).multipliedBy(gasCostBN).toNumber();
 }
 
-/**
- * Converts a duration to the countdown display string.
- * @param unixDiff {Number} The duration to convert. Formatted in unix time format.
- * @param locale {Object}} Locale object that the Intl is using.
- * @param localeMessages {Object} LocalMessages object that the Intl is using.
- * @return {String} A string either showing "ended" or the duration in human friendly way.
- */
-export function getEndTimeCountDownString(unixDiff, locale, localeMessages) {
+/*
+* Returns the string formatted date and time based on a unix timestamp.
+* @param dateTime {Moment} A moment instance of the date and time to convert.
+* @return {String} Returns a formatted string.
+*/
+export function getLocalDateTimeString(unixSeconds) {
+  return moment.unix(unixSeconds).format(FORMAT_DATE_TIME);
+}
+
+export function getShortLocalDateTimeString(unixSeconds) {
+  const dateTime = moment.unix(unixSeconds);
+
+  return dateTime.format(FORMAT_SHORT_DATE_TIME);
+}
+
+export function getEndTimeCountDownString(unixSeconds, locale, localeMessages) {
   const { day, hour, minute, second, end } = messages;
+  const nowUnix = moment().unix();
+  const unixDiff = unixSeconds - nowUnix;
 
   const { formatMessage } = getIntlProvider(locale, localeMessages);
   if (unixDiff <= 0) {
@@ -179,16 +192,40 @@ export function getDetailPagePath(oracles) {
  * @param {oracle} oracle
  */
 export const getPhase = ({ token, status }) => {
-  const [BOT, QTUM] = [token === 'BOT', token === 'QTUM'];
-  if (QTUM && status === 'CREATED') return UNCONFIRMED; // BETTING
-  if (QTUM && status === 'VOTING') return BETTING;
-  if (BOT && status === 'VOTING') return VOTING;
-  if (QTUM && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
-  if ((BOT || QTUM) && status === 'PENDING') return PENDING; // VOTING
-  if (BOT && status === 'WAITRESULT') return FINALIZING;
-  if ((BOT || QTUM) && status === 'WITHDRAW') return WITHDRAWING;
+  const [PRED, RUNES] = [token === 'PRED', token === 'RUNES'];
+  if (RUNES && status === 'CREATED') return UNCONFIRMED; // BETTING
+  if (RUNES && status === 'VOTING') return BETTING;
+  if (PRED && status === 'VOTING') return VOTING;
+  if (RUNES && ['WAITRESULT', 'OPENRESULTSET'].includes(status)) return RESULT_SETTING;
+  if ((PRED || RUNES) && status === 'PENDING') return PENDING; // VOTING
+  if (PRED && status === 'WAITRESULT') return FINALIZING;
+  if ((PRED || RUNES) && status === 'WITHDRAW') return WITHDRAWING;
   throw Error(`Invalid Phase determined by these -> TOKEN: ${token} STATUS: ${status}`);
 };
+
+export function processTopic(topic) {
+  if (!topic) {
+    return undefined;
+  }
+
+  const newTopic = _.assign({}, topic);
+  newTopic.runebaseAmount = _.map(topic.runebaseAmount, satoshiToDecimal);
+  newTopic.predAmount = _.map(topic.predAmount, satoshiToDecimal);
+  newTopic.escrowAmount = satoshiToDecimal(topic.escrowAmount);
+  newTopic.oracles = _.map(topic.oracles, processOracle);
+  return newTopic;
+}
+
+export function processOracle(oracle) {
+  if (!oracle) {
+    return undefined;
+  }
+
+  const newOracle = _.assign({}, oracle);
+  newOracle.amounts = _.map(oracle.amounts, satoshiToDecimal);
+  newOracle.consensusThreshold = satoshiToDecimal(oracle.consensusThreshold);
+  return newOracle;
+}
 
 export function toFixed(num) {
   let x = num;

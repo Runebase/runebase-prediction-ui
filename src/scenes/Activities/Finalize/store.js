@@ -1,6 +1,7 @@
-import { observable, action, runInAction, reaction, toJS } from 'mobx';
-import { isEmpty } from 'lodash';
+import { observable, action, runInAction, reaction } from 'mobx';
+import _ from 'lodash';
 import { Token, OracleStatus, Routes, SortBy } from 'constants';
+import { Oracle } from 'models';
 
 import { queryAllOracles } from '../../../network/graphql/queries';
 
@@ -24,7 +25,7 @@ export default class {
   constructor(app) {
     this.app = app;
     reaction(
-      () => toJS(this.app.wallet.addresses) + this.app.global.syncBlockNum,
+      () => this.app.wallet.addresses + this.app.global.syncBlockNum,
       () => {
         if (this.app.ui.location === Routes.FINALIZE) {
           this.init();
@@ -51,11 +52,6 @@ export default class {
 
   @action
   loadMore = async () => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      return;
-    }
-
     if (this.hasMore) {
       this.loadingMore = true;
       this.skip += this.limit; // pump the skip eg. from 0 to 24
@@ -68,18 +64,13 @@ export default class {
   }
 
   fetch = async (limit = this.limit, skip = this.skip) => {
-    // Address is required for the request filters
-    if (isEmpty(this.app.wallet.addresses)) {
-      return;
-    }
-
-    // we want to fetch all *Oracles* which is related to BOT token and waitResult status
+    // we want to fetch all *Oracles* which is related to PRED token and waitResult status
     if (this.hasMore) {
-      const filters = [{ token: Token.BOT, status: OracleStatus.WAIT_RESULT, language: this.app.ui.locale }];
+      const filters = [{ token: Token.PRED, status: OracleStatus.WAIT_RESULT }];
       const orderBy = { field: 'endTime', direction: SortBy.ASCENDING };
-      const result = await queryAllOracles(this.app, filters, orderBy, limit, skip);
+      const result = await queryAllOracles(filters, orderBy, limit, skip);
       if (result.length < limit) this.hasMore = false;
-      return result;
+      return _.uniqBy(result, 'txid').map((oracle) => new Oracle(oracle, this.app));
     }
     return INIT_VALUES.list;
   }

@@ -14,13 +14,13 @@ export default class Topic {
   phase = Phases.WITHDRAWING // Stage the Topic is in. For the UI, users will only see the Withdrawing phase.
   status = '' // Status of the Topic. One of: [CREATED, WITHDRAW]
   blockNum // Block number when this Topic was created.
-  creatorAddress = '' // Creator address in Qtum format
+  creatorAddress = '' // Creator address in Runebase format
   escrowAmount = '' // Escrow amount needed to create the Event
   name = '' // Name of the Event
   options = [] // Option names
   oracles = [] // Oracle objects for the Event
-  qtumAmount = [] // Total amount of QTUM voted in all the rounds
-  botAmount = [] // Total amount of BOT voted in all the rounds
+  runebaseAmount = [] // Total amount of RUNES voted in all the rounds
+  predAmount = [] // Total amount of PRED voted in all the rounds
   resultIdx // Result index of the current result
   transactions = [] // Transaction objects tied to this Event
   version // Current version of the contract. To manage deprecations later.
@@ -34,8 +34,8 @@ export default class Topic {
   constructor(topic, app) {
     Object.assign(this, topic);
     this.app = app;
-    this.botAmount = this.botAmount.map(satoshiToDecimal);
-    this.qtumAmount = this.qtumAmount.map(satoshiToDecimal);
+    this.predAmount = this.predAmount.map(satoshiToDecimal);
+    this.runebaseAmount = this.runebaseAmount.map(satoshiToDecimal);
     this.escrowAmount = satoshiToDecimal(this.escrowAmount);
     this.oracles = this.oracles.map((oracle) => ({
       ...oracle,

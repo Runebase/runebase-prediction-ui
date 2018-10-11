@@ -1,7 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
+import moment from 'moment';
+import momentDurationFormat from 'moment-duration-format';
 import { AppProvider } from './appProvider';
 import { unregister } from './registerServiceWorker';
+
+momentDurationFormat(moment);
 
 render(
   <AppProvider />,

@@ -3,12 +3,16 @@ const styles = (theme) => ({
     background: theme.palette.background.default,
   },
   container: {
-    margin: `${theme.sizes.navHeight} ${theme.padding.md.px} ${theme.padding.md.px} ${theme.padding.md.px}`,
-    padding: `${theme.padding.md.px} 0 0 0`,
-    [theme.breakpoints.down('xs')]: {
-      margin: `${theme.sizes.navHeight} ${theme.padding.unit.px} ${theme.padding.unit.px} ${theme.padding.unit.px}`,
-      padding: `${theme.padding.unit.px} 0 0 0`,
+    padding: `${theme.sizes.navHeight} ${theme.padding.md.px} ${theme.padding.md.px} ${theme.padding.md.px}`,
+
+    [theme.breakpoints.up('xs')]: {
+      margin: theme.padding.sm.px,
     },
+
+    [theme.breakpoints.up('sm')]: {
+      margin: theme.padding.md.px,
+    },
+
     [theme.breakpoints.up('xl')]: {
       margin: '0 auto',
       marginTop: theme.padding.md.px,

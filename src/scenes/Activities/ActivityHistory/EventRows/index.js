@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
-import moment from 'moment';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { TableBody, TableCell, TableRow, withStyles } from '@material-ui/core';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
 
 import styles from './styles';
+import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { i18nToUpperCase } from '../../../../helpers/i18nUtil';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 
@@ -46,13 +46,14 @@ class EventRow extends Component {
     render() {
       const { transaction, intl, classes } = this.props;
       const { name, topic, type, txid, amount, token, fee, status, createdTime } = transaction;
+      const { locale, messages: localeMessages } = intl;
       const { expanded } = this.state;
 
       return (
         <Fragment>
           <TableRow selected={expanded}>
-            <TableCell>{moment.unix(createdTime).format('LLL')}</TableCell>
-            <TableCell>{getTxTypeString(type, intl)}</TableCell>
+            <TableCell className={classes.summaryRowCell}>{getShortLocalDateTimeString(createdTime)}</TableCell>
+            <TableCell>{getTxTypeString(type, locale, localeMessages)}</TableCell>
             <NameLinkCell clickable={topic && topic.address} onClick={this.onEventNameClick(topic && topic.address)}>
               {(topic && topic.name) || name}
             </NameLinkCell>
@@ -72,8 +73,10 @@ class EventRow extends Component {
           </TableRow>
           <CollapsableItem expanded={expanded}>
             <TableRow key={`txaddr-${txid}`} selected className={expanded ? classes.show : classes.hide}>
-              <TransactionHistoryAddress colSpan={3} transaction={transaction} />
-              <TransactionHistoryID colSpan={4} transaction={transaction} />
+              <TransactionHistoryAddress transaction={transaction} className={classes.detailRow} />
+              <TableCell /><TransactionHistoryID transaction={transaction} />
+              <TableCell />
+              <TableCell /><TableCell /><TableCell />
             </TableRow>
           </CollapsableItem>
         </Fragment>
@@ -81,11 +84,11 @@ class EventRow extends Component {
     }
 }
 
-const EventRows = ({ store: { activities: { history: { displayedTxs } } } }) => (
+const EventRows = observer(({ displayedTxs }) => (
   <TableBody>
     {displayedTxs.map((transaction) => (<EventRow key={transaction.txid} transaction={transaction} />))}
   </TableBody>
-);
+));
 
 const NameLinkCell = withStyles(styles)(({ classes, clickable, topic, ...props }) => (
   <TableCell>
@@ -99,4 +102,4 @@ const CollapsableItem = withStyles(styles)(({ expanded, children }) => (
   </Fragment>
 ));
 
-export default inject('store')(observer(EventRows));
+export default EventRows;

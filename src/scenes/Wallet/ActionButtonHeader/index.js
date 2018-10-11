@@ -15,7 +15,7 @@ import ChangePassphraseStatusDialog from './ChangePassphraseStatusDialog';
 const messages = defineMessages({
   encrypt: {
     id: 'str.encrypt',
-    defaultMessage: 'Encrypts the wallet with a passphrase. This is for first time encryption. After encrypting, you will have to use this passphrase to unlock your wallet when starting Bodhi.',
+    defaultMessage: 'Encrypts the wallet with a passphrase. This is for first time encryption. After encrypting, you will have to use this passphrase to unlock your wallet when starting RunebasePrediction.',
   },
   backup: {
     id: 'str.backup',

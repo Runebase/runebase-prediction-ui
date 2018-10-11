@@ -84,7 +84,7 @@ export default class TutorialCarouselDialog extends Component {
     const CurrentComponentName = this.components[currentIndex];
 
     return (
-      <Dialog open={openTutorial} fullWidth maxWidth="md" classes={{ paper: classes.tutorialDialogPaper }}>
+      <Dialog open={openTutorial} fullWidth maxWidth="md">
         <DialogContent className={cx(classes[`tutorialDialog${currentIndex}`], classes.tutorialDialog)}>
           <div className={classes.titleTopLine}></div>
           <Select
@@ -95,13 +95,9 @@ export default class TutorialCarouselDialog extends Component {
             disableUnderline
           >
             <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
-            <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
-            <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
           </Select>
           <div className={classes.contentWrapper}>
-            <div className={classes.tutorialDialogContentWrapper}>
-              <CurrentComponentName />
-            </div>
+            <CurrentComponentName />
             <div className={classes.buttonsWrapper}>
               {currentIndex > 0 && (
                 <Button onClick={this.prevSlide} msgId={messages.previous} />

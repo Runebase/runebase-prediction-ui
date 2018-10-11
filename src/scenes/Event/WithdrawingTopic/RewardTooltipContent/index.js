@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import styles from './styles';
 
-const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, tokenWinnings, qtumWon, botQtumWon, classes }) => {
+const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, tokenWinnings, runebaseWon, predRunebaseWon, classes }) => {
   function atMostEightDigits(num) {
     let numToString = _.toString(num);
     const numArr = numToString.split('.');
@@ -19,13 +19,13 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
     return numToString;
   }
 
-  let qtumWonFixed = qtumWon;
-  let botQtumWonFixed = botQtumWon;
-  if (_.isNumber(qtumWon)) {
-    qtumWonFixed = atMostEightDigits(qtumWon);
+  let runebaseWonFixed = runebaseWon;
+  let predRunebaseWonFixed = predRunebaseWon;
+  if (_.isNumber(runebaseWon)) {
+    runebaseWonFixed = atMostEightDigits(runebaseWon);
   }
-  if (_.isNumber(botQtumWon)) {
-    botQtumWonFixed = atMostEightDigits(botQtumWon);
+  if (_.isNumber(predRunebaseWon)) {
+    predRunebaseWonFixed = atMostEightDigits(predRunebaseWon);
   }
 
   const tokenLosing = totalTokenAmount - resultTokenAmount;
@@ -42,7 +42,7 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
             {totalTokenAmount}
           </TableCell>
         </TableRow>
-        {token === 'BOT' &&
+        {token === 'PRED' &&
         (
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
@@ -54,26 +54,26 @@ const RewardTooltipContent = ({ token, resultTokenAmount = 0, totalTokenAmount, 
           </TableRow>
         )
         }
-        {token === 'QTUM' &&
+        {token === 'RUNES' &&
         (
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
-              <FormattedMessage id="tooltip.qtumWon" defaultMessage="{token} Won" values={{ token }} />
+              <FormattedMessage id="tooltip.runebaseWon" defaultMessage="{token} Won" values={{ token }} />
             </TableCell>
             <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
-              {qtumWonFixed}
+              {runebaseWonFixed}
             </TableCell>
           </TableRow>
         )
         }
-        {token === 'QTUM' &&
+        {token === 'RUNES' &&
         (
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell}>
-              <FormattedMessage id="tooltip.botQtumWon" defaultMessage="{token} Reward" values={{ token }} />
+              <FormattedMessage id="tooltip.predRunebaseWon" defaultMessage="{token} Reward" values={{ token }} />
             </TableCell>
             <TableCell className={cx(classes.tableCell, classes.root)} numeric padding="none">
-              {botQtumWonFixed}
+              {predRunebaseWonFixed}
             </TableCell>
           </TableRow>
         )

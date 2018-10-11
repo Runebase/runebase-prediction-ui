@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { orderBy, cloneDeep, filter, map, sum } from 'lodash';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import { Table, TableBody, TableCell, TableHead, TableRow, withStyles } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableHead, TableRow, withStyles, Typography } from '@material-ui/core';
 import { Token, Phases } from 'constants';
+import { getShortLocalDateTimeString, i18nToUpperCase } from '../../../../helpers';
 import styles from './styles';
 
 
@@ -18,7 +18,7 @@ export default class EventResultHistory extends Component {
   };
 
   getTypeText(oracle, index) {
-    if (oracle.token === Token.QTUM) {
+    if (oracle.token === Token.RUNES) {
       return <FormattedMessage id="str.bettingRound" defaultMessage="Betting Round" />;
     } else if (index === 1) {
       return <FormattedMessage id="str.resultSettingRound" defaultMessage="Result Setting Round" />;
@@ -32,7 +32,7 @@ export default class EventResultHistory extends Component {
     );
   }
   render() {
-    const { oracles } = this.props;
+    const { classes, oracles } = this.props;
     let sortedOracles = orderBy(oracles, ['endTime']);
 
     // Add Result Setting round
@@ -56,7 +56,12 @@ export default class EventResultHistory extends Component {
     sortedOracles = filter(sortedOracles, (oracle) => oracle.status !== Phases.VOTING);
 
     return (
-      <div>
+      <div className={classes.detailTxWrapper}>
+        <Typography variant="headline" className={classes.detailTxTitle}>
+          <FormattedMessage id="str.resultHistory" defaultMessage="Result History">
+            {(txt) => i18nToUpperCase(txt)}
+          </FormattedMessage>
+        </Typography>
         {sortedOracles.length && (
           <Table>
             <TableHead>
@@ -103,8 +108,8 @@ const ResultRows = ({ sortedOracles, intl, getTypeText }) => map(sortedOracles, 
   }
 
   return (
-    <TableRow key={`result-${index}`}>
-      <TableCell padding="dense">{moment.unix(oracle.endTime).format('LLL')}</TableCell>
+    <TableRow key={`result-${index}`} selected={index % 2 === 1}>
+      <TableCell padding="dense">{getShortLocalDateTimeString(oracle.endTime)}</TableCell>
       <TableCell padding="dense">{getTypeText(oracle, index)}</TableCell>
       <TableCell padding="dense">{winningOutcome}</TableCell>
       <TableCell padding="dense">{`${sum(oracle.amounts)} ${oracle.token}`}</TableCell>

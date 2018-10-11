@@ -9,11 +9,11 @@ import { ContentItem } from './contentItem';
 const messages = defineMessages({
   tutorial1Content0Msg: {
     id: 'tutorial1.content0',
-    defaultMessage: 'Assuming you have not used the Qtum Wallet client before, when you first open the Bodhi Dapp, you are generating a brand new Qtum wallet. ',
+    defaultMessage: 'Assuming you have not used the Runebase Wallet client before, when you first open the RunebasePrediction Dapp, you are generating a brand new Runebase wallet. ',
   },
   tutorial1Content1Msg: {
     id: 'tutorial1.content1',
-    defaultMessage: 'Qtum uses the Bitcoin Core wallet infrastructure.',
+    defaultMessage: 'Runebase uses the Bitcoin Core wallet infrastructure.',
   },
   tutorial1Content2Msg: {
     id: 'tutorial1.content2',
@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
   tutorial1Content3Msg: {
     id: 'tutorial1.content3',
-    defaultMessage: 'The Qtum Wallet is responsible for holding your passphrase and private keys. Bodhi Dapp does not store or handle this for you.',
+    defaultMessage: 'The Runebase Wallet is responsible for holding your passphrase and private keys. RunebasePrediction Dapp does not store or handle this for you.',
   },
   tutorial1Content4Msg: {
     id: 'tutorial1.content4',
@@ -29,11 +29,11 @@ const messages = defineMessages({
   },
   tutorial1Content5Msg: {
     id: 'tutorial1.content5',
-    defaultMessage: 'You are simply using our interface to interact directly with the Qtum blockchain.',
+    defaultMessage: 'You are simply using our interface to interact directly with the Runebase blockchain.',
   },
   tutorial1Content6Msg: {
     id: 'tutorial1.content6',
-    defaultMessage: 'If you send your public key (Qtum address) to someone, they can send you QTUM or BOT.',
+    defaultMessage: 'If you send your public key (Runebase address) to someone, they can send you RUNES or PRED.',
   },
   tutorial1Content7Msg: {
     id: 'tutorial1.content7',
@@ -43,8 +43,8 @@ const messages = defineMessages({
 
 const Tutorial1 = ({ classes }) => (
   <div>
-    <Typography variant="display1" classes={{ display1: classes.tutorialDialogContentTitle }}>
-      <FormattedMessage id="tutorial1.title" defaultMessage="Bodhi Dapp Uses The Qtum Wallet" />
+    <Typography variant="display1">
+      <FormattedMessage id="tutorial1.title" defaultMessage="RunebasePrediction Dapp Uses The Runebase Wallet" />
     </Typography>
     <ul className={classes.contentList}>
       <ContentItem id={messages.tutorial1Content0Msg.id} defaultMessage={messages.tutorial1Content0Msg.defaultMessage} />

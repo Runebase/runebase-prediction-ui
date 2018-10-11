@@ -1,5 +1,4 @@
 module.exports = {
-  isProduction: () => process.env.NODE_ENV === 'production',
   intervals: { // in MS
     syncInfo: 5000,
     tooltipDelay: 300,
@@ -12,15 +11,11 @@ module.exports = {
   },
   maxTransactionFee: 0.1,
   faqUrls: {
-    'en-US': 'https://www.bodhi.network/faq',
-    'zh-Hans-CN': 'https://cn.bodhi.network/faq',
-  },
-  urls: {
-    qryptoWebStore: 'https://chrome.google.com/webstore/detail/qrypto/hdmjdgjbehedbnjmljikggbmmbnbmlnd',
+    'en-US': 'https://www.runebase.io/prediction/faq',
   },
   debug: {
     // Set to false if in test environment and Insight API is down
     // and loading screen is blocking the view.
-    showAppLoad: false,
+    showAppLoad: true,
   },
 };

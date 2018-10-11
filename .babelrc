@@ -9,8 +9,7 @@
     ["module-resolver", {
       "root": ["./src"],
       "alias": {
-        "constants":"./src/constants",
-        "models":"./src/stores/models"
+        "constants":"./src/constants"
       }
     }]
   ]

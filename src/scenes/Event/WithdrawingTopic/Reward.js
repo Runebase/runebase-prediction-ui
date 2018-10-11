@@ -22,43 +22,43 @@ const messages = defineMessages({
 class Reward extends Component {
   render() {
     const { eventPage, topic, classes } = this.props;
-    const { qtumWinnings, botWinnings, betBalances, voteBalances } = eventPage;
+    const { runebaseWinnings, predWinnings, betBalances, voteBalances } = eventPage;
     const totalBetAmount = _.sum(betBalances);
     const totalVoteAmount = _.sum(voteBalances);
-    const qtumReturnRate = totalBetAmount ? ((qtumWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
-    const botReturnRate = totalVoteAmount ? ((botWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
+    const runebaseReturnRate = totalBetAmount ? ((runebaseWinnings - totalBetAmount) / totalBetAmount) * 100 : 0;
+    const predReturnRate = totalVoteAmount ? ((predWinnings - totalVoteAmount) / totalVoteAmount) * 100 : 0;
     const resultBetAmount = betBalances[topic.resultIdx];
     const resultVoteAmount = voteBalances[topic.resultIdx];
-    const totalQtumWinningBets = eventPage.topic.qtumAmount[topic.resultIdx];
-    const totalQtumBets = _.sum(topic.qtumAmount);
-    const totalLosingQtumBets = totalQtumBets - totalQtumWinningBets;
-    const losersQtumReward = totalLosingQtumBets / 100;
-    const losersAdjustedQtum = totalLosingQtumBets - losersQtumReward;
-    const qtumWon = ((resultBetAmount / totalQtumWinningBets) * losersAdjustedQtum) || 0;
-    const totalBotWinningBets = topic.botAmount[topic.resultIdx];
-    const botQtumWon = ((resultVoteAmount / totalBotWinningBets) * losersQtumReward) || 0;
-    if (botQtumWon > 0 || qtumWon > 0) {
+    const totalRunebaseWinningBets = eventPage.topic.runebaseAmount[topic.resultIdx];
+    const totalRunebaseBets = _.sum(topic.runebaseAmount);
+    const totalLosingRunebaseBets = totalRunebaseBets - totalRunebaseWinningBets;
+    const losersRunebaseReward = totalLosingRunebaseBets / 100;
+    const losersAdjustedRunebase = totalLosingRunebaseBets - losersRunebaseReward;
+    const runebaseWon = ((resultBetAmount / totalRunebaseWinningBets) * losersAdjustedRunebase) || 0;
+    const totalPredWinningBets = topic.predAmount[topic.resultIdx];
+    const predRunebaseWon = ((resultVoteAmount / totalPredWinningBets) * losersRunebaseReward) || 0;
+    if (predRunebaseWon > 0 || runebaseWon > 0) {
       return (
         <Container>
           <RewardIcon />
           <RewardTitle />
           <div className={classes.rowDiv}>
-            <QtumReturn
-              qtumWinnings={eventPage.qtumWinnings}
-              qtumWon={qtumWon}
-              botQtumWon={botQtumWon}
+            <RunebaseReturn
+              runebaseWinnings={eventPage.runebaseWinnings}
+              runebaseWon={runebaseWon}
+              predRunebaseWon={predRunebaseWon}
               resultTokenAmount={resultBetAmount}
               totalTokenAmount={totalBetAmount}
-              tokenWinnings={qtumWinnings}
-              qtumReturnRate={qtumReturnRate}
+              tokenWinnings={runebaseWinnings}
+              runebaseReturnRate={runebaseReturnRate}
             />
             <Separator />
-            <BotUsed
-              botWinnings={eventPage.botWinnings}
+            <PredUsed
+              predWinnings={eventPage.predWinnings}
               resultTokenAmount={resultVoteAmount}
               totalTokenAmount={totalVoteAmount}
-              tokenWinnings={botWinnings}
-              botReturnRate={botReturnRate}
+              tokenWinnings={predWinnings}
+              predReturnRate={predReturnRate}
             />
           </div>
         </Container>
@@ -89,21 +89,21 @@ const Separator = styled.div`
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
-class QtumReturn extends Component {
+class RunebaseReturn extends Component {
   render() {
-    const { qtumWinnings, qtumReturnRate, intl, classes, ...props } = this.props;
+    const { runebaseWinnings, runebaseReturnRate, intl, classes, ...props } = this.props;
     return (
       <div className={classes.colDiv}>
         <Typography variant="display1">
           <div className={classes.rowDiv}>
-            +{qtumWinnings} <div className={classes.tokenDiv}>QTUM</div>
-            <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="QTUM" {...props} />}>
+            +{runebaseWinnings} <div className={classes.tokenDiv}>RUNES</div>
+            <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="RUNES" {...props} />}>
               <i className="icon iconfont icon-ic_question" />
             </Tooltip>
           </div>
         </Typography>
         <Typography variant="caption">
-          {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${qtumReturnRate.toFixed(2)}%`}
+          {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${runebaseReturnRate.toFixed(2)}%`}
         </Typography>
       </div>
     );
@@ -112,21 +112,21 @@ class QtumReturn extends Component {
 
 @withStyles(styles, { withTheme: true })
 @injectIntl
-class BotUsed extends Component {
+class PredUsed extends Component {
   render() {
-    const { botWinnings, botReturnRate, intl, classes, ...props } = this.props;
+    const { predWinnings, predReturnRate, intl, classes, ...props } = this.props;
     return (
       <div className={classes.colDiv}>
         <Typography variant="display1">
           <div className={classes.rowDiv}>
-            +{botWinnings} <div className={classes.tokenDiv}>BOT</div>
-            <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="BOT" {...props} />}>
+            +{predWinnings} <div className={classes.tokenDiv}>PRED</div>
+            <Tooltip classes={{ tooltip: classes.rewardTooltip }} id="tooltip-reward" title={<RewardTooltipContent token="PRED" {...props} />}>
               <i className="icon iconfont icon-ic_question" />
             </Tooltip>
           </div>
         </Typography>
         <Typography variant="caption">
-          {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${botReturnRate.toFixed(2)}%`}
+          {`${intl.formatMessage(messages.withdrawDetailReturnRateMsg)} ${predReturnRate.toFixed(2)}%`}
         </Typography>
       </div>
     );

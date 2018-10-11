@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
 import cx from 'classnames';
 import { TransactionHistoryID, TransactionHistoryAddress } from 'components';
+import { TransactionType } from 'constants';
 
 import styles from './styles';
+import { getShortLocalDateTimeString } from '../../../../helpers/utility';
 import { getTxTypeString } from '../../../../helpers/stringUtil';
 
 const messages = defineMessages({
@@ -24,6 +25,8 @@ const messages = defineMessages({
   },
 });
 
+const { WITHDRAW, WITHDRAW_ESCROW } = TransactionType;
+
 @injectIntl
 @withStyles(styles, { withTheme: true })
 export default class TxRow extends Component {
@@ -37,20 +40,19 @@ export default class TxRow extends Component {
     expanded: false,
   }
 
-  get description() {
-    const { intl, transaction: { optionIdx, topic, localizedInvalid } } = this.props;
-    if (topic && optionIdx) {
-      const optionName = topic.options[optionIdx];
-      return `#${optionIdx + 1} ${optionName === 'Invalid' && !localizedInvalid
-        ? localizedInvalid.parse(intl.locale)
-        : optionName}`;
-    }
-    return '';
-  }
-
   toggle = () => {
     this.setState({ expanded: !this.state.expanded });
   };
+
+  get name() {
+    const { intl, transaction: { optionIdx, topic, name, localizedInvalid } } = this.props;
+    if ([WITHDRAW, WITHDRAW_ESCROW].includes(name)) {
+      return getTxTypeString(name, intl.locale, intl.messages);
+    } else if (topic) {
+      return `#${optionIdx + 1} ${name === 'Invalid' && localizedInvalid !== undefined ? localizedInvalid.parse(intl.locale) : name}`;
+    }
+    return '';
+  }
 
   render() {
     const { classes, intl, transaction } = this.props;
@@ -68,10 +70,12 @@ export default class TxRow extends Component {
     return (
       <Fragment>
         <TableRow key={`tx-${txid}`}>
-          <TableCell padding="dense">{moment.unix(createdTime).format('LLL')}</TableCell>
-          <TableCell padding="dense">{getTxTypeString(type, intl)}</TableCell>
-          <TableCell padding="dense">{this.description}</TableCell>
-          <TableCell padding="dense">{!amount ? '' : `${amount} ${token}`}</TableCell>
+          <TableCell padding="dense">{getShortLocalDateTimeString(createdTime)}</TableCell>
+          <TableCell padding="dense">{getTxTypeString(type, intl.locale, intl.messages)}</TableCell>
+          <TableCell padding="dense">{this.name}</TableCell>
+          <TableCell padding="dense">
+            {!amount ? '' : `${amount} ${token}`}
+          </TableCell>
           <TableCell padding="dense">{intl.formatMessage(statusMsg)}</TableCell>
           <TableCell padding="dense">
             <i

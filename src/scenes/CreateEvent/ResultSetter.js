@@ -1,15 +1,14 @@
 import React from 'react';
+import styled from 'styled-components';
 import { observer, inject } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
-import { FormControl, TextField, FormHelperText, Button, withStyles } from '@material-ui/core';
+import { FormControl, TextField, FormHelperText, Button as _Button } from '@material-ui/core';
 import { Section, SelectAddressDialog } from './components';
 
-import styles from './styles';
-
 const messages = defineMessages({
-  resultSetterPlaceholder: {
+  createResultSetterPlaceholderMsg: {
     id: 'create.resultSetterPlaceholder',
-    defaultMessage: 'e.g. qMZK8FNPRm54jvTLAGEs1biTCgyCkcsmna',
+    defaultMessage: 'Enter the address of the result setter or select your own address',
   },
   createSelectMyAddressMsg: {
     id: 'create.selectMyAddress',
@@ -21,36 +20,36 @@ const messages = defineMessages({
   },
 });
 
-const ResultSetter = ({ store: { createEvent } }) => (
+const ResultSetter = observer(({ store: { createEvent } }) => (
   <Section column title={messages.strResultSetterMsg}>
     <Input createEvent={createEvent} />
+    <SelectAddressButton onClick={() => createEvent.resultSetterDialogOpen = true} />
     <SelectAddressDialog />
   </Section>
-);
+));
 
-const Input = injectIntl(withStyles(styles, { withTheme: true })(observer(({ classes, intl, createEvent }) => (
+const Input = injectIntl(observer(({ intl, createEvent }) => (
   <FormControl fullWidth>
     <TextField
-      InputProps={{
-        classes: { input: classes.createEventTextField },
-        endAdornment: <SelectAddressButton onClick={() => createEvent.resultSetterDialogOpen = true} />,
-      }}
       value={createEvent.resultSetter}
       onChange={e => createEvent.resultSetter = e.target.value}
-      placeholder={intl.formatMessage(messages.resultSetterPlaceholder)}
+      placeholder={intl.formatMessage(messages.createResultSetterPlaceholderMsg)}
       onBlur={createEvent.validateResultSetter}
       error={!!createEvent.error.resultSetter}
     />
-    {!!createEvent.error.resultSetter && (
-      <FormHelperText error>{intl.formatMessage({ id: createEvent.error.resultSetter })}</FormHelperText>
-    )}
+    {!!createEvent.error.resultSetter && <FormHelperText error>{intl.formatMessage({ id: createEvent.error.resultSetter })}</FormHelperText>}
   </FormControl>
-))));
-
-const SelectAddressButton = injectIntl(withStyles(styles)(({ classes, intl, ...props }) => (
-  <Button className={classes.selectAddressButton} variant="raised" color="primary" size="small" {...props}>
-    {intl.formatMessage(messages.createSelectMyAddressMsg)}
-  </Button>
 )));
 
-export default inject('store')(observer(ResultSetter));
+const SelectAddressButton = injectIntl(({ intl, ...props }) => (
+  <Button {...props}>
+    {intl.formatMessage(messages.createSelectMyAddressMsg)}
+  </Button>
+));
+
+const Button = styled(_Button).attrs({ variant: 'raised' })`
+  margin-top: ${props => props.theme.padding.unit.px} !important;
+  width: 200px;
+`;
+
+export default inject('store')(ResultSetter);

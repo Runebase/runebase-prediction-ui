@@ -1,13 +1,11 @@
 import React from 'react';
-import { Typography, withStyles } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { injectIntl } from 'react-intl';
 
-import styles from '../styles';
-
-export const ContentItem = injectIntl(withStyles(styles, { withTheme: true })(({ classes, intl, id, defaultMessage }) => ( // eslint-disable-line
+export const ContentItem = injectIntl(({ intl, id, defaultMessage }) => ( // eslint-disable-line
   <li>
-    <Typography variant="body2" classes={{ body2: classes.tutorialDialogContentItem }}>
+    <Typography variant="body2">
       {intl.formatMessage({ id, defaultMessage })}
     </Typography>
   </li>
-)));
+));

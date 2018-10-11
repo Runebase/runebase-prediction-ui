@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { createMuiTheme } from '@material-ui/core';
 
-// Font
+/* Brand Variables */
+
 const fontLato = 'Lato, Helvetica, Arial, sans-serif';
 
-// Font size
+// TODO (LIV): TOO MANY FONT SIZES, TALK TO THE DESIGNERS
 const fontSizeTitleLg = 36;
 const fontSizeTitleMd = 32;
 const fontSizeTitleSm = 24;
@@ -13,68 +14,53 @@ const fontSizeTextMd = 18;
 const fontSizeTextSm = 16;
 const fontSizeMeta = 14;
 
-// Font weight
-const fontWeightBold = 700;
-const fontWeightMedium = 700;
-const fontWeightRegular = 400;
-const fontWeightLight = 300;
-
-// Line height
 const lineHeightLg = '133.33%';
 const lineHeightSm = '125%';
-const lineHeight32 = '32px';
 
-// Neon blue
+const progressHeight = 12;
+const iconSize = 24;
+
+const white = '#FFFFFF';
+
+// neon blue
 const primaryColor = '#585AFA';
 const primaryColorDark = '#4244BB';
 const primaryColorLight = '#F0F0FF';
 
-// Neo teal
+// neo teal
 const secondaryColor = '#23DAE0';
 const secondaryColorLight = '#E9FEFE';
 const secondaryColorDark = '#11A5A9';
 
-// White
-const white = '#FFFFFF';
-
-// Red
+// red
 const redColor = '#FE4A49';
 const redColorLight = '#FFDEDE';
 const redColorDark = '#960F0E';
 
-// Orange
-const orange = '#F5A623';
-
-// Text
 const textColorDark = '#333333';
 const textColorGrey = '#666666';
 const textColorLight = '#9B9B9B';
 
-// Misc
 const backgroundColor = '#F9F9F9';
 const borderColor = '#ECECEC';
-const borderColorDark = '#999999';
-
-// Spacing
-const paddingUnit = 8;
-const paddingXs = paddingUnit * 2; // 16
-const paddingSm = paddingUnit * 3; // 24
-const paddingMd = paddingUnit * 5; // 40
-const paddingLg = paddingUnit * 7; // 56
-
-// Size
-const progressHeight = 12;
-const iconSizeLg = 24;
-const iconSizeSm = 18;
 const borderRadius = 4;
+
+const spaceUnit = 8;
+const paddingXs = spaceUnit * 2; // 16
+const paddingSm = spaceUnit * 3; // 24
+const paddingMd = spaceUnit * 5; // 40
+const paddingLg = spaceUnit * 7; // 56
+
 const navHeight = 70;
 const footerHeight = '34.48px';
 const tableHeaderHeight = 40;
 
 const px = (value) => value.toString().concat('px');
 
+// Material Theme for RunebasePrediction
+
 export const theme = {
-  /* Material variables */
+  /* material variables */
   palette: {
     primary: {
       light: primaryColorLight,
@@ -105,21 +91,26 @@ export const theme = {
       disabled: textColorLight,
       hint: textColorLight,
     },
-    extra: {
-      orange,
-    },
     divider: borderColor,
   },
   typography: {
     fontFamily: fontLato,
     fontSize: fontSizeTextSm,
-    fontWeightLight,
-    fontWeightRegular,
-    fontWeightMedium,
-    fontWeightBold, // additional var
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 700,
+    fontWeightBold: 700, // additional var
+    // large headline (i.e. title on prediction title)
+    display1: {
+      fontSize: px(fontSizeTitleLg),
+      fontWeight: 400,
+      lineHeight: lineHeightLg,
+      marginLeft: '0',
+      color: textColorDark,
+    },
     headline: {
       fontSize: px(fontSizeTitleSm),
-      fontWeight: fontWeightRegular,
+      fontWeight: 400,
       lineHeight: lineHeightLg,
       marginLeft: '0',
       color: textColorDark,
@@ -127,19 +118,19 @@ export const theme = {
     // large text (i.e. title on prediction title)
     title: {
       fontSize: px(fontSizeTextMd),
-      fontWeight: fontWeightBold,
+      fontWeight: 700,
       lineHeight: lineHeightLg,
       color: textColorDark,
     },
     body1: {
       fontSize: px(fontSizeMeta),
-      fontWeight: fontWeightRegular,
+      fontWeight: 400,
       lineHeight: lineHeightLg,
       color: textColorGrey,
     },
     body2: {
       fontSize: px(fontSizeTextSm),
-      fontWeight: fontWeightRegular,
+      fontWeight: 400,
       lineHeight: lineHeightLg,
       color: textColorGrey,
     },
@@ -148,13 +139,13 @@ export const theme = {
       color: textColorLight,
     },
   },
-  /* Component overrides */
+  /* override component globally */
   overrides: {
     MuiLinearProgress: {
       root: {
         height: px(progressHeight),
         borderRadius: px(progressHeight),
-        backgroundColor: `${borderColor} !important`,
+        backgroundColor: borderColor.concat(' !important'),
       },
     },
     MuiSelect: {
@@ -164,6 +155,26 @@ export const theme = {
         },
       },
     },
+    MuiButton: {
+      root: {
+        borderRadius: px(paddingLg),
+        textTransform: 'none',
+      },
+      raised: {
+        backgroundColor: 'white',
+        color: primaryColor,
+        '&:hover': {
+          background: primaryColor,
+          color: white,
+        },
+      },
+      sizeLarge: {
+        fontSize: px(fontSizeTextLg),
+        fontWeight: 700,
+        minHeight: px(paddingLg),
+      },
+    },
+    // TODO (LIVIA): USE A VARIENT INSTEAD OF OVERRIDE
     MuiStepConnector: {
       vertical: {
         padding: '0',
@@ -180,16 +191,12 @@ export const theme = {
     MuiTabs: {
       root: {
         zIndex: 999,
-        boxSizing: 'border-box',
-        borderBottom: `2px solid ${borderColor}`,
-        background: white,
       },
     },
     MuiTab: {
       root: {
-        marginTop: px(paddingUnit),
-        marginBottom: px(paddingUnit),
-        borderCollapse: 'separate',
+        marginTop: px(spaceUnit),
+        marginBottom: px(spaceUnit),
       },
       label: {
         fontSize: fontSizeTextSm,
@@ -199,7 +206,7 @@ export const theme = {
     MuiTable: {
       root: {
         background: white,
-        borderTop: `1px solid ${borderColor}`,
+        border: 'solid 1px '.concat(borderColor),
       },
     },
     MuiTableRow: {
@@ -208,12 +215,14 @@ export const theme = {
         background: borderColor,
       },
     },
-    MuiTooltip: {
-      tooltip: {
-        backgroundColor: primaryColor,
-        color: white,
+    MuiTableCell: {
+      body: {
+        color: textColorGrey,
+        fontSize: 13,
+      },
+      head: {
+        fontWeight: 700,
         fontSize: px(fontSizeMeta),
-        padding: paddingUnit,
       },
     },
     MuiExpansionPanelSummary: {
@@ -222,21 +231,12 @@ export const theme = {
         right: 0,
       },
     },
-    MuiExpansionPanel: {
-      root: {
-        '&:disabled': {
-          backgroundColor: primaryColor,
-          opacity: 0.1,
-          boxShadow: '0px 0px 4px rgba(0, 0, 0, .2)',
-        },
-      },
-    },
   },
-  /* User-defined */
+  /* additional variables */
   padding: {
     unit: {
-      value: paddingUnit,
-      px: px(paddingUnit),
+      value: spaceUnit,
+      px: px(spaceUnit),
     },
     xs: {
       value: paddingXs,
@@ -256,10 +256,7 @@ export const theme = {
     },
   },
   sizes: {
-    icon: {
-      large: px(iconSizeLg),
-      small: px(iconSizeSm),
-    },
+    icon: px(iconSize),
     font: {
       titleLg: px(fontSizeTitleLg),
       titleMd: px(fontSizeTitleMd),
@@ -276,116 +273,10 @@ export const theme = {
     navHeight: px(navHeight),
     footerHeight,
   },
-  border: `solid 1px ${borderColor}`,
+  border: 'solid 1px '.concat(borderColor),
   borderRadius: px(borderRadius),
 };
 
-const bodhiTheme = createMuiTheme(theme);
+const runebasepredictionTheme = createMuiTheme(theme);
 
-bodhiTheme.typography = {
-  ...bodhiTheme.typography,
-  // large headline (i.e. title on prediction title)
-  display1: {
-    fontSize: px(fontSizeTitleLg),
-    fontWeight: fontWeightRegular,
-    lineHeight: lineHeightLg,
-    marginLeft: '0',
-    color: textColorDark,
-    [bodhiTheme.breakpoints.down('xs')]: {
-      fontSize: fontSizeTitleSm,
-      fontWeight: fontWeightBold,
-      lineHeight: lineHeight32,
-    },
-  },
-};
-
-bodhiTheme.overrides = {
-  ...bodhiTheme.overrides,
-  MuiButton: {
-    root: {
-      borderRadius: px(paddingLg),
-      textTransform: 'none',
-      [bodhiTheme.breakpoints.down('xs')]: {
-        padding: px(paddingUnit),
-        minWidth: 64,
-        minHeight: 32,
-        fontSize: 12,
-      },
-    },
-    raisedPrimary: {
-      backgroundColor: primaryColor,
-      color: white,
-      boxShadow: '0px 0px 2px rgba(0, 0, 0, .5)',
-      '&:hover': {
-        backgroundColor: primaryColor,
-        boxShadow: '0px 0px 10px rgba(0, 0, 0, .25)',
-      },
-      '&:disabled': {
-        backgroundColor: primaryColor,
-        color: white,
-        opacity: 0.6,
-      },
-    },
-    sizeLarge: {
-      fontSize: px(fontSizeTextLg),
-      fontWeight: fontWeightBold,
-      minHeight: 56,
-    },
-    sizeSmall: {
-      fontSize: px(fontSizeMeta),
-      fontWeight: fontWeightBold,
-      height: 40,
-      padding: `0 ${paddingSm}`,
-    },
-  },
-  MuiTablePagination: {
-    toolbar: {
-      [bodhiTheme.breakpoints.down('xs')]: {
-        paddingLeft: px(paddingUnit),
-      },
-    },
-    selectRoot: {
-      [bodhiTheme.breakpoints.down('xs')]: {
-        margin: 0,
-        fontSize: 12,
-      },
-    },
-    caption: {
-      [bodhiTheme.breakpoints.down('xs')]: {
-        fontSize: 12,
-      },
-    },
-    actions: {
-      [bodhiTheme.breakpoints.down('xs')]: {
-        marginLeft: 0,
-      },
-    },
-  },
-  MuiTableCell: {
-    body: {
-      color: textColorGrey,
-      fontSize: 13,
-      paddingTop: px(paddingSm),
-      paddingBottom: px(paddingSm),
-      [bodhiTheme.breakpoints.down('md')]: {
-        padding: px(paddingUnit),
-        fontSize: 12,
-      },
-    },
-    head: {
-      fontWeight: fontWeightBold,
-      fontSize: px(fontSizeMeta),
-      [bodhiTheme.breakpoints.down('md')]: {
-        padding: px(paddingUnit),
-        fontSize: 12,
-      },
-    },
-    numeric: {
-      [bodhiTheme.breakpoints.down('md')]: {
-        padding: px(paddingUnit),
-      },
-    },
-  },
-};
-
-export default bodhiTheme;
+export default runebasepredictionTheme;

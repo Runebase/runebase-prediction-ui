@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
+import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import { defineMessages } from 'react-intl';
-import { Loading } from 'components';
+import { TxSentDialog, Loading as _Loading } from 'components';
 import { EventType } from 'constants';
 
 import BettingOracle from './BettingOracle';
@@ -30,8 +31,8 @@ export default class EventPage extends Component {
     if (path.startsWith('/topic')) {
       type = EventType.TOPIC;
     } else if (path.startsWith('/oracle')) {
-      const { hashId } = params;
-      if (hashId) {
+      const { address, topicAddress } = params;
+      if (address === 'null' || topicAddress === 'null') {
         type = EventType.UNCONFIRMED;
       } else {
         type = EventType.ORACLE;
@@ -52,6 +53,13 @@ export default class EventPage extends Component {
       return <Loading text={messages.loadOracleMsg} />;
     }
 
+    // Unconfirmed Oracle changed txid so Oracles query comes back empty. Return to Runebase Prediction.
+    // TODO: can remove this when hashId is implemented and we can get the Oracle by hashId.
+    if (!event) {
+      this.props.history.push('/');
+      return;
+    }
+
     const Event = {
       BETTING: BettingOracle,
       RESULT_SETTING: ResultSettingOracle,
@@ -64,7 +72,24 @@ export default class EventPage extends Component {
       <Fragment>
         <BackButton />
         <Event eventPage={eventPage} />
+        <EventTxSuccessDialog eventPage={eventPage} />
       </Fragment>
     );
   }
 }
+
+const Loading = styled(_Loading)`
+  margin-top: 25rem;
+  .animation {
+    width: 5rem;
+    height: 5rem;
+  }
+`;
+
+const EventTxSuccessDialog = observer(({ eventPage }) => (
+  <TxSentDialog
+    txid={eventPage.event.txid}
+    open={eventPage.txSentDialogOpen}
+    onClose={() => eventPage.txSentDialogOpen = false}
+  />
+));

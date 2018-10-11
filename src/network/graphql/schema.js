@@ -1,4 +1,4 @@
-import { has, includes } from 'lodash';
+import _ from 'lodash';
 
 export const TYPE = {
   topic: 'Topic',
@@ -18,11 +18,10 @@ const TYPE_DEF = {
     blockNum
     status
     resultIdx
-    qtumAmount
-    botAmount
+    runebaseAmount
+    predAmount
     escrowAmount
     creatorAddress
-    language
     oracles {
       version
       address
@@ -40,6 +39,7 @@ const TYPE_DEF = {
       resultSetStartTime
       resultSetEndTime
       resultSetterAddress
+      resultSetterQAddress
       consensusThreshold
     }
     transactions {
@@ -66,24 +66,24 @@ const TYPE_DEF = {
     resultSetStartTime
     resultSetEndTime
     resultSetterAddress
+    resultSetterQAddress
     consensusThreshold
     transactions {
       type
       status
     }
-    hashId
-    language
   `,
 
   Vote: `
     txid
+    version
     blockNum
     voterAddress
+    voterQAddress
     topicAddress
     oracleAddress
     optionIdx
     amount
-    version
   `,
 
   SyncInfo: `
@@ -93,66 +93,41 @@ const TYPE_DEF = {
     peerNodeCount
     addressBalances {
       address
-      qtum
-      bot
+      runebase
+      pred
     }
   `,
 
   Transaction: `
     type
-    status
     txid
-    createdBlock
+    status
     createdTime
     blockNum
     blockTime
     gasLimit
     gasPrice
     gasUsed
+    version
     senderAddress
     receiverAddress
     topicAddress
     oracleAddress
     name
-    options
     optionIdx
-    amount
     token
-    resultSetterAddress
-    bettingStartTime
-    bettingEndTime
-    resultSettingStartTime
-    resultSettingEndTime
+    amount
     topic {
       address
       name
       options
     }
-    version
-    language
   `,
 };
 
 const MUTATIONS = {
-  resetApprove: {
+  createTopic: {
     mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
-      'receiverAddress',
-      'topicAddress',
-      'oracleAddress',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
-  approveCreateEvent: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
       'name',
       'options',
       'resultSetterAddress',
@@ -161,122 +136,125 @@ const MUTATIONS = {
       'resultSettingStartTime',
       'resultSettingEndTime',
       'amount',
-      'language',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
-  createEvent: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
       'senderAddress',
-      'name',
-      'options',
-      'resultSetterAddress',
-      'bettingStartTime',
-      'bettingEndTime',
-      'resultSettingStartTime',
-      'resultSettingEndTime',
-      'amount',
-      'language',
     ],
-    return: TYPE_DEF.Transaction,
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      token
+      senderAddress
+    `,
   },
 
   createBet: {
     mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
+      'version',
       'topicAddress',
       'oracleAddress',
       'optionIdx',
       'amount',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
-  approveSetResult: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
       'senderAddress',
-      'topicAddress',
-      'oracleAddress',
-      'optionIdx',
-      'amount',
     ],
-    return: TYPE_DEF.Transaction,
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      topicAddress
+      oracleAddress
+      optionIdx
+      amount
+      senderAddress
+      token
+    `,
   },
 
   setResult: {
     mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
+      'version',
       'topicAddress',
       'oracleAddress',
       'optionIdx',
       'amount',
-    ],
-    return: TYPE_DEF.Transaction,
-  },
-
-  approveVote: {
-    mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
       'senderAddress',
-      'topicAddress',
-      'oracleAddress',
-      'optionIdx',
-      'amount',
     ],
-    return: TYPE_DEF.Transaction,
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      topicAddress
+      oracleAddress
+      optionIdx
+      amount
+      senderAddress
+      token
+    `,
   },
 
   createVote: {
     mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
+      'version',
       'topicAddress',
       'oracleAddress',
       'optionIdx',
       'amount',
+      'senderAddress',
     ],
-    return: TYPE_DEF.Transaction,
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      topicAddress
+      oracleAddress
+      optionIdx
+      amount
+      senderAddress
+      token
+    `,
   },
 
   finalizeResult: {
     mapping: [
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
+      'version',
       'topicAddress',
       'oracleAddress',
+      'senderAddress',
     ],
-    return: TYPE_DEF.Transaction,
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      oracleAddress
+      senderAddress
+    `,
   },
 
   withdraw: {
     mapping: [
       'type',
-      'txid',
-      'gasLimit',
-      'gasPrice',
-      'senderAddress',
+      'version',
       'topicAddress',
+      'senderAddress',
     ],
-    return: TYPE_DEF.Transaction,
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      topicAddress
+      senderAddress
+    `,
   },
 
   transfer: {
@@ -286,7 +264,17 @@ const MUTATIONS = {
       'token',
       'amount',
     ],
-    return: TYPE_DEF.Transaction,
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      senderAddress
+      receiverAddress
+      token
+      amount
+    `,
   },
 };
 
@@ -323,14 +311,14 @@ const ENUMS = {
   ],
 
   token: [
-    'QTUM',
-    'BOT',
+    'RUNES',
+    'PRED',
   ],
 };
 
 export function isValidEnum(key, value) {
-  const isEnum = has(ENUMS, key);
-  const isValid = includes(ENUMS[key], value);
+  const isEnum = _.has(ENUMS, key);
+  const isValid = _.includes(ENUMS[key], value);
   return isEnum && isValid;
 }
 

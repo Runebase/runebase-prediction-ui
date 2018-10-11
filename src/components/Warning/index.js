@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 import { injectIntl, intlShape } from 'react-intl';
 import cx from 'classnames';
-import { EventWarningType } from 'constants';
 
 import styles from './styles';
 
@@ -31,7 +30,7 @@ Warning.defaultProps = {
   id: '',
   className: undefined,
   theme: undefined,
-  type: EventWarningType.HIGHLIGHT,
+  type: 'pending',
 };
 
 export default injectIntl(withStyles(styles)(Warning));

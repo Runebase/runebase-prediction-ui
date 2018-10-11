@@ -1,13 +1,9 @@
-import React from 'react';
-import { Button as _Button, withStyles } from '@material-ui/core';
-import styles from './styles';
+import styled from 'styled-components';
+import { Button as _Button } from '@material-ui/core';
 
-export const Button = withStyles(styles, { withTheme: true })(({ classes, ...props }) => (
-  <_Button
-    fullWidth
-    size='large'
-    variant='raised'
-    className={classes.oracleButton}
-    {...props}
-  />
-));
+
+export const Button = styled(_Button).attrs({ variant: 'raised', fullWidth: true, size: 'large', color: 'primary' })`
+  margin-top: ${props => props.theme.padding.md.px} !important;
+  background-color: ${props => props.theme.palette.primary.main} !important; // TODO: fix
+  color: white !important; // TODO fix
+`;
