@@ -34,22 +34,22 @@ const Tutorial2 = ({ classes }) => (
       <ContentItem id={messages.tutorial2Content0Msg.id} defaultMessage={messages.tutorial2Content0Msg.defaultMessage} />
       <li>
         <Typography variant="body2">
-          <a className={classes.link} href="https://github.com/runebaseproject/runebase/wiki/Runebase-Wallet-Tutorial#wallet-encryption" target="_blank">
-            https://github.com/runebaseproject/runebase/wiki/Runebase-Wallet-Tutorial#wallet-encryption
+          <a className={classes.link} href="https://github.com/runebase/runebase/wiki/Runebase-Wallet-Tutorial#wallet-encryption" target="_blank">
+            https://github.com/runebase/runebase/wiki/Runebase-Wallet-Tutorial#wallet-encryption
           </a>
         </Typography>
       </li>
       <li>
         <Typography variant="body2">
-          <a className={classes.link} href="https://github.com/runebaseproject/runebase/wiki/Runebase-Wallet-Tutorial#wallet-backup" target="_blank">
-            https://github.com/runebaseproject/runebase/wiki/Runebase-Wallet-Tutorial#wallet-backup
+          <a className={classes.link} href="https://github.com/runebase/runebase/wiki/Runebase-Wallet-Tutorial#wallet-backup" target="_blank">
+            https://github.com/runebase/runebase/wiki/Runebase-Wallet-Tutorial#wallet-backup
           </a>
         </Typography>
       </li>
       <li>
         <Typography variant="body2">
-          <a className={classes.link} href="https://github.com/runebaseproject/runebase/wiki/Runebase-Wallet-Tutorial#restore-wallet-backup" target="_blank">
-            https://github.com/runebaseproject/runebase/wiki/Runebase-Wallet-Tutorial#restore-wallet-backup
+          <a className={classes.link} href="https://github.com/runebase/runebase/wiki/Runebase-Wallet-Tutorial#restore-wallet-backup" target="_blank">
+            https://github.com/runebase/runebase/wiki/Runebase-Wallet-Tutorial#restore-wallet-backup
           </a>
         </Typography>
       </li>
