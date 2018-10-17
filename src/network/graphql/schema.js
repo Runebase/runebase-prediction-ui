@@ -95,6 +95,7 @@ const TYPE_DEF = {
       address
       runebase
       pred
+      fun
     }
   `,
 
@@ -313,6 +314,7 @@ const ENUMS = {
   token: [
     'RUNES',
     'PRED',
+    'FUN',
   ],
 };
 

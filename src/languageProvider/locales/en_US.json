@@ -143,6 +143,7 @@
   "str.block": "Block",
   "str.blockSync": "Blockchain syncing with {peers} peers...",
   "str.pred": "PRED",
+  "str.fun": "FUN",
   "str.cancel": "Cancel",
   "str.changePassphrase": "Change your passphrase",
   "str.close": "Close",
@@ -176,6 +177,7 @@
   "str.name": "Name",
   "str.newPassphrase": "NEW PASSPHRASE",
   "str.notEnoughPred": "You don't have enough PRED",
+  "str.notEnoughFun": "You don't have enough FUN",
   "str.notEnoughRunebase": "You don't have enough RUNES",
   "str.notEnoughRunebaseAndPred": "You don't have enough RUNES or PRED",
   "str.ok": "Ok",
@@ -338,6 +340,7 @@
   "tutorial6.content3": "If you don't find these things valuable, ask yourself why you think the blockchain and cryptocurrencies are valuable.",
   "tutorial6.title": "Decentralization",
   "tx.approvePredTransfer": "Approve PRED Transfer",
+  "tx.approveFunTransfer": "Approve FUN Transfer",
   "tx.resetApproval": "Reset Approval",
   "txConfirm.message": "You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.",
   "txConfirm.messageWithFee": "You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} RUNES. Any unused transaction fees will be refunded to you. Please click OK to continue.",
@@ -371,6 +374,6 @@
   "withdrawDialog.invalidAddress": "Invalid address",
   "withdrawDialog.required": "Required",
   "withdrawDialog.send": "Send",
-  "withdrawDialog.title": "Withdraw RUNES/PRED",
+  "withdrawDialog.title": "Withdraw RUNES/PRED/FUN",
   "withdrawDialog.youCanWithdraw": "You can withdraw up to:"
 }

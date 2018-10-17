@@ -31,6 +31,11 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
+        path={`${url}${Routes.EXCHANGE}`}
+        component={asyncComponent(() => import('../Exchange'))}
+      />
+      <Route
+        exact
         path={`${url}/oracle/:topicAddress/:address/:txid`}
         component={asyncComponent(() => import('../Event'))}
       />

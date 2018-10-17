@@ -16,10 +16,6 @@ export default {
   api: {
     getWalletInfo: `${HTTP_ROUTE}/get-wallet-info`,
     unlockWallet: `${HTTP_ROUTE}/wallet-passphrase`,
-    eventEscrowAmount: `${HTTP_ROUTE}/event-escrow-amount`,
-    winnings: `${HTTP_ROUTE}/winnings`,
-    betBalances: `${HTTP_ROUTE}/bet-balances`,
-    voteBalances: `${HTTP_ROUTE}/vote-balances`,
     validateAddress: `${HTTP_ROUTE}/validate-address`,
     encryptWallet: `${HTTP_ROUTE}/encrypt-wallet`,
     backupWallet: `${HTTP_ROUTE}/backup-wallet`,

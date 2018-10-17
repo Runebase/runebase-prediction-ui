@@ -19,5 +19,8 @@ export default class TransactionCost {
     if (this.token === Token.PRED) {
       this.amount = satoshiToDecimal(this.amount);
     }
+    if (this.token === Token.FUN) {
+      this.amount = satoshiToDecimal(this.amount);
+    }
   }
 }

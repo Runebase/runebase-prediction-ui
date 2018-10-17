@@ -57,6 +57,7 @@ export default class MyBalances extends Component {
       selectedAddress: undefined,
       selectedAddressRunebase: undefined,
       selectedAddressPred: undefined,
+      selectedAddressFun: undefined,
       depositDialogVisible: false,
       withdrawDialogVisible: false,
     };
@@ -81,6 +82,7 @@ export default class MyBalances extends Component {
       selectedAddress,
       selectedAddressRunebase,
       selectedAddressPred,
+      selectedAddressFun,
       depositDialogVisible,
       withdrawDialogVisible,
     } = this.state;
@@ -104,6 +106,7 @@ export default class MyBalances extends Component {
             walletAddress={selectedAddress}
             runebaseAmount={selectedAddressRunebase}
             predAmount={selectedAddressPred}
+            funAmount={selectedAddressFun}
           />
           <WithdrawDialog
             dialogVisible={withdrawDialogVisible}
@@ -112,6 +115,7 @@ export default class MyBalances extends Component {
             walletAddress={selectedAddress}
             runebaseAmount={selectedAddressRunebase}
             predAmount={selectedAddressPred}
+            funAmount={selectedAddressFun}
           />
           <WithdrawTxConfirmDialog onWithdraw={this.onWithdraw} id={messages.txConfirmMsgSendMsg.id} />
         </Grid>
@@ -124,10 +128,12 @@ export default class MyBalances extends Component {
 
     let totalRunebase = 0;
     let totalPred = 0;
+    let totalFun = 0;
     const walletAddresses = wallet.addresses;
     if (walletAddresses && walletAddresses.length) {
       totalRunebase = _.sumBy(walletAddresses, (address) => address.runebase ? address.runebase : 0);
       totalPred = _.sumBy(walletAddresses, (address) => address.pred ? address.pred : 0);
+      totalFun = _.sumBy(walletAddresses, (address) => address.fun ? address.fun : 0);
     }
 
     const items = [
@@ -142,6 +148,12 @@ export default class MyBalances extends Component {
         name: 'str.pred',
         nameDefault: 'PRED',
         total: totalPred,
+      },
+      {
+        id: 'fun',
+        name: 'str.fun',
+        nameDefault: 'FUN',
+        total: totalFun,
       },
     ];
 
@@ -186,6 +198,13 @@ export default class MyBalances extends Component {
         id: 'pred',
         name: 'str.pred',
         nameDefault: 'PRED',
+        numeric: true,
+        sortable: true,
+      },
+      {
+        id: 'fun',
+        name: 'str.fun',
+        nameDefault: 'FUN',
         numeric: true,
         sortable: true,
       },
@@ -298,6 +317,9 @@ export default class MyBalances extends Component {
             <TableCell numeric>
               <Typography variant="body1">{item.pred}</Typography>
             </TableCell>
+            <TableCell numeric>
+              <Typography variant="body1">{item.fun}</Typography>
+            </TableCell>
             <TableCell>
               <Button
                 variant="raised"
@@ -308,6 +330,7 @@ export default class MyBalances extends Component {
                 data-address={item.address}
                 data-runebase={item.runebase}
                 data-pred={item.pred}
+                data-fun={item.fun}
               >
                 <FormattedMessage id="myBalances.deposit" defaultMessage="Deposit" />
               </Button>
@@ -320,6 +343,7 @@ export default class MyBalances extends Component {
                 data-address={item.address}
                 data-runebase={item.runebase}
                 data-pred={item.pred}
+                data-fun={item.fun}
               >
                 <FormattedMessage id="str.withdraw" defaultMessage="Withdraw" />
               </Button>
@@ -363,6 +387,7 @@ export default class MyBalances extends Component {
       selectedAddress: event.currentTarget.getAttribute('data-address'),
       selectedAddressRunebase: event.currentTarget.getAttribute('data-runebase'),
       selectedAddressPred: event.currentTarget.getAttribute('data-pred'),
+      selectedAddressFun: event.currentTarget.getAttribute('data-fun'),
       depositDialogVisible: true,
     });
 
@@ -374,6 +399,7 @@ export default class MyBalances extends Component {
       selectedAddress: undefined,
       selectedAddressRunebase: undefined,
       selectedAddressPred: undefined,
+      selectedAddressFun: undefined,
       depositDialogVisible: false,
     });
   };
@@ -385,6 +411,7 @@ export default class MyBalances extends Component {
       selectedAddress: event.currentTarget.getAttribute('data-address'),
       selectedAddressRunebase: event.currentTarget.getAttribute('data-runebase'),
       selectedAddressPred: event.currentTarget.getAttribute('data-pred'),
+      selectedAddressFun: event.currentTarget.getAttribute('data-fun'),
       withdrawDialogVisible: true,
     });
     wallet.lastUsedAddress = event.currentTarget.getAttribute('data-address');
@@ -397,6 +424,7 @@ export default class MyBalances extends Component {
       selectedAddress: undefined,
       selectedAddressRunebase: undefined,
       selectedAddressPred: undefined,
+      selectedAddressFun: undefined,
       withdrawDialogVisible: false,
     });
   };

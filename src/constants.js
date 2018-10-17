@@ -3,6 +3,7 @@ module.exports = {
     RUNES_PREDICTION: '/',
     PRED_COURT: '/pred-court',
     WALLET: '/wallet',
+    EXCHANGE: '/exchange',
     SET: '/activities/set',
     FINALIZE: '/activities/finalize',
     WITHDRAW: '/activities/withdraw',
@@ -44,6 +45,7 @@ module.exports = {
   Token: {
     RUNES: 'RUNES',
     PRED: 'PRED',
+    FUN: 'FUN',
   },
 
   OracleStatus: {

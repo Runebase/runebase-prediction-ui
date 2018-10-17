@@ -44,6 +44,7 @@ export default class NavBar extends Component {
             <RunebasePredictionLogo {...this.props} />
             <RunebasePrediction {...this.props} />
             <PredCourt {...this.props} />
+            <Exchange {...this.props} />
           </NavSection>
           <MyActivities {...this.props} />
           <Toggle onClick={this.changeDropDownDirection}><div className={`icon iconfont icon-ic_${this.state.dropdownDirection}`}></div></Toggle>
@@ -117,6 +118,7 @@ const MyActivities = observer(({ store: { global } }) => {
 const Wallet = styled(({ store: { wallet } }) => {
   const totalRUNES = _.sumBy(wallet.addresses, ({ runebase }) => runebase).toFixed(2) || '0.00';
   const totalPRED = _.sumBy(wallet.addresses, ({ pred }) => pred).toFixed(2) || '0.00';
+  const totalFUN = _.sumBy(wallet.addresses, ({ fun }) => fun).toFixed(2) || '0.00';
   return (<Link to={Routes.WALLET}>
     <Item>
       <WalletItem>
@@ -125,6 +127,7 @@ const Wallet = styled(({ store: { wallet } }) => {
       <WalletItem>
         <div style={{ paddingPredtom: '10px' }}><b>{totalRUNES}</b> RUNES</div>
         <div><b>{totalPRED}</b> PRED</div>
+        <div><b>{totalFUN}</b> FUN</div>
       </WalletItem>
       <WalletItem>{'>'}</WalletItem>
     </Item>
@@ -212,6 +215,20 @@ const PredCourt = observer(({ classes, store: { ui } }) => (
       )}
     >
       <FormattedMessage id="navbar.predCourt" defaultMessage="PRED Court" />
+    </Button>
+  </NavLink>
+));
+
+const Exchange = observer(({ classes, store: { ui } }) => (
+  <NavLink to={Routes.EXCHANGE}>
+    <Button
+      data-index={EventStatus.VOTE}
+      className={cx(
+        classes.navEventsButton,
+        ui.location === Routes.EXCHANGE ? 'selected' : '',
+      )}
+    >
+      <FormattedMessage id="navbar.exchange" defaultMessage="Exchange" />
     </Button>
   </NavLink>
 ));

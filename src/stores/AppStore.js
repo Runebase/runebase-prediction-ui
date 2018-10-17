@@ -6,6 +6,7 @@ import UiStore from './UiStore';
 import RefreshingStore from './RefreshingStore';
 import AllEventsStore from './AllEventsStore';
 import RunebasePredictionStore from '../scenes/RunebasePrediction/store';
+import ExchangeStore from '../scenes/Exchange/store';
 import PredCourtStore from './PredCourtStore';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';
@@ -31,6 +32,7 @@ class AppStore {
   pendingTxsSnackbar = {}
   refreshing = {}
   eventPage = {}
+  exchange = {}
   runebasePrediction = {}
   predCourt = {}
   createEvent = {}
@@ -45,6 +47,7 @@ class AppStore {
     this.global = new GlobalStore(this);
     this.ui = new UiStore();
     this.wallet = new WalletStore(this);
+    this.exchange = new ExchangeStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
@@ -53,6 +56,7 @@ class AppStore {
 
     runInAction(() => {
       this.runebasePrediction = new RunebasePredictionStore(this);
+      this.exchange = new ExchangeStore(this);
       this.predCourt = new PredCourtStore(this);
       this.createEvent = new CreateEventStore(this);
       this.allEvents = new AllEventsStore(this);
