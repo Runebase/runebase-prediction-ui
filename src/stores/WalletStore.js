@@ -32,6 +32,11 @@ const messages = defineMessages({
 });
 
 const INIT_VALUE = {
+  market: 'PRED',
+  marketContract: 'init contract address',
+  accountData: [],
+  addressesHasCoin: [],
+  addressList: [],
   addresses: [],
   lastUsedAddress: '',
   walletEncrypted: false,
@@ -54,6 +59,11 @@ const INIT_VALUE_DIALOG = {
 };
 
 export default class {
+  @observable market = "PRED";
+  @observable marketContract = "Init Market Contract";
+  @observable addressesHasCoin = "Init addressesHasCoin";
+  @observable addressList = [];
+  @observable tokenAmount = INIT_VALUE.tokenAmount;
   @observable addresses = INIT_VALUE.addresses;
   @observable lastUsedAddress = INIT_VALUE.lastUsedAddress;
   @observable walletEncrypted = INIT_VALUE.walletEncrypted;
@@ -68,6 +78,42 @@ export default class {
   @observable withdrawAmount = INIT_VALUE_DIALOG.withdrawAmount;
   @observable toAddress = INIT_VALUE_DIALOG.toAddress;
 
+  @action changeMarket = (market, addresses) => {
+    this.addressList = [];
+    this.market = market;    
+    market = market.toLowerCase();
+    addresses.forEach((address) => {
+      if (address[market]) {
+        this.accountData = [address.address, market, address[market], address.runebase];
+        this.addressList.push( this.accountData );
+      }
+    });   
+    switch(market) {
+      case 'PRED':
+        this.tokenAmount = _.sumBy(addresses, ({ pred }) => pred).toFixed(2) || '0.00';
+        this.marketContract = "1";
+        break;
+      case 'FUN':
+        this.tokenAmount = _.sumBy(addresses, ({ fun }) => fun).toFixed(2) || '0.00';
+        this.marketContract = "2";
+        break;
+      case 'RRC223':
+        this.tokenAmount = _.sumBy(addresses, ({ fun }) => fun).toFixed(2) || '0.00';
+        this.marketContract = "3";
+        break;
+      default:
+        return 'foo';
+    }    
+  }
+  @computed get currentMarketContract() {
+    return this.marketContract;
+  }
+  @computed get currentMarket() {
+    return this.market;
+  }
+  @computed get currentTokenAmount() {
+    return this.tokenAmount;
+  }
   @computed get needsToBeUnlocked() {
     if (this.walletEncrypted) return false;
     if (this.walletUnlockedUntil === 0) return true;

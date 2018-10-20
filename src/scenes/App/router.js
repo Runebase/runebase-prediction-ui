@@ -26,13 +26,13 @@ const AppRouter = ({ url }) => {
       />
       <Route
         exact
-        path={`${url}${Routes.PRED_COURT}`}
-        component={asyncComponent(() => import('../PredCourt'))}
+        path={`${url}${Routes.EXCHANGE}`}
+        component={asyncComponent(() => import('../Exchange'))}
       />
       <Route
         exact
-        path={`${url}${Routes.EXCHANGE}`}
-        component={asyncComponent(() => import('../Exchange'))}
+        path={`${url}${Routes.PRED_COURT}`}
+        component={asyncComponent(() => import('../PredCourt'))}
       />
       <Route
         exact

@@ -219,13 +219,12 @@ const PredCourt = observer(({ classes, store: { ui } }) => (
   </NavLink>
 ));
 
-const Exchange = observer(({ classes, store: { ui } }) => (
+const Exchange = observer(({ classes, store: { exchange } }) => (
   <NavLink to={Routes.EXCHANGE}>
     <Button
-      data-index={EventStatus.VOTE}
       className={cx(
         classes.navEventsButton,
-        ui.location === Routes.EXCHANGE ? 'selected' : '',
+        exchange.location === Routes.EXCHANGE ? 'selected' : '',
       )}
     >
       <FormattedMessage id="navbar.exchange" defaultMessage="Exchange" />

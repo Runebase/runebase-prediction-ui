@@ -10,7 +10,6 @@ import {
   withStyles,
 } from '@material-ui/core';
 
-import { SortBy } from 'constants';
 import styles from './styles';
 
 @injectIntl
@@ -23,7 +22,7 @@ export default class OrderBook extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store, store: { exchange } } = this.props;
+    const { classes, store, store: { exchange } } = this.props;
     const { createEvent } = store;
 
     return (

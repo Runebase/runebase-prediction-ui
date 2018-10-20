@@ -1,4 +1,13 @@
 {
+  "navbar.exchange": "DEX",
+  "orderbooksect": "orderbooksect",
+  "tradedata": "tradedata",
+  "transactionhistory": "transactionhistory",
+  "tradedata": "tradedata",
+  "create.sell": "create.sell",
+  "create.buy": "create.buy",
+  "neworder": "neworder",
+  "orderbook": "orderbook",
   "Loading Oracle...": "Loading Oracle...",
   "activitiesTab.Finalize": "Finalize",
   "activitiesTab.History": "Activities History",

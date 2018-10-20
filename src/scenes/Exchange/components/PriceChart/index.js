@@ -1,52 +1,23 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import Chart from 'react-google-charts';
+import { render } from 'react-dom';
+import { TypeChooser } from "react-stockcharts/lib/helper";
+import Chart from './Chart';
+import { getData } from "./utils";
 
-const data = [
-  [
-    {
-      type: 'string',
-      id: 'Date',
-    },
-    {
-      type: 'number',
-      label: 'Something',
-    },
-    {
-      type: 'number',
-      label: 'Something',
-    },
-    {
-      type: 'number',
-      label: 'Something',
-    },
-    {
-      type: 'number',
-      label: 'Something',
-    },
-  ],
-  ['Mon', 0, 0, 38, 45],
-  ['Tue', 31, 38, 55, 66],
-  ['Wed', 50, 55, 77, 80],
-  ['Thu', 77, 77, 66, 50],
-  ['Fri', 68, 66, 22, 15],
-  ['Mon', 0, 0, 38, 45],
-  ['Tue', 31, 38, 55, 66],
-  ['Wed', 50, 55, 77, 80],
-  ['Thu', 77, 77, 66, 50],
-  ['Fri', 68, 66, 22, 15],
-];
-export default class PriceChart extends Component {
+export default class ChartComponent extends Component {
+  componentDidMount() {
+    getData().then(data => {
+      this.setState({ data });
+    });
+  }
   render() {
+    if (this.state == null) {
+      return <div>Loading...</div>;
+    }
     return (
-      <div className="App">
-        <Chart
-          chartType="CandlestickChart"
-          width="100%"
-          height="400px"
-          data={data}
-        />
-      </div>
+      <TypeChooser>
+        {type => <Chart type={type} data={this.state.data} />}
+      </TypeChooser>      
     );
   }
 }

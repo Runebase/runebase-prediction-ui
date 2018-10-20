@@ -48,7 +48,7 @@ const borderRadius = 4;
 const spaceUnit = 8;
 const paddingXs = spaceUnit * 2; // 16
 const paddingSm = spaceUnit * 3; // 24
-const paddingMd = spaceUnit * 5; // 40
+const paddingMd = spaceUnit * 0; // 40
 const paddingLg = spaceUnit * 7; // 56
 
 const navHeight = 70;

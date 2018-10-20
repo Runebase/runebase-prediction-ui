@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { inject, observer } from 'mobx-react';
+import Web3Utils from 'web3-utils';
 
 import {
   Grid,
@@ -25,6 +26,16 @@ export default class TradeData extends Component {
   render() {
     const { classes, noCreateEventButton, fontSize, store, store: { exchange } } = this.props;
     const { createEvent } = store;
+
+    const msg = "H343BuRAQncb6qetTthjp2ygTrOD4CgmUGPBbauNHBRUCoxwtzpROWq02PDUA1zGIF4CCtXKjbj4QfzAYVnRthY=";
+
+    const r = msg.slice(0, 66);
+    const s = msg.slice(66, 130);
+    const v = msg.slice(130, 132);
+    console.log(v);
+    console.log(Web3Utils.sha3(r));
+    console.log(Web3Utils.sha3("f3cf5095b40898d9e20e0cfad62772c4df2473da"));
+
 
     return (
       <Grid container className={classes.dashboardOrderBookWrapper}>

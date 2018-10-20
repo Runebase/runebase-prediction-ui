@@ -6,7 +6,7 @@ import UiStore from './UiStore';
 import RefreshingStore from './RefreshingStore';
 import AllEventsStore from './AllEventsStore';
 import RunebasePredictionStore from '../scenes/RunebasePrediction/store';
-import ExchangeStore from '../scenes/Exchange/store';
+import ExchangeStore from './ExchangeStore';
 import PredCourtStore from './PredCourtStore';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';
