@@ -3,8 +3,7 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import { getMarkets } from './Utils';
-
+import { getMarkets } from '../../../../helpers/exchange';
 
 @injectIntl
 @inject('store')
@@ -20,9 +19,11 @@ export default class Markets extends Component {
   render() {
     const { data } = this.state;
     const { store } = this.props;
+    console.log(data);
     return (
       <ReactTable
         getTdProps={(state, rowInfo, column ) => ({
+          
           onClick: (e) => {
             e.preventDefault();
             if(rowInfo){
@@ -33,6 +34,10 @@ export default class Markets extends Component {
         })}
         data={data}
         filterable
+        minRows={3}
+        showPageJump={false}
+        showPaginationBottom={false}
+        style={{cursor: 'pointer'}}
         columns={[
           {
             columns: [
@@ -74,12 +79,14 @@ export default class Markets extends Component {
               {
                 Header: 'Price',
                 id: 'price',
+                accessor: 'price',
                 filterable:false,
                 minWidth: 50,
               },
               {
                 Header: 'volume',
                 id: 'volume',
+                accessor: 'vol',
                 filterable:false,
                 minWidth: 50,
               },
@@ -98,7 +105,7 @@ export default class Markets extends Component {
             ],
           },
         ]}
-        className='-striped -highlight'
+        className='-striped -highlight -active'
       />
     );
   }

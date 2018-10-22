@@ -31,9 +31,9 @@ const messages = defineMessages({
     id: 'str.amount',
     defaultMessage: 'Amount',
   },
-  youCanWithdraw: {
-    id: 'withdrawDialog.youCanWithdraw',
-    defaultMessage: 'You can withdraw up to:',
+  youCanDeposit: {
+    id: 'depositDialog.youCanDeposit',
+    defaultMessage: 'You can deposit up to:',
   },
   confirmSendMsg: {
     id: 'txConfirmMsg.send',
@@ -45,7 +45,7 @@ const messages = defineMessages({
 @withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
-export default class WithdrawDialog extends Component {
+export default class DepositDialog extends Component {
   static propTypes = {
     intl: intlShape.isRequired, // eslint-disable-line react/no-typos
     classes: PropTypes.object.isRequired,
@@ -53,7 +53,7 @@ export default class WithdrawDialog extends Component {
     walletAddress: PropTypes.string,
     predAmount: PropTypes.string,
     onClose: PropTypes.func.isRequired,
-    onWithdraw: PropTypes.func.isRequired,
+    onDeposit: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -71,11 +71,11 @@ export default class WithdrawDialog extends Component {
     return (
       <Dialog
         open={dialogVisible}
-        onEnter={wallet.resetWithdrawDialog}
+        onEnter={wallet.resetDepositDialog}
         onClose={onClose}
       >
         <DialogTitle>
-          <FormattedMessage id="withdrawDialog.title" defaultMessage="Withdraw RUNES/PRED" />
+          <FormattedMessage id="depositDialog.title" defaultMessage="Deposit RUNES/PRED" />
         </DialogTitle>
         <DialogContent>
           <FromToField walletAddress={walletAddress} />
@@ -85,8 +85,8 @@ export default class WithdrawDialog extends Component {
           <Button onClick={onClose}>
             <FormattedMessage id="str.close" defaultMessage="Close" />
           </Button>
-          <Button color="primary" onClick={wallet.prepareWithdraw.bind(this, walletAddress)} disabled={wallet.withdrawDialogHasError}>
-            <FormattedMessage id="withdrawDialog.send" defaultMessage="Send" />
+          <Button color="primary" onClick={wallet.prepareDeposit.bind(this, walletAddress)} disabled={wallet.depositDialogHasError}>
+            <FormattedMessage id="depositDialog.send" defaultMessage="Send" />
           </Button>
         </DialogActions>
       </Dialog>
@@ -119,11 +119,11 @@ class FromToField extends Component {
             fullWidth
             value={toAddress}
             onChange={e => wallet.toAddress = e.target.value}
-            onBlur={wallet.validateWithdrawDialogWalletAddress}
-            error={wallet.withdrawDialogError.walletAddress !== ''}
+            onBlur={wallet.validateDepositDialogWalletAddress}
+            error={wallet.depositDialogError.walletAddress !== ''}
             required
           />
-          {!!wallet.withdrawDialogError.walletAddress && <FormHelperText error>{intl.formatMessage({ id: wallet.withdrawDialogError.walletAddress })}</FormHelperText>}
+          {!!wallet.depositDialogError.walletAddress && <FormHelperText error>{intl.formatMessage({ id: wallet.depositDialogError.walletAddress })}</FormHelperText>}
         </div>
       </div>
     );
@@ -142,7 +142,7 @@ class AmountField extends Component {
       store: { wallet },
     } = this.props;
 
-    const withdrawAmountText = intl.formatMessage(messages.youCanWithdraw);
+    const depositAmountText = intl.formatMessage(messages.youCanDeposit);
 
     return (
       <div>
@@ -153,26 +153,26 @@ class AmountField extends Component {
             label={intl.formatMessage(messages.amount)}
             type="number"
             className={classes.amountInput}
-            value={wallet.withdrawAmount}
-            onChange={e => wallet.withdrawAmount = e.target.value}
-            onBlur={wallet.validateWithdrawDialogAmount}
-            error={wallet.withdrawDialogError.withdrawAmount !== ''}
+            value={wallet.depositAmount}
+            onChange={e => wallet.depositAmount = e.target.value}
+            onBlur={wallet.validateDepositDialogAmount}
+            error={wallet.depositDialogError.depositAmount !== ''}
             required
           />
           <Select
             value={wallet.selectedToken}
             onChange={e => wallet.selectedToken = e.target.value} // eslint-disable-line
-            onBlur={wallet.validateWithdrawDialogAmount}
+            onBlur={wallet.validateDepositDialogAmount}
             inputProps={{ name: 'selectedToken', id: 'selectedToken' }}
           >
             <MenuItem value={Token.RUNES}>RUNES</MenuItem>
             <MenuItem value={Token.PRED}>PRED</MenuItem>
-            <MenuItem value={Token.PRED}>FUN</MenuItem>
+            <MenuItem value={Token.FUN}>FUN</MenuItem>
           </Select>
-          {!!wallet.withdrawDialogError.withdrawAmount && <FormHelperText error>{intl.formatMessage({ id: wallet.withdrawDialogError.withdrawAmount })}</FormHelperText>}
+          {!!wallet.depositDialogError.depositAmount && <FormHelperText error>{intl.formatMessage({ id: wallet.depositDialogError.depositAmount })}</FormHelperText>}
         </div>
         <Typography variant="body1">
-          {`${withdrawAmountText} ${wallet.lastAddressWithdrawLimit[wallet.selectedToken]}`}
+          {`${depositAmountText} ${wallet.lastAddressDepositLimit[wallet.selectedToken]}`}
         </Typography>
       </div>
     );

@@ -2,8 +2,8 @@ module.exports = {
   Routes: {
     RUNES_PREDICTION: '/',
     PRED_COURT: '/pred-court',
-    WALLET: '/wallet',
     EXCHANGE: '/exchange',
+    WALLET: '/wallet',
     SET: '/activities/set',
     FINALIZE: '/activities/finalize',
     WITHDRAW: '/activities/withdraw',

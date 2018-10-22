@@ -17,16 +17,12 @@ import styles from './styles';
 @inject('store')
 @observer
 export default class OrderBook extends Component {
-  static propTypes = {
-    classes: PropTypes.object.isRequired,
-  };
 
   render() {
     const { classes, store, store: { exchange } } = this.props;
-    const { createEvent } = store;
 
     return (
-      <Grid container className={classes.dashboardOrderBookWrapper}>
+      <Grid container className={styles.marketInfo}>
         <Grid item xs={12}>
           <Card className={classes.dashboardOrderBookTitle}>
             <FormattedMessage id="orderbook" defaultMessage="OrderBook" />

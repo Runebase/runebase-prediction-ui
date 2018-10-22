@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { inject, observer } from 'mobx-react';
-
 import {
   Grid,
   FormLabel,
@@ -13,7 +12,6 @@ import {
 import Form from 'muicss/lib/react/form';
 import Input from 'muicss/lib/react/input';
 import Select from 'muicss/lib/react/select';
-
 import styles from './styles';
 
 @injectIntl
@@ -31,7 +29,6 @@ export default class NewOrder extends Component {
       amount: 0,
       price: 0,
       total: 0,
-      token: 'PRED',
     };
   }
 
@@ -88,10 +85,6 @@ export default class NewOrder extends Component {
           <Grid container className={classes.dashboardOrderBookWrapper}>
             <Grid item xs={12}>
               <Form className={classes.tokenSelect} onSubmit={this.handleSubmit}>
-                <Select className={classes.tokenSelect} onChange={this.tokenChange} value={this.state.token}>
-                  <option className={classes.tokenOption} value="PRED">PRED</option>
-                  <option className={classes.tokenOption} value="FUN">FUN</option>
-                </Select>
                 <h3>{this.props.store.wallet.currentMarket}/RUNES</h3>
                 <h3>{this.props.store.wallet.currentTokenAmount}</h3>
                 <Grid container>

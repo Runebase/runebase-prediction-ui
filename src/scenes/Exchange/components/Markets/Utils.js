@@ -17,7 +17,7 @@ export function tokenChange(event){
       this.setState({
         token: event,
         balance: _.sumBy(this.props.store.wallet.addresses, ({ pred }) => pred).toFixed(2) || '0.00',
-        chartstate: 1,
+        contractAdress: "1",
         oderstate: 1,
       });
       break;
@@ -25,6 +25,7 @@ export function tokenChange(event){
       this.setState({
         token: event,
         balance: _.sumBy(this.props.store.wallet.addresses, ({ fun }) => fun).toFixed(2) || '0.00',
+        contractAdress: "1",
       });
       break;
     default:

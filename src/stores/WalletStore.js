@@ -10,6 +10,7 @@ import Routes from '../network/routes';
 import { createTransferTx } from '../network/graphql/mutations';
 import { decimalToSatoshi } from '../helpers/utility';
 import Tracking from '../helpers/mixpanelUtil';
+import { getWalletData } from '../helpers/exchange';
 
 // TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS, ALSO INTL TRANSLATION UPDATE
 const messages = defineMessages({
@@ -29,15 +30,35 @@ const messages = defineMessages({
     id: 'withdrawDialog.required',
     defaultMessage: 'Required',
   },
+  depositDialogInvalidAddressMsg: {
+    id: 'withdrawDialog.invalidAddress',
+    defaultMessage: 'Invalid address',
+  },
+  depositDialogAmountLargerThanZeroMsg: {
+    id: 'withdrawDialog.amountLargerThanZero',
+    defaultMessage: 'Amount should be larger than 0',
+  },
+  depositDialogAmountExceedLimitMsg: {
+    id: 'withdrawDialog.amountExceedLimit',
+    defaultMessage: 'Amount exceed the limit',
+  },
+  depositDialogRequiredMsg: {
+    id: 'withdrawDialog.required',
+    defaultMessage: 'Required',
+  },
 });
 
 const INIT_VALUE = {
   market: 'PRED',
-  marketContract: 'init contract address',
+  exchangeAddress: '5Xp7SfbsqH8oU4FjTWiZGW3Nhdn9LjopeU',
+  marketContract: '66cf6409b12e09d9d16395d2f0b224e56c3dc3a2',
   accountData: [],
   addressesHasCoin: [],
   addressList: [],
   addresses: [],
+  currentAddressBalanceRunes: '',
+  currentAddressBalanceToken: '',
+  currentAddressBalanceKey: '',
   lastUsedAddress: '',
   walletEncrypted: false,
   encryptResult: undefined,
@@ -56,13 +77,37 @@ const INIT_VALUE_DIALOG = {
     withdrawAmount: '',
     walletAddress: '',
   },
+  depositAmount: '',
+  depositDialogError: {
+    depositAmount: '',
+    walletAddress: '',
+  },
+};
+
+const INIT_VALUE_EXCHANGE_DIALOG = {
+  selectedToken: Token.RUNES,
+  toAddress: '',
+  withdrawAmount: '',
+  withdrawDialogError: {
+    withdrawAmount: '',
+    walletAddress: '',
+  },
+  depositAmount: '',
+  depositDialogError: {
+    depositAmount: '',
+    walletAddress: '',
+  },
 };
 
 export default class {
-  @observable market = "PRED";
-  @observable marketContract = "Init Market Contract";
-  @observable addressesHasCoin = "Init addressesHasCoin";
-  @observable addressList = [];
+  @observable exchangeAddress = INIT_VALUE.exchangeAddress;
+  @observable currentAddressBalanceRunes = INIT_VALUE.currentAddressBalanceRunes;
+  @observable currentAddressBalanceToken = INIT_VALUE.currentAddressBalanceToken;
+  @observable currentAddressBalanceKey = INIT_VALUE.currentAddressBalanceKey;  
+  @observable market = INIT_VALUE.market;
+  @observable marketContract = INIT_VALUE.marketContract;
+  @observable addressesHasCoin = INIT_VALUE.addressesHasCoin;
+  @observable addressList = INIT_VALUE.addressList;
   @observable tokenAmount = INIT_VALUE.tokenAmount;
   @observable addresses = INIT_VALUE.addresses;
   @observable lastUsedAddress = INIT_VALUE.lastUsedAddress;
@@ -77,8 +122,25 @@ export default class {
   @observable withdrawDialogError = INIT_VALUE_DIALOG.withdrawDialogError;
   @observable withdrawAmount = INIT_VALUE_DIALOG.withdrawAmount;
   @observable toAddress = INIT_VALUE_DIALOG.toAddress;
+  constructor(app) {
+    this.app = app;
 
+    // Set a default lastUsedAddress if there was none selected before
+    reaction(
+      () => this.addresses,
+      () => {
+        if (_.isEmpty(this.lastUsedAddress) && !_.isEmpty(this.addresses)) {
+          this.lastUsedAddress = this.addresses[0].address;
+        }
+      }
+    );
+  }
   @action changeMarket = (market, addresses) => {
+    if (market === this.market) {
+      return;
+    }
+    this.currentAddressBalanceRunes = '';
+    this.currentAddressBalanceToken = '';
     this.addressList = [];
     this.market = market;    
     market = market.toLowerCase();
@@ -87,23 +149,104 @@ export default class {
         this.accountData = [address.address, market, address[market], address.runebase];
         this.addressList.push( this.accountData );
       }
-    });   
-    switch(market) {
+    }); 
+    switch(this.market) {
       case 'PRED':
         this.tokenAmount = _.sumBy(addresses, ({ pred }) => pred).toFixed(2) || '0.00';
-        this.marketContract = "1";
+        this.marketContract = '1';
         break;
       case 'FUN':
         this.tokenAmount = _.sumBy(addresses, ({ fun }) => fun).toFixed(2) || '0.00';
-        this.marketContract = "2";
+        this.marketContract = '2';
         break;
-      case 'RRC223':
+      case 'RRC322':
         this.tokenAmount = _.sumBy(addresses, ({ fun }) => fun).toFixed(2) || '0.00';
-        this.marketContract = "3";
+        this.marketContract = '3';
         break;
       default:
+        this.marketContract = "foo";
         return 'foo';
     }    
+  }
+  @action changeAddress = (event) => {
+    this.currentAddressBalanceKey = event.target.selectedOptions[0].getAttribute('address');
+    this.currentAddressBalanceRunes = event.target.selectedOptions[0].getAttribute('runes');
+    this.currentAddressBalanceToken = event.target.selectedOptions[0].getAttribute('token');
+  }
+
+  @action
+  prepareDepositExchange = async (walletAddress, confirmAmount, tokenChoice) => {
+    console.log(tokenChoice);
+    this.walletAddress = walletAddress;
+    this.toAddress = '';
+    this.confirmAmount = confirmAmount;
+    this.tokenChoice = tokenChoice;
+    try {
+      const { data: { result } } = await axios.post(Routes.api.transactionCost, {
+        type: TransactionType.TRANSFER,
+        token: tokenChoice,
+        amount: tokenChoice === 'PRED' || tokenChoice === 'FUN' ? decimalToSatoshi(confirmAmount) : Number(confirmAmount),
+        senderAddress: walletAddress,
+      });
+      const txFees = _.map(result, (item) => new TransactionCost(item));
+      runInAction(() => {
+        this.txFees = txFees;
+        this.txConfirmDialogOpen = true;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.transactionCost);
+      });
+    }
+  }
+
+  @action
+  confirmExchange = (onWithdraw) => {
+    let amount = this.confirmAmount;
+    if (this.tokenChoice === 'PRED') {
+      amount = decimalToSatoshi(this.confirmAmount);
+    }
+    if (this.tokenChoice === 'FUN') {
+      amount = decimalToSatoshi(this.confirmAmount);
+    }
+    console.log(this.walletAddress);
+    console.log(this.exchangeAddress);
+    console.log(this.tokenChoice);
+    console.log(amount);
+    this.createTransferTransaction(this.walletAddress, this.exchangeAddress, this.tokenChoice, amount);
+    runInAction(() => {
+      onWithdraw();
+      this.txConfirmDialogOpen = false;
+      Tracking.track('myWallet-withdraw');
+    });
+  };
+
+  @action
+  createTransferTransactionExchange = async (walletAddress, toAddress, selectedToken, amount) => {
+    try {
+      const { data: { transfer } } = await createTransferTx(walletAddress, toAddress, selectedToken, amount);
+      this.app.myWallet.history.addTransaction(new Transaction(transfer));
+      runInAction(() => {
+        this.app.pendingTxsSnackbar.init();
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.createTransferTx);
+      });
+    }
+  }
+
+  @computed get currentAddressSelected() {
+    return this.currentAddressBalanceKey;
+  }
+  @computed get currentAddressesBalanceRunes() {
+    return this.currentAddressBalanceRunes;
+  }
+  @computed get currentAddressesBalanceToken() {
+    return this.currentAddressBalanceToken;
+  }
+  @computed get currentAddresses() {
+    return this.addressList;
   }
   @computed get currentMarketContract() {
     return this.marketContract;
@@ -131,25 +274,19 @@ export default class {
   @computed get lastAddressWithdrawLimit() {
     return { RUNES: this.lastUsedWallet.runebase, PRED: this.lastUsedWallet.pred, FUN: this.lastUsedWallet.fun };
   }
+  @computed get depsoitDialogHasError() {
+    if (this.withdrawDialogError.withdrawAmount !== '') return true;
+    if (this.withdrawDialogError.walletAddress !== '') return true;
+    return false;
+  }
 
+  @computed get lastAddressDepositLimit() {
+    return { RUNES: this.lastUsedWallet.runebase, PRED: this.lastUsedWallet.pred, FUN: this.lastUsedWallet.fun };
+  }
   @computed get lastUsedWallet() {
     const res = _.filter(this.addresses, (x) => x.address === this.lastUsedAddress);
     if (res.length > 0) return res[0];
     return {};
-  }
-
-  constructor(app) {
-    this.app = app;
-
-    // Set a default lastUsedAddress if there was none selected before
-    reaction(
-      () => this.addresses,
-      () => {
-        if (_.isEmpty(this.lastUsedAddress) && !_.isEmpty(this.addresses)) {
-          this.lastUsedAddress = this.addresses[0].address;
-        }
-      }
-    );
   }
 
   @action
@@ -228,7 +365,23 @@ export default class {
   }
 
   @action
+  validateDepositDialogAmount = () => {
+    if (_.isEmpty(this.depositAmount)) {
+      this.depositDialogError.depositAmount = messages.depositDialogRequiredMsg.id;
+    } else if (Number(this.withdrawAmount) <= 0) {
+      this.depositDialogError.depositAmount = messages.depositDialogAmountLargerThanZeroMsg.id;
+    } else if (Number(this.withdrawAmount) > this.lastAddressDepositLimit[this.selectedToken]) {
+      this.depositDialogError.withdrawAmount = messages.depositDialogAmountExceedLimitMsg.id;
+    } else {
+      this.depositDialogError.depositAmount = '';
+    }
+  }
+
+  @action
   resetWithdrawDialog = () => Object.assign(this, INIT_VALUE_DIALOG);
+
+  @action
+  resetDepositDialog = () => Object.assign(this, INIT_VALUE_DIALOG);
 
   @action
   backupWallet = async () => {
@@ -259,13 +412,30 @@ export default class {
   };
 
   @action
+  confirm = (onDeposit) => {
+    let amount = this.depositAmount;
+    if (this.selectedToken === Token.PRED) {
+      amount = decimalToSatoshi(this.depositAmount);
+    }
+    if (this.selectedToken === Token.FUN) {
+      amount = decimalToSatoshi(this.depositAmount);
+    }
+    this.createTransferTransaction(this.walletAddress, this.toAddress, this.selectedToken, amount);
+    runInAction(() => {
+      onDeposit();
+      this.txConfirmDialogOpen = false;
+      Tracking.track('myWallet-deposit');
+    });
+  };  
+
+  @action
   prepareWithdraw = async (walletAddress) => {
     this.walletAddress = walletAddress;
     try {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
         type: TransactionType.TRANSFER,
         token: this.selectedToken,
-        amount: this.selectedToken === Token.PRED || Token.FUN ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount),
+        amount: this.selectedToken === Token.PRED || this.selectedToken === Token.FUN ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount),
         optionIdx: undefined,
         topicAddress: undefined,
         oracleAddress: undefined,
@@ -283,6 +453,30 @@ export default class {
     }
   }
 
+  @action
+  prepareDeposit = async (walletAddress) => {
+    this.walletAddress = walletAddress;
+    try {
+      const { data: { result } } = await axios.post(Routes.api.transactionCost, {
+        type: TransactionType.TRANSFER,
+        token: this.selectedToken,
+        amount: this.selectedToken === Token.PRED || Token.FUN ? decimalToSatoshi(this.depositAmount) : Number(this.depositAmount),
+        optionIdx: undefined,
+        topicAddress: undefined,
+        oracleAddress: undefined,
+        senderAddress: walletAddress,
+      });
+      const txFees = _.map(result, (item) => new TransactionCost(item));
+      runInAction(() => {
+        this.txFees = txFees;
+        this.txConfirmDialogOpen = true;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.transactionCost);
+      });
+    }
+  }
   @action
   createTransferTransaction = async (walletAddress, toAddress, selectedToken, amount) => {
     try {

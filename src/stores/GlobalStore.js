@@ -39,7 +39,6 @@ export default class GlobalStore {
 
   constructor(app) {
     this.app = app;
-
     // Disable the syncInfo polling since we will get new syncInfo from the subscription
     reaction(
       () => this.syncPercent,

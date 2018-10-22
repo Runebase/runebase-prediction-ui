@@ -18,9 +18,6 @@ const styles = (theme) => ({
     background: '#F9F9F9',
     textAlign: 'center',
   },
-  marketInfo: {
-    fontSize: '24',
-  },
 });
 
 export default styles;

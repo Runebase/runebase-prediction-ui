@@ -8,6 +8,7 @@ import PriceChart from './components/PriceChart';
 import TradeData from './components/TradeData';
 import Markets from './components/Markets';
 import MarketInfo from './components/MarketInfo';
+import MyBalance from './components/MyBalance';
 import TransactionHistory from './components/TransactionHistory';
 
 @inject('store')
@@ -21,7 +22,10 @@ export default class Exchange extends Component {
       <Fragment>
         <Grid container>
           <Grid item xs={4}>
-            <Markets />            
+            <MyBalance />  
+            <Markets />  
+            <OrderBook />
+            <TradeData />          
           </Grid>
           <Grid item xs={8}>
             <Grid>
@@ -40,8 +44,6 @@ export default class Exchange extends Component {
         </Grid>
         <Grid container>
           <Grid item xs={4}>
-            <OrderBook />
-            <TradeData />
           </Grid>
           <Grid item xs={8}>
             <TransactionHistory />
