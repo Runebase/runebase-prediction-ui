@@ -20,6 +20,8 @@ const TYPE_DEF = {
     resultIdx
     runebaseAmount
     predAmount
+    runesAmount
+    funAmount
     escrowAmount
     creatorAddress
     oracles {
@@ -94,6 +96,15 @@ const TYPE_DEF = {
     addressBalances {
       address
       runebase
+      pred
+      fun
+      exchangerunes
+      exchangepred
+      exchangefun
+    }
+    exchangeBalances {
+      address
+      runes
       pred
       fun
     }

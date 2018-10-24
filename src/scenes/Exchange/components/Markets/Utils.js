@@ -10,25 +10,3 @@ export function getMarkets() {
   return data;
 }
 
-export function tokenChange(event){
-  console.log(event);
-  switch (event) {
-    case 'PRED':
-      this.setState({
-        token: event,
-        balance: _.sumBy(this.props.store.wallet.addresses, ({ pred }) => pred).toFixed(2) || '0.00',
-        contractAdress: "1",
-        oderstate: 1,
-      });
-      break;
-    case 'FUN':
-      this.setState({
-        token: event,
-        balance: _.sumBy(this.props.store.wallet.addresses, ({ fun }) => fun).toFixed(2) || '0.00',
-        contractAdress: "1",
-      });
-      break;
-    default:
-      return 'FOO';
-  }
-}

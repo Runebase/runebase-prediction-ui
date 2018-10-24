@@ -18,12 +18,9 @@ import styles from './styles';
 @inject('store')
 @observer
 export default class myBalance extends Component {
-  static propTypes = {
-    classes: PropTypes.object.isRequired,
-  };
 
   render() {
-    const { classes, store} = this.props;
+    const { store: { wallet } } = this.props;
     const stylist = {
       largeIcon: {
         width: 70,
@@ -42,8 +39,29 @@ export default class myBalance extends Component {
       <withStyles>
         <Grid container>
           <Grid item xs={8}>
-            <div>Exchange Address Balance: </div>
-            <div>Wallet Address Balance: </div> 
+            {wallet.addresses.map((addressData) => {
+              console.log(wallet.currentAddressBalanceKey);
+              if(addressData.address === wallet.currentAddressBalanceKey){
+                return (
+                  <Grid item xs={12}>
+                    <Grid container>
+                      <Grid item xs={3}>
+                        <p>RUNES</p>
+                        <p>{addressData.exchangerunes}</p>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <p>PRED</p>
+                        <p>{addressData.exchangepred}</p>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <p>FUN</p>
+                        <p>{addressData.exchangefun}</p>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                );}
+              return null;
+            })}
           </Grid> 
           <Grid item xs={4}>
             <Grid container>

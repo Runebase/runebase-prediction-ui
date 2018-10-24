@@ -29,7 +29,7 @@ export default class ExchangeStore {
     reaction(
       () => this.sortBy + this.app.wallet.addresses + this.app.global.syncBlockNum + this.app.refreshing.status,
       () => {
-        if (this.app.ui.location === Routes.RUNES_PREDICTION) {
+        if (this.app.ui.location === Routes.EXCHANGE) {
           this.init();
         }
       }

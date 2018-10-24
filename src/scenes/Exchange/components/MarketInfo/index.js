@@ -1,51 +1,66 @@
 import React, { Component } from 'react';
-import { FormattedMessage, injectIntl, defineMessages } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { inject, observer } from 'mobx-react';
+import $ from 'jquery';
+import { Button, Dropdown, NavItem } from 'react-materialize';
 import {
   Grid,
   withStyles,
 } from '@material-ui/core';
 import styles from './styles';
 import Deposit from './Deposit';
+import classes from './mystyle.css';
+window.jQuery = $;
+window.$ = $;
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
 export default class MarketInfo extends Component {
-
   constructor(props) {
     super(props); 
     this.state = {
-      market: 'a',
-      addresslist: [],
+      market: '', 
     };
-    this.props.store.wallet.changeMarket('PRED', this.props.store.wallet.addresses);
+  }
+  componentDidMount = () =>{
+    $(() => {  
+      $(document).on('click','.addressBookSelection', function(e){ 
+        const $this = $(`#${this.id}`);
+        $this.find('ul').fadeToggle(); 
+      })
+        .on('click', '.addressBookSelection ul li', function(e){
+          const $this = $(this);
+          const $selectBox = $('.addressBookSelection');
+        
+          $selectBox.find('.active').removeClass('active');
+          $this.addClass('active');
+          $selectBox.find('.heading').html($this.html());
+          $selectBox.find('ul').scrollTop(0);
+        
+          $('#Event strong').html( `${this.id  }- ${  $(this).find("strong").html() } selected` );
+        });
+    }); 
   }
   handleSelectChange = (event) => {
     this.props.store.wallet.changeAddress(event);
   }
   render() {
-    const {
-      depositDialogVisible,
-    } = this.state;
-    const { classes, store, store: { wallet } } = this.props;
+    const { store: { wallet } } = this.props;
     const stylist = {
       heightRow: {
         height: 75,
       },
-    };
-    this.state.market = this.props.store.wallet.market;
-    this.state.addresslist = this.props.store.wallet.addressList;
-    console.log('vlah');
-    console.log(this.props.store.wallet.currentAddresses);
+    };;
+    this.state.market = wallet.market;
     return (
-      <withStyles>        
+      <div>        
         <Grid container>
           <Grid item xs={3}>
             <Grid container>
               <Grid item xs={12} style={stylist.heightRow}>
-                <Deposit />                
+                <Deposit />                        
               </Grid>
             </Grid>
             <Grid container>
@@ -57,44 +72,65 @@ export default class MarketInfo extends Component {
           <Grid item xs={9}>
             <Grid container>
               <Grid item xs={12}>
-                <select onChange={this.handleSelectChange}>
-                  <option>Please Select Your Address</option>
-                  {this.props.store.wallet.currentAddresses.map((addressData) =>
-                    <option 
-                      key={addressData[0]}
-                      runes={addressData[3]}
-                      token={addressData[2]}
-                      address={addressData[0]}
-                    > 
-                      {addressData[0]} | {addressData[2]} {this.props.store.wallet.market} | {addressData[3]} RUNES
-                    </option> 
-                  )
-                  }
-                </select> 
-              </Grid>
-            </Grid>
-            <Grid cointainer>
-              <Grid item xs={12}>
-                <withStyles>
-                  RUNES balance of selected address:
-                  {this.props.store.wallet.currentAddressBalanceRunes}
-                </withStyles>
-              </Grid>
-              <Grid item xs={12}>
-                <withStyles>{this.props.store.wallet.market} balance of selected address: {this.props.store.wallet.currentAddressBalanceToken}</withStyles>
+                <div className="addressBookSelection" id="selectBox_addressBook_1">
+                  <div className="heading">Select Your Address<span>&#9662;</span></div>
+                  <ul id='dropdown-menu btn-block'>
+                    <li>
+                      Please Select Your Address
+                    </li>
+                    {wallet.addresses.map((addressData) => {
+                      if(addressData.fun > 0 || addressData.runebase > 0|| addressData.pred > 0){
+                        return (
+                          <li
+                            onClick={this.handleSelectChange}
+                            address={addressData.address} 
+                            runes={addressData.runebase}
+                            pred={addressData.pred}
+                            fun={addressData.fun}
+                            key={addressData.address}
+                          > 
+                            {addressData.address} | {addressData.runebase} {this.props.store.wallet.market} | {addressData.runebase} RUNES | {addressData.pred} PRED | {addressData.fun} FUN
+                          </li>
+                        );}
+                      return null;
+                    })}
+                  </ul>
+                </div>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
-        <Grid cointainer>
+        <Grid container>
+          {wallet.addresses.map((addressData) => {
+            if(addressData.address === wallet.currentAddressBalanceKey){
+              return (
+                <Grid item xs={12}>
+                  <Grid container>
+                    <Grid item xs={3}>
+                      <p>RUNES</p>
+                      <p>{addressData.runebase}</p>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <p>PRED</p>
+                      <p>{addressData.pred}</p>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <p>FUN</p>
+                      <p>{addressData.fun}</p>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              );}
+            return null;
+          })}
           <Grid item xs={12}>
             <withStyles>{this.state.market}/RUNES</withStyles>
           </Grid>
           <Grid item xs={12}>
-            <withStyles>Contract Address: {this.props.store.wallet.currentMarketContract}</withStyles>
+            <withStyles>Contract Address: {wallet.currentMarketContract}</withStyles>
           </Grid>
         </Grid>
-      </withStyles>
+      </div>
     );
   }  
 }

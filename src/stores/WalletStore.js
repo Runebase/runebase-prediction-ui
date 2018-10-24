@@ -50,7 +50,7 @@ const messages = defineMessages({
 
 const INIT_VALUE = {
   market: 'PRED',
-  exchangeAddress: '5Xp7SfbsqH8oU4FjTWiZGW3Nhdn9LjopeU',
+  exchangeAddress: '5dNoKDt3fQFKMXeUR21SoappnLg9YEggMU',
   marketContract: '66cf6409b12e09d9d16395d2f0b224e56c3dc3a2',
   accountData: [],
   addressesHasCoin: [],
@@ -75,11 +75,6 @@ const INIT_VALUE_DIALOG = {
   withdrawAmount: '',
   withdrawDialogError: {
     withdrawAmount: '',
-    walletAddress: '',
-  },
-  depositAmount: '',
-  depositDialogError: {
-    depositAmount: '',
     walletAddress: '',
   },
 };
@@ -145,7 +140,7 @@ export default class {
     this.market = market;    
     market = market.toLowerCase();
     addresses.forEach((address) => {
-      if (address[market]) {
+      if (address[market] || address.runebase) {
         this.accountData = [address.address, market, address[market], address.runebase];
         this.addressList.push( this.accountData );
       }
@@ -169,9 +164,8 @@ export default class {
     }    
   }
   @action changeAddress = (event) => {
-    this.currentAddressBalanceKey = event.target.selectedOptions[0].getAttribute('address');
-    this.currentAddressBalanceRunes = event.target.selectedOptions[0].getAttribute('runes');
-    this.currentAddressBalanceToken = event.target.selectedOptions[0].getAttribute('token');
+    this.currentAddressBalanceKey = event.target.attributes.getNamedItem('address').value;
+    console.log(this.currentAddressBalanceKey);
   }
 
   @action
@@ -238,12 +232,6 @@ export default class {
 
   @computed get currentAddressSelected() {
     return this.currentAddressBalanceKey;
-  }
-  @computed get currentAddressesBalanceRunes() {
-    return this.currentAddressBalanceRunes;
-  }
-  @computed get currentAddressesBalanceToken() {
-    return this.currentAddressBalanceToken;
   }
   @computed get currentAddresses() {
     return this.addressList;
@@ -365,19 +353,6 @@ export default class {
   }
 
   @action
-  validateDepositDialogAmount = () => {
-    if (_.isEmpty(this.depositAmount)) {
-      this.depositDialogError.depositAmount = messages.depositDialogRequiredMsg.id;
-    } else if (Number(this.withdrawAmount) <= 0) {
-      this.depositDialogError.depositAmount = messages.depositDialogAmountLargerThanZeroMsg.id;
-    } else if (Number(this.withdrawAmount) > this.lastAddressDepositLimit[this.selectedToken]) {
-      this.depositDialogError.withdrawAmount = messages.depositDialogAmountExceedLimitMsg.id;
-    } else {
-      this.depositDialogError.depositAmount = '';
-    }
-  }
-
-  @action
   resetWithdrawDialog = () => Object.assign(this, INIT_VALUE_DIALOG);
 
   @action
@@ -411,22 +386,6 @@ export default class {
     });
   };
 
-  @action
-  confirm = (onDeposit) => {
-    let amount = this.depositAmount;
-    if (this.selectedToken === Token.PRED) {
-      amount = decimalToSatoshi(this.depositAmount);
-    }
-    if (this.selectedToken === Token.FUN) {
-      amount = decimalToSatoshi(this.depositAmount);
-    }
-    this.createTransferTransaction(this.walletAddress, this.toAddress, this.selectedToken, amount);
-    runInAction(() => {
-      onDeposit();
-      this.txConfirmDialogOpen = false;
-      Tracking.track('myWallet-deposit');
-    });
-  };  
 
   @action
   prepareWithdraw = async (walletAddress) => {
