@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { inject, observer } from 'mobx-react';
@@ -19,7 +18,7 @@ import styles from './styles';
 export default class OrderBook extends Component {
 
   render() {
-    const { classes, store, store: { exchange } } = this.props;
+    const { classes, store: { wallet } } = this.props;
 
     return (
       <Grid container className={styles.marketInfo}>

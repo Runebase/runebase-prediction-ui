@@ -102,12 +102,6 @@ const TYPE_DEF = {
       exchangepred
       exchangefun
     }
-    exchangeBalances {
-      address
-      runes
-      pred
-      fun
-    }
   `,
 
   Transaction: `
@@ -288,6 +282,44 @@ const MUTATIONS = {
       amount
     `,
   },
+  transferExchange: {
+    mapping: [
+      'senderAddress',
+      'receiverAddress',
+      'token',
+      'amount',
+    ],
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      senderAddress
+      receiverAddress
+      token
+      amount
+    `,
+  },
+  redeemExchange: {
+    mapping: [
+      'senderAddress',
+      'receiverAddress',
+      'token',
+      'amount',
+    ],
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      senderAddress
+      receiverAddress
+      token
+      amount
+    `,
+  },
 };
 
 const ENUMS = {
@@ -319,6 +351,8 @@ const ENUMS = {
     'WITHDRAW',
     'WITHDRAWESCROW',
     'TRANSFER',
+    'FUNDEXCHANGE',
+    'REDEEMEXCHANGE',
     'RESETAPPROVE',
   ],
 

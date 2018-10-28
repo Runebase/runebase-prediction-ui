@@ -151,7 +151,29 @@ export function createTransferTx(senderAddress, receiverAddress, token, amount) 
     receiverAddress,
     token,
     amount,
-  };
+  };  
 
   return new GraphMutation('transfer', args, TYPE.transaction).execute();
+}
+
+export function createTransferExchange(senderAddress, receiverAddress, token, amount) {
+  const args = {
+    senderAddress,
+    receiverAddress,
+    token,
+    amount,
+  };
+
+  return new GraphMutation('transferExchange', args, TYPE.transaction).execute();
+}
+
+export function createRedeemExchange(senderAddress, receiverAddress, token, amount) {  
+  const args = {
+    senderAddress,
+    receiverAddress,
+    token,
+    amount,
+  };  
+
+  return new GraphMutation('redeemExchange', args, TYPE.transaction).execute();
 }

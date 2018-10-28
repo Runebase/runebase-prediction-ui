@@ -10,12 +10,12 @@ import {
 } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
-import { FastForward, FastRewind, AccountBalanceWallet } from '@material-ui/icons';
-import DepositTxConfirmDialog from '../DepositTxConfirmDialog';
+import { FastForward, AccountBalanceWallet } from '@material-ui/icons';
+import RedeemExchangeTxConfirmDialog from '../RedeemExchangeTxConfirmDialog';
 
 const messages = defineMessages({
-  txConfirmMsgSendMsg: {
-    id: 'txConfirmMsg.send',
+  redeemConfirmMsgSendMsg: {
+    id: 'redeemConfirmMsg.send',
     defaultMessage: 'send to address {address}',
   },
 });
@@ -23,7 +23,7 @@ const messages = defineMessages({
 @injectIntl
 @inject('store')
 @observer
-export default class Deposit extends Component {
+export default class RedeemExchange extends Component {
   constructor(props) {
     super(props); 
     this.state = {
@@ -36,7 +36,7 @@ export default class Deposit extends Component {
     };
   }  
   
-  handleClickOpenDepositChoice = () => {
+  handleClickOpenRedeemChoice = () => {
     /* Needs Fix -> If Address Is Selected else show error */
     this.setState({ 
       open: true,
@@ -44,7 +44,7 @@ export default class Deposit extends Component {
     });
   };
 
-  handleClickOpenDepositDialog = (event) => {
+  handleClickOpenRedeemDialog = (event) => {
     /* Needs Fix -> If Address Has enough tokens or runes */
     if (event.target.value === this.props.store.wallet.market) {
       this.setState({ 
@@ -77,7 +77,7 @@ export default class Deposit extends Component {
       [name]: event.target.value,
     });
   };
-  onWithdraw = () => {
+  onRedeem = () => {
     this.setState({
       open: false,
       open2: false,
@@ -95,24 +95,24 @@ export default class Deposit extends Component {
       },
     };
     return (      
-      <div>
-        <FastRewind onClick={this.handleClickOpenDepositChoice} style={stylist.largeIcon}>Deposit</FastRewind> 
-        <AccountBalanceWallet onClick={this.handleClickOpenDepositChoice} style={stylist.largeIcon}></AccountBalanceWallet>
-        <p>Desposit</p>      
+      <div>        
+        <AccountBalanceWallet onClick={this.handleClickOpenRedeemChoice}  style={stylist.largeIcon}></AccountBalanceWallet>
+        <FastForward onClick={this.handleClickOpenRedeemChoice}  style={stylist.largeIcon}></FastForward>
+        <p>Withdraw</p>      
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Deposit</DialogTitle>
+          <DialogTitle id="form-dialog-title">Withdraw from Exchange</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              What would you like to deposit?
+              What would you like to withdraw?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button value='RUNES' onClick={this.handleClickOpenDepositDialog}>Deposit RUNES</Button>
-            <Button value={this.props.store.wallet.market} onClick={this.handleClickOpenDepositDialog}>Deposit {this.props.store.wallet.market}</Button>
+            <Button value='RUNES' onClick={this.handleClickOpenRedeemDialog}>withdraw RUNES</Button>
+            <Button value={this.props.store.wallet.market} onClick={this.handleClickOpenRedeemDialog}>withdraw {this.props.store.wallet.market}</Button>
             <Button onClick={this.handleClose}>Close</Button>
           </DialogActions>
         </Dialog>
@@ -121,14 +121,22 @@ export default class Deposit extends Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title2"
         >
-          <DialogTitle id="form-dialog-title2">Deposit</DialogTitle>
+          <DialogTitle id="form-dialog-title2">withdraw</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              <p>How much {this.state.tokenChoice} would you like to deposit?</p>
-              <p>Current Address:</p>
-              <p>{this.state.address}</p>
-              <p>Available:</p>
-              <p>{this.state.available} {this.state.tokenChoice}</p>
+              How much {this.state.tokenChoice} would you like to withdraw?
+            </DialogContentText>
+            <DialogContentText>
+              Current Address:
+            </DialogContentText>
+            <DialogContentText>
+              {this.state.address}
+            </DialogContentText>
+            <DialogContentText>
+              Available:
+            </DialogContentText>
+            <DialogContentText>
+              {this.state.available} {this.state.tokenChoice}
             </DialogContentText>
             <TextField
               id="standard-number"
@@ -145,15 +153,15 @@ export default class Deposit extends Component {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={ () =>  wallet.prepareDepositExchange(this.state.address, this.state.amount, this.state.tokenChoice) } color="primary">
-              Deposit
+            <Button onClick={ () =>  wallet.prepareRedeemExchange(this.state.address, this.state.amount, this.state.tokenChoice) } color="primary">
+              Withdraw
             </Button>
             <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
           </DialogActions>
         </Dialog>
-        <DepositTxConfirmDialog onWithdraw={this.onWithdraw} id={messages.txConfirmMsgSendMsg.id} />
+        <RedeemExchangeTxConfirmDialog onRedeem={this.onRedeem} id={messages.redeemConfirmMsgSendMsg.id} />
       </div>
     );
   }

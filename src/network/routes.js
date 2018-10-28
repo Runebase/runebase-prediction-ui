@@ -31,6 +31,6 @@ export default {
     totals: `${BASE_INSIGHT}/statistics/total`,
   },
   explorer: {
-    tx: 'https://runebasehost/tx',
+    tx: 'https://explorer.runebase.io/tx',
   },
 };

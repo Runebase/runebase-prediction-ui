@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { FastForward, FastRewind, AccountBalanceWallet } from '@material-ui/icons';
+import { injectIntl } from 'react-intl';
+import { FastForward, AccountBalanceWallet } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
 
 import {
   Grid,
-  Card,
   withStyles,
 } from '@material-ui/core';
 
-import { SortBy } from 'constants';
 import styles from './styles';
+import RedeemExchange from './RedeemExchange';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -37,8 +35,11 @@ export default class myBalance extends Component {
 
     return (
       <withStyles>
-        <Grid container>
-          <Grid item xs={8}>
+        <Grid container>          
+          <Grid item xs={12}>
+            <RedeemExchange />                              
+          </Grid>
+          <Grid container>
             {wallet.addresses.map((addressData) => {
               console.log(wallet.currentAddressBalanceKey);
               if(addressData.address === wallet.currentAddressBalanceKey){
@@ -62,20 +63,7 @@ export default class myBalance extends Component {
                 );}
               return null;
             })}
-          </Grid> 
-          <Grid item xs={4}>
-            <Grid container>
-              <Grid item xs={12} style={stylist.heightRow}>
-                <FastForward style={stylist.largeIcon}>Withdraw</FastForward>
-                <AccountBalanceWallet style={stylist.largeIcon}></AccountBalanceWallet>              
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs={12}>
-                <p style={stylist.floatright}>Withdraw</p>
-              </Grid>
-            </Grid>          
-          </Grid>        
+          </Grid>         
         </Grid>
       </withStyles>
     );

@@ -14,5 +14,8 @@ export default class AddressBalance {
     this.runes = satoshiToDecimal(addressBalance.runes);
     this.pred = satoshiToDecimal(addressBalance.pred);
     this.fun = satoshiToDecimal(addressBalance.fun);
+    this.exchangerunes = satoshiToDecimal(addressBalance.exchangerunes);
+    this.exchangepred = satoshiToDecimal(addressBalance.exchangepred);
+    this.exchangefun = satoshiToDecimal(addressBalance.exchangefun);
   }
 }

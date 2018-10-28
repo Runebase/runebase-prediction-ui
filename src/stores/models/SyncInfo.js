@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import AddressBalance from './AddressBalance';
-import ExchangeBalance from './ExchangeBalance';
 import { SortBy } from '../../constants';
 
 
@@ -10,7 +9,6 @@ export default class SyncInfo {
   blockNum = 0
   blockTime = ''
   balances = []
-  exchangeBalances = []
   peerNodeCount = 0
 
   constructor(syncInfo) {
@@ -20,9 +18,7 @@ export default class SyncInfo {
     this.blockTime = Number(syncInfo.syncBlockTime);
     this.peerCount = Number(syncInfo.peerNodeCount);
     const balances = _.map(syncInfo.addressBalances, (addressBalance) => new AddressBalance(addressBalance));
-    const exchangeBalances = _.map(syncInfo.exchangeBalances, (exchangeBalance) => new ExchangeBalance(exchangeBalance));
     // Sort by runebase balance
     this.balances = _.orderBy(balances, ['runebase'], [SortBy.DESCENDING.toLowerCase()]);
-    this.exchangeBalances = _.orderBy(exchangeBalances, ['runes'], [SortBy.DESCENDING.toLowerCase()]);
   }
 }

@@ -78,7 +78,6 @@ class GraphParser {
       'syncPercent',
       'peerNodeCount',
       'addressBalances',
-      'exchangeBalances',
     ]);
   }
 

@@ -11,7 +11,6 @@ import {
   withStyles,
 } from '@material-ui/core';
 
-import { SortBy } from 'constants';
 import styles from './styles';
 
 @injectIntl
@@ -24,18 +23,7 @@ export default class TradeData extends Component {
   };
 
   render() {
-    const { classes, noCreateEventButton, fontSize, store, store: { exchange } } = this.props;
-    const { createEvent } = store;
-
-    const msg = "H343BuRAQncb6qetTthjp2ygTrOD4CgmUGPBbauNHBRUCoxwtzpROWq02PDUA1zGIF4CCtXKjbj4QfzAYVnRthY=";
-
-    const r = msg.slice(0, 66);
-    const s = msg.slice(66, 130);
-    const v = msg.slice(130, 132);
-    console.log(v);
-    console.log(Web3Utils.sha3(r));
-    console.log(Web3Utils.sha3("f3cf5095b40898d9e20e0cfad62772c4df2473da"));
-
+    const { classes, store, store: { exchange } } = this.props;
 
     return (
       <Grid container className={classes.dashboardOrderBookWrapper}>

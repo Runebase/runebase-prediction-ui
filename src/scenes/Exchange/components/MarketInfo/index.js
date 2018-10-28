@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
 import { inject, observer } from 'mobx-react';
 import $ from 'jquery';
-import { Button, Dropdown, NavItem } from 'react-materialize';
 import {
   Grid,
   withStyles,
 } from '@material-ui/core';
 import styles from './styles';
-import Deposit from './Deposit';
+import FundExchange from './FundExchange';
 import classes from './mystyle.css';
 window.jQuery = $;
 window.$ = $;
@@ -60,7 +59,7 @@ export default class MarketInfo extends Component {
           <Grid item xs={3}>
             <Grid container>
               <Grid item xs={12} style={stylist.heightRow}>
-                <Deposit />                        
+                <FundExchange />                        
               </Grid>
             </Grid>
             <Grid container>
