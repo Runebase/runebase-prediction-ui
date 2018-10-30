@@ -190,3 +190,11 @@ export function createOrderExchange(senderAddress, receiverAddress, token, amoun
 
   return new GraphMutation('orderExchange', args, TYPE.transaction).execute();
 }
+
+export function createCancelOrderExchange(senderAddress, orderId) {  
+  const args = {
+    senderAddress,
+    orderId,
+  };
+  return new GraphMutation('cancelOrderExchange', args, TYPE.transaction).execute();
+}

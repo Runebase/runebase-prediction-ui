@@ -1,17 +1,26 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { inject } from 'mobx-react';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
 import { Button, Grid, Typography, withStyles, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import cx from 'classnames';
 import { sum } from 'lodash';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CancelOrderTxConfirmDialog from '../CancelOrderTxConfirmDialog';
 
 import EventWarning from '../../../../../components/EventWarning';
 import styles from './styles';
 
+const messages = defineMessages({
+  cancelOrderConfirmMsgSendMsg: {
+    id: 'redeemConfirmMsg.send',
+    defaultMessage: 'send to address {address}',
+  },
+});
 
 @injectIntl
+@inject('store')
 @withStyles(styles, { withTheme: true })
 export default class EventCard extends PureComponent {
   static propTypes = {
@@ -24,10 +33,19 @@ export default class EventCard extends PureComponent {
   static defaultProps = {
     orderId: undefined,
   };
-  
+  constructor(props) {
+    super(props);
+    this.state = { open:1 };
+  }
+  onCancelOrder = () => {
+    this.setState({
+      open: 0,
+    });
+  }
 
   render() {
-    const { classes, index } = this.props;
+    console.log(this.state.open);
+    const { classes, index, store: { wallet }  } = this.props;
     const { orderId, txid, buyToken, sellToken, amount, owner, blockNum, time, priceDiv, priceMul } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
 
@@ -64,9 +82,10 @@ export default class EventCard extends PureComponent {
                 </Grid>
               </Grid>
               <div>
-                <Button>
-                    Cancel
+                <Button onClick={ () =>  wallet.prepareCancelOrderExchange(orderId) } color="primary">
+                  Cancel
                 </Button>
+                <CancelOrderTxConfirmDialog onCancelOrder={this.onCancelOrder} id={messages.cancelOrderConfirmMsgSendMsg.id} />
               </div>
             </Typography>
           </ExpansionPanelDetails>

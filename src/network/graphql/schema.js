@@ -355,6 +355,23 @@ const MUTATIONS = {
       amount
     `,
   },
+  cancelOrderExchange: {
+    mapping: [
+      'senderAddress',
+      'orderId',
+    ],
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      senderAddress
+      receiverAddress
+      token
+      amount
+    `,
+  },
 };
 
 const ENUMS = {
@@ -391,6 +408,7 @@ const ENUMS = {
     'RESETAPPROVE',
     'BUYORDER',
     'SELLORDER',
+    'CANCELORDER',
   ],
 
   token: [
