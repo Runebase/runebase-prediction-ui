@@ -8,6 +8,7 @@ class GraphParser {
       Vote: this.parseVote,
       SyncInfo: this.parseSyncInfo,
       Transaction: this.parseTransaction,
+      NewOrder: this.parseNewOrder,
     };
     return PARSER_MAPPINGS[requestName];
   }
@@ -29,6 +30,21 @@ class GraphParser {
       creatorAddress: entry.creatorAddress,
       token: entry.token,
       transactions: entry.transactions,
+    }));
+  }
+
+  static parseNewOrder(data) {
+    return data.map((entry) => ({
+      txid: entry.txid,
+      orderId: entry.orderId,
+      owner: entry.owner,
+      sellToken: entry.sellToken,
+      buyToken: entry.buyToken,
+      priceMul: entry.priceMul,
+      priceDiv: entry.priceDiv,
+      time: entry.time,
+      amount: entry.amount,
+      blockNum: entry.blockNum,
     }));
   }
 

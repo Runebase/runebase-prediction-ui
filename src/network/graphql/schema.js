@@ -6,6 +6,7 @@ export const TYPE = {
   vote: 'Vote',
   syncInfo: 'SyncInfo',
   transaction: 'Transaction',
+  newOrder: 'NewOrder',
 };
 
 const TYPE_DEF = {
@@ -86,6 +87,19 @@ const TYPE_DEF = {
     oracleAddress
     optionIdx
     amount
+  `,
+
+  NewOrder: `
+    txid
+    orderId
+    owner
+    sellToken
+    buyToken
+    priceMul
+    priceDiv
+    time
+    amount
+    blockNum
   `,
 
   SyncInfo: `
@@ -320,6 +334,27 @@ const MUTATIONS = {
       amount
     `,
   },
+  orderExchange: {
+    mapping: [
+      'senderAddress',
+      'receiverAddress',
+      'token',
+      'amount',
+      'price',
+      'orderType',
+    ],
+    return: `
+      txid
+      createdTime
+      version
+      type
+      status
+      senderAddress
+      receiverAddress
+      token
+      amount
+    `,
+  },
 };
 
 const ENUMS = {
@@ -354,6 +389,8 @@ const ENUMS = {
     'FUNDEXCHANGE',
     'REDEEMEXCHANGE',
     'RESETAPPROVE',
+    'BUYORDER',
+    'SELLORDER',
   ],
 
   token: [

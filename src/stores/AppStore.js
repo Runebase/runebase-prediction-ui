@@ -37,6 +37,7 @@ class AppStore {
   predCourt = {}
   createEvent = {}
   allEvents = {}
+  allNewOrders = {}
   activities = {}
 
   constructor() {
@@ -60,6 +61,7 @@ class AppStore {
       this.predCourt = new PredCourtStore(this);
       this.createEvent = new CreateEventStore(this);
       this.allEvents = new AllEventsStore(this);
+      this.allNewOrders = new ExchangeStore(this);
       this.activities = {
         resultSetting: new ResultSettingStore(this),
         finalize: new FinalizeStore(this),

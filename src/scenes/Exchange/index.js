@@ -3,13 +3,14 @@ import { inject, observer } from 'mobx-react';
 import { Grid } from '@material-ui/core';
 import Loading from '../../components/EventListLoading';
 import OrderBook from './components/OrderBook';
-import NewOrder from './components/NewOrder';
 import PriceChart from './components/PriceChart';
 import TradeData from './components/TradeData';
 import Markets from './components/Markets';
 import MarketInfo from './components/MarketInfo';
 import MyBalance from './components/MyBalance';
 import TransactionHistory from './components/TransactionHistory';
+import BuyOrder from './components/BuyOrder';
+import SellOrder from './components/SellOrder';
 
 @inject('store')
 @observer
@@ -37,8 +38,8 @@ export default class Exchange extends Component {
               id="chart"
             />
             <Grid container>
-              <NewOrder />
-              <NewOrder />
+              <BuyOrder />
+              <SellOrder />
             </Grid>
           </Grid>
         </Grid>

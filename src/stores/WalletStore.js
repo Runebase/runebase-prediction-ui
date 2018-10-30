@@ -4,10 +4,10 @@ import moment from 'moment';
 import { TransactionType, Token } from 'constants';
 import { Transaction, TransactionCost } from 'models';
 import { defineMessages } from 'react-intl';
-
+import ExchangeStore from './ExchangeStore';
 import axios from '../network/api';
 import Routes from '../network/routes';
-import { createTransferTx, createTransferExchange, createRedeemExchange } from '../network/graphql/mutations';
+import { createTransferTx, createTransferExchange, createRedeemExchange, createOrderExchange } from '../network/graphql/mutations';
 import { decimalToSatoshi } from '../helpers/utility';
 import Tracking from '../helpers/mixpanelUtil';
 
@@ -67,6 +67,7 @@ const INIT_VALUE = {
   changePassphraseResult: undefined,
   txConfirmDialogOpen: false,
   redeemConfirmDialogOpen: false,
+  orderConfirmDialogOpen: false,
 };
 
 const INIT_VALUE_DIALOG = {
@@ -99,6 +100,7 @@ export default class {
   @observable selectedToken = INIT_VALUE_DIALOG.selectedToken;
   @observable changePassphraseResult = INIT_VALUE.changePassphraseResult;
   @observable txConfirmDialogOpen = INIT_VALUE.txConfirmDialogOpen;
+  @observable orderConfirmDialogOpen = INIT_VALUE.orderConfirmDialogOpen;
   @observable redeemConfirmDialogOpen = INIT_VALUE.redeemConfirmDialogOpen;
   @observable withdrawDialogError = INIT_VALUE_DIALOG.withdrawDialogError;
   @observable withdrawAmount = INIT_VALUE_DIALOG.withdrawAmount;
@@ -190,7 +192,72 @@ export default class {
   }
   @action changeAddress = (event) => {
     this.currentAddressBalanceKey = event.target.attributes.getNamedItem('address').value;
+    try {
+      runInAction(() => {
+        this.app.allNewOrders.init();
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.createTransferTx);
+      });
+    }
     console.log(this.currentAddressBalanceKey);
+  }
+
+  @action
+  prepareOrderExchange = async (price, confirmAmount, tokenChoice, orderType) => {
+    console.log(tokenChoice);
+    this.walletAddress = this.currentAddressBalanceKey;
+    this.toAddress = this.exchangeAddress;
+    this.confirmAmount = confirmAmount;
+    this.tokenChoice = tokenChoice;
+    this.orderType = orderType;
+    this.price = price;
+    try {
+      const { data: { result } } = await axios.post(Routes.api.transactionCost, {
+        type: TransactionType.TRANSFER,
+        token: tokenChoice,
+        amount: tokenChoice === 'PRED' || tokenChoice === 'FUN' ? decimalToSatoshi(confirmAmount) : Number(confirmAmount),
+        senderAddress: this.walletAddress,
+        receiverAddress: this.toAddress,
+      });
+      const txFees = _.map(result, (item) => new TransactionCost(item));
+      runInAction(() => {
+        this.txFees = txFees;
+        this.orderConfirmDialogOpen = true;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.transactionCost);
+      });
+    }
+  }
+
+  @action
+  confirmOrderExchange = (onOrder) => {
+    let amount = this.confirmAmount;
+    amount = decimalToSatoshi(this.confirmAmount);
+    this.createTransferOrderExchange(this.walletAddress, this.exchangeAddress, this.tokenChoice, amount, this.price, this.orderType);
+    runInAction(() => {
+      onOrder();
+      this.orderConfirmDialogOpen = false;
+      Tracking.track('myWallet-withdraw');
+    });
+  };
+
+  @action
+  createTransferOrderExchange = async (walletAddress, toAddress, selectedToken, amount, price, orderType) => {
+    try {
+      const { data: { orderExchange } } = await createOrderExchange(walletAddress, toAddress, selectedToken, amount, price, orderType);
+      this.app.myWallet.history.addTransaction(new Transaction(orderExchange));
+      runInAction(() => {
+        this.app.pendingTxsSnackbar.init();
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.createTransferTx);
+      });
+    }
   }
 
   @action

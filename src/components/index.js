@@ -8,3 +8,4 @@ export { default as Warning } from './Warning';
 export { default as TransactionHistoryID } from './TransactionHistoryAddressAndID/id';
 export { default as TransactionHistoryAddress } from './TransactionHistoryAddressAndID/address';
 export { default as RedeemConfirmDialog } from './RedeemConfirmDialog';
+export { default as OrderConfirmDialog } from './OrderConfirmDialog';

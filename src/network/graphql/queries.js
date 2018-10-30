@@ -128,7 +128,29 @@ class GraphQuery {
     return GraphParser.getParser(this.type)(res.data[this.queryName]);
   }
 }
-
+/*
+* Queries allOrders from GraphQL with optional filters.
+* @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
+* @param orderBy {Object} Object with order by fields. ie. { field: 'blockNum', direction: 'DESC' }
+*/
+export function queryAllNewOrders(filters, orderBy, limit, skip) {
+  const request = new GraphQuery('allNewOrders', TYPE.newOrder);
+  if (!_.isEmpty(filters)) {
+    request.setFilters(filters);
+  }
+  if (!_.isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
+  }
+  if (_.isFinite(limit) && limit > 0) {
+    request.addParam('limit', limit);
+  }
+  if (_.isFinite(skip) && skip >= 0) {
+    request.addParam('skip', skip);
+  }
+  console.log('request.execute()');
+  console.log(request.execute());
+  return request.execute();
+}
 /*
 * Queries allTopics from GraphQL with optional filters.
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]

@@ -177,3 +177,16 @@ export function createRedeemExchange(senderAddress, receiverAddress, token, amou
 
   return new GraphMutation('redeemExchange', args, TYPE.transaction).execute();
 }
+
+export function createOrderExchange(senderAddress, receiverAddress, token, amount, price, orderType) {  
+  const args = {
+    senderAddress,
+    receiverAddress,
+    token,
+    amount,
+    price,
+    orderType,
+  };  
+
+  return new GraphMutation('orderExchange', args, TYPE.transaction).execute();
+}
