@@ -1,0 +1,9 @@
+.SUCCESS {
+  box-shadow: inset 8px 0 10px -6px green;
+}
+.PENDING {
+  box-shadow: inset 8px 0 10px -6px orange;
+}
+.CANCELED {
+  box-shadow: inset 8px 0 10px -6px red;
+}

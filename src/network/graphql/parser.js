@@ -38,6 +38,31 @@ class GraphParser {
       txid: entry.txid,
       orderId: entry.orderId,
       owner: entry.owner,
+      status: entry.status,
+      type: entry.type,
+      token: entry.token,
+      tokenName: entry.tokenName,
+      orderType: entry.orderType,
+      price: entry.price,
+      sellToken: entry.sellToken,
+      buyToken: entry.buyToken,
+      priceMul: entry.priceMul,
+      priceDiv: entry.priceDiv,
+      time: entry.time,
+      amount: entry.amount,
+      blockNum: entry.blockNum,
+    }));
+  }
+
+  static parseBuyOrder(data) {
+    return data.map((entry) => ({
+      txid: entry.txid,
+      orderId: entry.orderId,
+      owner: entry.owner,
+      status: entry.status,
+      type: entry.type,
+      token: entry.token,
+      price: entry.price,
       sellToken: entry.sellToken,
       buyToken: entry.buyToken,
       priceMul: entry.priceMul,

@@ -7,6 +7,7 @@
     "@material-ui/icons": "^1.1.1",
     "apollo-cache-inmemory": "^1.2.3",
     "apollo-client": "^2.3.3",
+    "apollo-link-error": "^1.1.1",
     "apollo-link-http": "^1.5.4",
     "apollo-link-ws": "^1.0.8",
     "apollo-utilities": "^1.0.14",

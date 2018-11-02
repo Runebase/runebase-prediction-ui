@@ -10,3 +10,4 @@ export { default as TransactionHistoryAddress } from './TransactionHistoryAddres
 export { default as RedeemConfirmDialog } from './RedeemConfirmDialog';
 export { default as OrderConfirmDialog } from './OrderConfirmDialog';
 export { default as CancelOrderConfirmDialog } from './CancelOrderConfirmDialog';
+export { default as ExecuteOrderConfirmDialog } from './ExecuteOrderConfirmDialog';

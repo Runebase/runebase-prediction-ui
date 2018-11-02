@@ -4,8 +4,13 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
+import { onError } from "apollo-link-error";
 
 import Routes from '../routes';
+
+const errorLink = onError(({ graphQLErrors }) => {
+  if (graphQLErrors) graphQLErrors.map(({ message }) => console.log(message));
+});
 
 const httpLink = new HttpLink({
   uri: Routes.graphql.http,
@@ -28,6 +33,7 @@ const link = split(
   },
   wsLink,
   httpLink,
+  errorLink,
 );
 
 const client = new ApolloClient({

@@ -198,3 +198,12 @@ export function createCancelOrderExchange(senderAddress, orderId) {
   };
   return new GraphMutation('cancelOrderExchange', args, TYPE.transaction).execute();
 }
+
+export function createExecuteOrderExchange(senderAddress, orderId, exchangeAmount) {  
+  const args = {
+    senderAddress,
+    orderId,
+    exchangeAmount,
+  };
+  return new GraphMutation('executeOrderExchange', args, TYPE.transaction).execute();
+}

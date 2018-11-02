@@ -93,6 +93,12 @@ const TYPE_DEF = {
     txid
     orderId
     owner
+    token
+    tokenName
+    status
+    price
+    type
+    orderType
     sellToken
     buyToken
     priceMul
@@ -363,13 +369,25 @@ const MUTATIONS = {
     return: `
       txid
       createdTime
-      version
       type
       status
       senderAddress
       receiverAddress
-      token
-      amount
+    `,
+  },
+  executeOrderExchange: {
+    mapping: [
+      'senderAddress',
+      'orderId',
+      'exchangeAmount',
+    ],
+    return: `
+      txid
+      createdTime
+      type
+      status
+      senderAddress
+      receiverAddress
     `,
   },
 };
@@ -406,9 +424,10 @@ const ENUMS = {
     'FUNDEXCHANGE',
     'REDEEMEXCHANGE',
     'RESETAPPROVE',
+    'CANCELORDER',
     'BUYORDER',
     'SELLORDER',
-    'CANCELORDER',
+    'EXECUTEORDER',
   ],
 
   token: [

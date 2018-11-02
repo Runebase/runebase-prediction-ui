@@ -74,6 +74,15 @@ const styles = (theme) => ({
   eventCardInfoItem: {
     padding: '3px 0px',
   },
+  PENDING: {
+    boxSizing: 'borderBox',
+    mozBoxSizing: 'borderBox',
+    webkitBoxSizing: 'borderBox',
+    border: '20px solid #f00',
+  },
+  CONFIRMED: {
+    boxShadow: '0px 0px 0px 10px black inset',
+    backgroundColor: 'blue',
+  },
 });
-
 export default styles;

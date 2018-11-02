@@ -9,6 +9,10 @@ import { satoshiToDecimal } from '../../helpers/utility';
 */
 export default class NewOrder {
   txid = ''
+  type = ''
+  status = ''
+  token = ''
+  price = ''
   orderId = ''
   owner = ''
   sellToken = ''
@@ -27,6 +31,10 @@ export default class NewOrder {
     this.app = app;
     this.amount = newOrder.amount;
     this.txid = newOrder.txid;
+    this.status = newOrder.status;
+    this.token = newOrder.token;
+    this.price = newOrder.price;
+    this.type = newOrder.type;
     this.sellToken = newOrder.sellToken;
     this.buyToken = newOrder.buyToken;
     this.priceMul = newOrder.priceMul;

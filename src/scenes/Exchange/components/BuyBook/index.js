@@ -5,12 +5,12 @@ import { defineMessages } from 'react-intl';
 import theme from '../../../../config/theme';
 import InfiniteScroll from '../../../../components/InfiniteScroll';
 import _Loading from '../../../../components/Loading';
-import EventCard from './EventCard';
+import OrderBook from './OrderBook';
 import styles from './styles';
 
 
 const messages = defineMessages({
-  loadAllNewOrdersMsg: {
+  loadAllBuyOrdersMsg: {
     id: 'load.allNewOrders',
     defaultMessage: 'loading',
   },
@@ -19,39 +19,35 @@ const messages = defineMessages({
 @inject('store')
 @observer
 @withStyles(styles, { withTheme: true })
-export default class OrderBook extends Component {
+export default class BuyBook extends Component {
 
   componentDidMount() {
-    this.props.store.allNewOrders.init();
+    this.props.store.buyStore.init();
   }
 
   render() {
-    const { classes } = this.props;
-    const { allNewOrders } = this.props.store;
+    const { classes, store: { wallet }  } = this.props;
+    const { buyStore } = this.props.store;
     return (
       <Fragment>
         <Card className={classes.dashboardOrderBookTitle}>
-          <p>My Open Orders</p>
+          <p>People Buying {wallet.market} </p>
         </Card>
-        <Events allNewOrders={allNewOrders} />
+        <Events buyStore={buyStore} />
       </Fragment>
     );
   }
 }
 
-const Events = observer(({ allNewOrders: { list, loadMore, loading, loadingMore } }) => {
+const Events = observer(({ buyStore: { list, loading } }) => {
   if (loading) return <Loading />;
-  const newOrders = (list || []).map((event, i) => <EventCard key={i} index={i} event={event} />); // eslint-disable-line
+  const newOrders = (list || []).map((event, i) => <OrderBook key={i} index={i} event={event} />); // eslint-disable-line
   return (
-    <InfiniteScroll
-      data={newOrders}
-      loadMore={loadMore}
-      loadingMore={loadingMore}
-    />
+    newOrders
   );
 });
 
-const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text={messages.loadAllNewOrdersMsg} /></Row>);
+const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text={messages.loadAllBuyOrdersMsg} /></Row>);
 
 const Row = withStyles(styles)(({ classes, ...props }) => (
   <div className={classes.row} {...props} />

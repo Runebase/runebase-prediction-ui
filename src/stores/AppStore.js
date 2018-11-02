@@ -19,6 +19,8 @@ import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
+import BuyStore from './BuyStore';
+import SellStore from './SellStore';
 
 class AppStore {
   @observable loading = true;
@@ -38,6 +40,8 @@ class AppStore {
   createEvent = {}
   allEvents = {}
   allNewOrders = {}
+  buyStore = {}
+  sellStore = {}
   activities = {}
 
   constructor() {
@@ -62,6 +66,8 @@ class AppStore {
       this.createEvent = new CreateEventStore(this);
       this.allEvents = new AllEventsStore(this);
       this.allNewOrders = new ExchangeStore(this);
+      this.buyStore = new BuyStore(this);
+      this.sellStore = new SellStore(this);
       this.activities = {
         resultSetting: new ResultSettingStore(this),
         finalize: new FinalizeStore(this),

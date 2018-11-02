@@ -120,7 +120,6 @@ class GraphQuery {
     if (process.env.REACT_APP_ENV === 'dev') {
       window.queries += `\n${query}`;
     }
-
     const res = await client.query({
       query: gql`${query}`,
       fetchPolicy: 'network-only',
@@ -147,10 +146,10 @@ export function queryAllNewOrders(filters, orderBy, limit, skip) {
   if (_.isFinite(skip) && skip >= 0) {
     request.addParam('skip', skip);
   }
-  console.log('request.execute()');
-  console.log(request.execute());
   return request.execute();
 }
+
+
 /*
 * Queries allTopics from GraphQL with optional filters.
 * @param filters {Array} Array of objects for filtering. ie. [{ status: 'WAITRESULT' }, { status: 'OPENRESULTSET' }]
