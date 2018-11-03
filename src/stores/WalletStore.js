@@ -185,7 +185,8 @@ export default class {
     this.currentAddressBalanceToken = '';
     this.addressList = [];
     this.market = market;   
-    this.app.buyStore.init(); 
+    this.app.buyStore.init();
+    this.app.chartStore.init(); 
     market = market.toLowerCase();
     addresses.forEach((address) => {
       if (address[market] || address.runebase) {

@@ -6,7 +6,6 @@ import UiStore from './UiStore';
 import RefreshingStore from './RefreshingStore';
 import AllEventsStore from './AllEventsStore';
 import RunebasePredictionStore from '../scenes/RunebasePrediction/store';
-import ExchangeStore from './ExchangeStore';
 import PredCourtStore from './PredCourtStore';
 import ResultSettingStore from '../scenes/Activities/ResultSetting/store';
 import FinalizeStore from '../scenes/Activities/Finalize/store';
@@ -19,8 +18,10 @@ import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
+import ExchangeStore from './ExchangeStore';
 import BuyStore from './BuyStore';
 import SellStore from './SellStore';
+import ChartStore from './ChartStore';
 
 class AppStore {
   @observable loading = true;
@@ -42,6 +43,7 @@ class AppStore {
   allNewOrders = {}
   buyStore = {}
   sellStore = {}
+  chartStore = {}
   activities = {}
 
   constructor() {
@@ -68,6 +70,7 @@ class AppStore {
       this.allNewOrders = new ExchangeStore(this);
       this.buyStore = new BuyStore(this);
       this.sellStore = new SellStore(this);
+      this.chartStore = new ChartStore(this);
       this.activities = {
         resultSetting: new ResultSettingStore(this),
         finalize: new FinalizeStore(this),

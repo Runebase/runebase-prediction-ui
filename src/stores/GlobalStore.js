@@ -78,6 +78,7 @@ export default class GlobalStore {
       this.syncBlockTime = blockTime;
       this.peerNodeCount = peerNodeCount || 0;
       this.app.wallet.addresses = balances;
+      console.log(this.app.wallet.addresses);
       this.app.wallet.exchangeAddresses = exchangeBalances;
     }
   }

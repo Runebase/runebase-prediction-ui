@@ -9,6 +9,7 @@ class GraphParser {
       SyncInfo: this.parseSyncInfo,
       Transaction: this.parseTransaction,
       NewOrder: this.parseNewOrder,
+      Trade: this.parseTrade,
     };
     return PARSER_MAPPINGS[requestName];
   }
@@ -53,6 +54,24 @@ class GraphParser {
       blockNum: entry.blockNum,
     }));
   }
+
+  static parseTrade(data) {
+    return data.map((entry) => ({
+      date: entry.date,
+      from: entry.from,
+      to: entry.to,
+      soldTokens: entry.soldTokens,
+      boughtTokens: entry.boughtTokens,
+      tokenName: entry.tokenName,
+      orderType: entry.orderType,
+      price: entry.price,
+      orderId: entry.orderId,
+      time: entry.time,
+      amount: entry.amount,     
+      blockNum: entry.blockNum,
+    }));
+  }
+  
 
   static parseBuyOrder(data) {
     return data.map((entry) => ({

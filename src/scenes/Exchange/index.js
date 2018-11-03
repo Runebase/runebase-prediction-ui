@@ -4,7 +4,7 @@ import { Grid } from '@material-ui/core';
 import Loading from '../../components/EventListLoading';
 import MyOrderBook from './components/MyOrderBook';
 import PriceChart from './components/PriceChart';
-import TradeData from './components/TradeData';
+import MyTrades from './components/MyTrades';
 import Markets from './components/Markets';
 import MarketInfo from './components/MarketInfo';
 import MyBalance from './components/MyBalance';
@@ -28,33 +28,33 @@ export default class Exchange extends Component {
             <MyBalance />  
             <Markets />  
             <MyOrderBook />
-            <TradeData />          
+            <MyTrades />          
           </Grid>
           <Grid item xs={8}>
-            <Grid>
+            <Grid container>
               <Grid item xs={12}>
                 <MarketInfo />
               </Grid>
-            </Grid>
-            <PriceChart 
-              id="chart"
-            />
+              <Grid item xs={12}>
+                <PriceChart 
+                  id="chart"
+                />
+              </Grid>
+            </Grid>            
             <Grid container>
               <BuyOrder />
               <SellOrder />
             </Grid>
+            <Grid container>
+              <Grid item xs={6}>
+                <SellBook />
+              </Grid>
+              <Grid item xs={6}>
+                <BuyBook />
+              </Grid>
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid container>
-          <Grid item xs={4}>
-          </Grid>
-          <Grid item xs={4}>
-            <SellBook />
-          </Grid>
-          <Grid item xs={4}>
-            <BuyBook />
-          </Grid>
-        </Grid>
+        </Grid>        
         <Grid container>
           <Grid item xs={4}>
           </Grid>

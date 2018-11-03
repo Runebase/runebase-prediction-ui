@@ -7,6 +7,7 @@ export const TYPE = {
   syncInfo: 'SyncInfo',
   transaction: 'Transaction',
   newOrder: 'NewOrder',
+  trade: 'Trade',
 };
 
 const TYPE_DEF = {
@@ -105,6 +106,21 @@ const TYPE_DEF = {
     priceDiv
     time
     amount
+    blockNum
+  `,
+
+  Trade: `
+    date
+    from
+    to
+    soldTokens
+    boughtTokens    
+    tokenName
+    orderType    
+    price
+    orderId
+    time
+    amount   
     blockNum
   `,
 

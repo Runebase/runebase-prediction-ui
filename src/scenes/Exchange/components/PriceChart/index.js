@@ -1,23 +1,28 @@
 import React, { Component } from 'react';
-import { render } from 'react-dom';
-import { TypeChooser } from "react-stockcharts/lib/helper";
-import Chart from './Chart';
-import { getData } from "./utils";
+import { inject, observer } from 'mobx-react';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-export default class ChartComponent extends Component {
-  componentDidMount() {
-    getData().then(data => {
-      this.setState({ data });
-    });
-  }
+
+@inject('store')
+@observer
+export default class PriceChart extends Component {  
+
   render() {
-    if (this.state == null) {
-      return <div>Loading...</div>;
-    }
+    const { chartStore } = this.props.store;
+
     return (
-      <TypeChooser>
-        {type => <Chart type={type} data={this.state.data} />}
-      </TypeChooser>      
+      <ResponsiveContainer height={300} width="100%">
+        <LineChart 
+          data={chartStore.list}
+          margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+          <XAxis dataKey="date"/>
+          <YAxis/>
+          <CartesianGrid strokeDasharray="3 3"/>
+          <Tooltip/>
+          <Legend />
+          <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{r: 8}}/>
+        </LineChart>
+      </ResponsiveContainer>
     );
   }
 }

@@ -17,7 +17,7 @@ import styles from './styles';
 @withStyles(styles, { withTheme: true })
 @inject('store')
 @observer
-export default class TradeData extends Component {
+export default class MyTrades extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
   };
@@ -29,10 +29,10 @@ export default class TradeData extends Component {
       <Grid container className={classes.dashboardOrderBookWrapper}>
         <Grid item xs={12}>
           <Card className={classes.dashboardOrderBookTitle}>
-            <FormattedMessage id="tradedata" defaultMessage="Trade Data" />
+            <FormattedMessage id="myTrade" defaultMessage="My Trades" />
           </Card>
           <Card className={classes.dashboardOrderBook}>
-            <FormattedMessage id="orderbooksect" defaultMessage="..." />
+            <FormattedMessage id="myTrades" defaultMessage="..." />
           </Card>
         </Grid>
 

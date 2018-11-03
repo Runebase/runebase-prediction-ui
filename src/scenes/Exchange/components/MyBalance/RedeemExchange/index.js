@@ -29,6 +29,7 @@ export default class RedeemExchange extends Component {
     this.state = {
       open: false,
       open2: false,
+      openError: false,
       amount: 0,
       tokenChoice: '',
       address: '',
@@ -37,7 +38,14 @@ export default class RedeemExchange extends Component {
   }  
   
   handleClickOpenRedeemChoice = () => {
-    /* Needs Fix -> If Address Is Selected else show error */
+    if (this.props.store.wallet.currentAddressBalanceKey === '') {
+      this.setState({ 
+        open: false,
+        open2: false, 
+        openError: true,
+      });
+      return;
+    }
     this.setState({ 
       open: true,
       open2: false, 
@@ -68,7 +76,8 @@ export default class RedeemExchange extends Component {
   handleClose = () => {
     this.setState({ 
       open: false,
-      open2: false, 
+      open2: false,
+      openError: false, 
     });
   };
 
@@ -98,7 +107,22 @@ export default class RedeemExchange extends Component {
       <div>        
         <AccountBalanceWallet onClick={this.handleClickOpenRedeemChoice}  style={stylist.largeIcon}></AccountBalanceWallet>
         <FastForward onClick={this.handleClickOpenRedeemChoice}  style={stylist.largeIcon}></FastForward>
-        <p>Withdraw</p>      
+        <p>Withdraw</p>
+        <Dialog
+          open={this.state.openError}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Withdraw</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please select an address first.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>            
+            <Button onClick={this.handleClose}>Close</Button>
+          </DialogActions>
+        </Dialog>      
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}

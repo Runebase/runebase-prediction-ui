@@ -33,15 +33,53 @@ export default class RedeemExchange extends Component {
       open: 0,
     });
   }
+  addressCheck = () => {
+    if (this.props.store.wallet.currentAddressBalanceKey === '') {
+      this.setState({ 
+        openError: true,
+      });
+    }
+  }
+
+  handleClose = () => {
+    this.setState({ 
+      openError: false, 
+    });
+  };
   render() {
     const { dialogVisible, classes, store: { wallet } } = this.props;
     console.log(this.state);
     return (      
       <div>
-        <Button onClick={ () =>  wallet.prepareOrderExchange(this.props.price, this.props.amount, wallet.currentMarket, this.props.orderType) } color="primary">
+
+        <Button 
+          onClick={ () =>{                      
+            if (this.props.store.wallet.currentAddressBalanceKey === '')  {
+              this.addressCheck();                        
+            }
+            else {
+              wallet.prepareOrderExchange(this.props.price, this.props.amount, wallet.currentMarket, this.props.orderType);
+            }                      
+          }}
+          color="primary">
           Buy {wallet.currentMarket}
         </Button>
         <OrderExchangeTxConfirmDialog onOrder={this.onOrder} id={messages.orderConfirmMsgSendMsg.id} />
+        <Dialog
+          open={this.state.openError}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Withdraw</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please select an address first.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>            
+            <Button onClick={this.handleClose}>Close</Button>
+          </DialogActions>
+        </Dialog> 
       </div>
     );
   }

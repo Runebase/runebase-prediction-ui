@@ -17,12 +17,6 @@ window.$ = $;
 @inject('store')
 @observer
 export default class MarketInfo extends Component {
-  constructor(props) {
-    super(props); 
-    this.state = {
-      market: '', 
-    };
-  }
   componentDidMount = () =>{
     $(() => {  
       $(document).on('click','.addressBookSelection', function(e){ 
@@ -31,13 +25,11 @@ export default class MarketInfo extends Component {
       })
         .on('click', '.addressBookSelection ul li', function(e){
           const $this = $(this);
-          const $selectBox = $('.addressBookSelection');
-        
+          const $selectBox = $('.addressBookSelection');        
           $selectBox.find('.active').removeClass('active');
           $this.addClass('active');
           $selectBox.find('.heading').html($this.html());
-          $selectBox.find('ul').scrollTop(0);
-        
+          $selectBox.find('ul').scrollTop(0);        
           $('#Event strong').html( `${this.id  }- ${  $(this).find("strong").html() } selected` );
         });
     }); 
@@ -52,7 +44,6 @@ export default class MarketInfo extends Component {
         height: 75,
       },
     };;
-    this.state.market = wallet.market;
     return (
       <div>        
         <Grid container>
@@ -72,13 +63,22 @@ export default class MarketInfo extends Component {
             <Grid container>
               <Grid item xs={12}>
                 <div className="addressBookSelection" id="selectBox_addressBook_1">
-                  <div className="heading">Select Your Address<span>&#9662;</span></div>
+                  <div className="heading">
+                    {(() => {
+                      console.log(wallet.currentAddressBalanceKey);
+                      if (wallet.currentAddressBalanceKey !== '') {
+                        return (
+                          <div>{wallet.currentAddressBalanceKey}</div>
+                        );
+                      }
+                      return (
+                        <div>Please Select Your Address</div>
+                      );                        
+                    })()}
+                  </div>
                   <ul id='dropdown-menu btn-block'>
-                    <li>
-                      Please Select Your Address
-                    </li>
                     {wallet.addresses.map((addressData) => {
-                      if(addressData.fun > 0 || addressData.runebase > 0|| addressData.pred > 0){
+                      if(addressData.fun > 0 || addressData.runebase > 0 || addressData.pred > 0 || addressData.exchangerunes > 0 || addressData.exchangepred > 0 || addressData.exchangefun > 0){
                         return (
                           <li
                             onClick={this.handleSelectChange}
@@ -87,8 +87,32 @@ export default class MarketInfo extends Component {
                             pred={addressData.pred}
                             fun={addressData.fun}
                             key={addressData.address}
-                          > 
-                            {addressData.address} | {addressData.runebase} {this.props.store.wallet.market} | {addressData.runebase} RUNES | {addressData.pred} PRED | {addressData.fun} FUN
+                          >                      
+                            {addressData.address}
+                            <p address={addressData.address}>Wallet</p>  
+                            <Grid container>
+                              <Grid item xs={3}>
+                                {addressData.runebase} RUNES
+                              </Grid>
+                              <Grid item xs={3}>
+                                {addressData.pred} PRED
+                              </Grid>
+                              <Grid item xs={3}>
+                                {addressData.fun} FUN
+                              </Grid>
+                            </Grid>
+                            <p address={addressData.address} >Exchange</p>
+                            <Grid container>
+                              <Grid item xs={3}>
+                                {addressData.exchangerunes} RUNES
+                              </Grid>
+                              <Grid item xs={3}>
+                                {addressData.exchangepred} PRED
+                              </Grid>
+                              <Grid item xs={3}>
+                                {addressData.exchangefun} FUN
+                              </Grid>
+                            </Grid>
                           </li>
                         );}
                       return null;
@@ -123,7 +147,7 @@ export default class MarketInfo extends Component {
             return null;
           })}
           <Grid item xs={12}>
-            <withStyles>{this.state.market}/RUNES</withStyles>
+            <withStyles>{wallet.market}/RUNES</withStyles>
           </Grid>
           <Grid item xs={12}>
             <withStyles>Contract Address: {wallet.currentMarketContract}</withStyles>

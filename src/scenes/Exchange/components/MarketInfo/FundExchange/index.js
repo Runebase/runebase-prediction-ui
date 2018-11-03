@@ -29,6 +29,7 @@ export default class FundExchange extends Component {
     this.state = {
       open: false,
       open2: false,
+      openError: false,
       amount: 0,
       tokenChoice: '',
       address: '',
@@ -37,7 +38,14 @@ export default class FundExchange extends Component {
   }  
   
   handleClickOpenDepositChoice = () => {
-    /* Needs Fix -> If Address Is Selected else show error */
+    if (this.props.store.wallet.currentAddressBalanceKey === '') {
+      this.setState({ 
+        open: false,
+        open2: false, 
+        openError: true,
+      });
+      return;
+    }
     this.setState({ 
       open: true,
       open2: false, 
@@ -46,18 +54,26 @@ export default class FundExchange extends Component {
 
   handleClickOpenDepositDialog = (event) => {
     /* Needs Fix -> If Address Has enough tokens or runes */
-    if (event.target.value === this.props.store.wallet.market) {
-      this.setState({ 
-        tokenChoice: this.props.store.wallet.market,
-        available: this.props.store.wallet.currentAddressBalanceToken, 
-      });
-    }
+    
     if (event.target.value === 'RUNES') {
       this.setState({ 
         tokenChoice: 'RUNES',
         available: this.props.store.wallet.currentAddressBalanceRunes,
       });
     }
+    if (event.target.value === 'PRED') {
+      this.setState({ 
+        tokenChoice: 'PRED',
+        available: this.props.store.wallet.currentAddressBalanceToken, 
+      });
+    }
+    if (event.target.value === 'FUN') {
+      this.setState({ 
+        tokenChoice: 'FUN',
+        available: this.props.store.wallet.currentAddressBalanceToken, 
+      });
+    }
+
     this.setState({ 
       open: false,
       open2: true, 
@@ -69,6 +85,7 @@ export default class FundExchange extends Component {
     this.setState({ 
       open: false,
       open2: false, 
+      openError: false,
     });
   };
 
@@ -98,7 +115,22 @@ export default class FundExchange extends Component {
       <div>
         <FastRewind onClick={this.handleClickOpenDepositChoice} style={stylist.largeIcon}>Deposit</FastRewind> 
         <AccountBalanceWallet onClick={this.handleClickOpenDepositChoice} style={stylist.largeIcon}></AccountBalanceWallet>
-        <p>Desposit</p>      
+        <p>Desposit</p>
+        <Dialog
+          open={this.state.openError}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Deposit</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please select an address first.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>            
+            <Button onClick={this.handleClose}>Close</Button>
+          </DialogActions>
+        </Dialog>      
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
@@ -112,7 +144,8 @@ export default class FundExchange extends Component {
           </DialogContent>
           <DialogActions>
             <Button value='RUNES' onClick={this.handleClickOpenDepositDialog}>Deposit RUNES</Button>
-            <Button value={this.props.store.wallet.market} onClick={this.handleClickOpenDepositDialog}>Deposit {this.props.store.wallet.market}</Button>
+            <Button value='PRED' onClick={this.handleClickOpenDepositDialog}>Deposit {this.props.store.wallet.market}</Button>
+            <Button value='FUN' onClick={this.handleClickOpenDepositDialog}>Deposit FUN</Button>
             <Button onClick={this.handleClose}>Close</Button>
           </DialogActions>
         </Dialog>

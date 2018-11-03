@@ -3,7 +3,21 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { inject } from 'mobx-react';
 import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
-import { Button, Grid, Typography, withStyles, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
+import {
+  Button, 
+  Grid, 
+  Typography, 
+  withStyles, 
+  ExpansionPanel, 
+  ExpansionPanelSummary, 
+  ExpansionPanelDetails, 
+  TextField, 
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogContentText, 
+  DialogTitle, 
+} from '@material-ui/core';
 import cx from 'classnames';
 import { sum } from 'lodash';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -33,8 +47,38 @@ export default class OrderBook extends PureComponent {
   static defaultProps = {
     orderId: undefined,
   };
+  constructor(props) {
+    super(props);
+    this.state = { open:1 };
+  }
+  onExecuteOrder = () => {
+    if (this.props.store.wallet.currentAddressBalanceKey === '') {
+      this.setState({ 
+        openError: true,
+      });
+      return;
+    }
+    this.setState({
+      open: 0,
+    });
+  }
+
+  addressCheck = () => {
+    if (this.props.store.wallet.currentAddressBalanceKey === '') {
+      this.setState({ 
+        openError: true,
+      });
+    }
+  }
+
+  handleClose = () => {
+    this.setState({ 
+      openError: false, 
+    });
+  };
 
   render() {
+    console.log(this.state.open);
     const { classes, index, store: { wallet }  } = this.props;
     const { orderId, txid, orderType, tokenName, buyToken, sellToken, amount, owner, blockNum, time, priceDiv, priceMul, price, token, type, status } = this.props.event;
     const { locale, messages: localeMessages, formatMessage } = this.props.intl;
@@ -42,8 +86,23 @@ export default class OrderBook extends PureComponent {
     let total = amountToken * price;
     const exchangeAmount = amount;
     total = total.toFixed(8);
-    return (
+    return (      
       <div className={`classes.root ${orderType}`}>
+        <Dialog
+          open={this.state.openError}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Withdraw</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please select an address first.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>            
+            <Button onClick={this.handleClose}>Close</Button>
+          </DialogActions>
+        </Dialog> 
         <ExpansionPanel className={orderType}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Grid container> 
@@ -77,8 +136,6 @@ export default class OrderBook extends PureComponent {
                 <Typography className={classes.root}>owner: {owner}</Typography>
                 <Typography>buyToken: {buyToken}</Typography>
                 <Typography>sellToken: {sellToken}</Typography>
-                <Typography>priceMul: {priceMul}</Typography>
-                <Typography>priceDiv: {priceDiv}</Typography>
                 <Typography className={classes.root}>amount: {amountToken}</Typography>
                 <Typography className={classes.root}>price: {price}</Typography>                
                 <Typography className={classes.root}>total: {total}</Typography>
@@ -96,10 +153,19 @@ export default class OrderBook extends PureComponent {
               </form>
               <Grid item xs={6}>
                 <div>
-                  <Button onClick={ () =>  wallet.prepareExecuteOrderExchange(orderId, exchangeAmount) } color="primary">
+                  <Button 
+                    onClick={ () =>{                      
+                      if (this.props.store.wallet.currentAddressBalanceKey === '')  {
+                        this.addressCheck();                        
+                      }
+                      else {
+                        wallet.prepareExecuteOrderExchange(orderId, exchangeAmount); 
+                      }                      
+                    }} 
+                    color="primary">
                     Execute Order
                   </Button>
-                  <ExecuteOrderTxConfirmDialog onCancelOrder={this.onExecuteOrder} id={messages.executeOrderConfirmMsgSendMsg.id} />
+                  <ExecuteOrderTxConfirmDialog onExecuteOrder={this.onExecuteOrder} id={messages.executeOrderConfirmMsgSendMsg.id} />
                 </div>
               </Grid>
             </Grid>
