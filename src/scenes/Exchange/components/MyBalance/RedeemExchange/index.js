@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
-import { FastForward, AccountBalanceWallet } from '@material-ui/icons';
+import { FastForward, AccountBalanceWallet, AccountBalance } from '@material-ui/icons';
 import RedeemExchangeTxConfirmDialog from '../RedeemExchangeTxConfirmDialog';
 
 const messages = defineMessages({
@@ -104,10 +104,12 @@ export default class RedeemExchange extends Component {
       },
     };
     return (      
-      <div>        
-        <AccountBalanceWallet onClick={this.handleClickOpenRedeemChoice}  style={stylist.largeIcon}></AccountBalanceWallet>
-        <FastForward onClick={this.handleClickOpenRedeemChoice}  style={stylist.largeIcon}></FastForward>
-        <p>Withdraw</p>
+      <div>
+        <div style={{ float: 'right', textAlign: 'right' }}>        
+          <AccountBalance onClick={this.handleClickOpenRedeemChoice}  style={stylist.largeIcon}></AccountBalance>
+          <FastForward onClick={this.handleClickOpenRedeemChoice}  style={stylist.largeIcon}></FastForward>
+          <p style={{ width: '100%', textAlign: 'left' }}>Withdraw</p>
+        </div>
         <Dialog
           open={this.state.openError}
           onClose={this.handleClose}

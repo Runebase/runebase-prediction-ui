@@ -21,27 +21,23 @@ const messages = defineMessages({
 @withStyles(styles, { withTheme: true })
 export default class BuyBook extends Component {
 
-  componentDidMount() {
-    this.props.store.buyStore.init();
-  }
-
   render() {
     const { classes, store: { wallet }  } = this.props;
-    const { buyStore } = this.props.store;
+    const { global } = this.props.store;
     return (
       <Fragment>
         <Card className={classes.dashboardOrderBookTitle}>
           <p>People Buying {wallet.market} </p>
         </Card>
-        <Events buyStore={buyStore} />
+        <Events global={global} />
       </Fragment>
     );
   }
 }
 
-const Events = observer(({ buyStore: { list, loading } }) => {
+const Events = observer(({ global: { buyOrderInfo, loading } }) => {
   if (loading) return <Loading />;
-  const newOrders = (list || []).map((event, i) => <OrderBook key={i} index={i} event={event} />); // eslint-disable-line
+  const newOrders = (buyOrderInfo || []).map((event, i) => <OrderBook key={i} index={i} event={event} />); // eslint-disable-line
   return (
     newOrders
   );

@@ -115,7 +115,6 @@ export default class FundExchange extends Component {
       <div>
         <FastRewind onClick={this.handleClickOpenDepositChoice} style={stylist.largeIcon}>Deposit</FastRewind> 
         <AccountBalanceWallet onClick={this.handleClickOpenDepositChoice} style={stylist.largeIcon}></AccountBalanceWallet>
-        <p>Desposit</p>
         <Dialog
           open={this.state.openError}
           onClose={this.handleClose}

@@ -6,14 +6,17 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 @inject('store')
 @observer
 export default class PriceChart extends Component {  
-
+  constructor(app) {
+    super(app);
+    this.app = app;
+  }
   render() {
-    const { chartStore } = this.props.store;
+    const { chartInfo } = this.props.store.global;
 
     return (
       <ResponsiveContainer height={300} width="100%">
         <LineChart 
-          data={chartStore.list}
+          data={chartInfo}
           margin={{top: 5, right: 30, left: 20, bottom: 5}}>
           <XAxis dataKey="date"/>
           <YAxis/>

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
 import { inject, observer } from 'mobx-react';
+import PropTypes from 'prop-types';
 import $ from 'jquery';
 import {
+  Card,
   Grid,
   withStyles,
 } from '@material-ui/core';
@@ -17,6 +19,9 @@ window.$ = $;
 @inject('store')
 @observer
 export default class MarketInfo extends Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
   componentDidMount = () =>{
     $(() => {  
       $(document).on('click','.addressBookSelection', function(e){ 
@@ -38,7 +43,7 @@ export default class MarketInfo extends Component {
     this.props.store.wallet.changeAddress(event);
   }
   render() {
-    const { store: { wallet } } = this.props;
+    const { classes, store: { wallet } } = this.props;
     const stylist = {
       heightRow: {
         height: 75,
@@ -90,26 +95,26 @@ export default class MarketInfo extends Component {
                           >                      
                             {addressData.address}
                             <p address={addressData.address}>Wallet</p>  
-                            <Grid container>
-                              <Grid item xs={3}>
+                            <Grid container address={addressData.address}>
+                              <Grid item xs={3} address={addressData.address}>
                                 {addressData.runebase} RUNES
                               </Grid>
-                              <Grid item xs={3}>
+                              <Grid item xs={3} address={addressData.address}>
                                 {addressData.pred} PRED
                               </Grid>
-                              <Grid item xs={3}>
+                              <Grid item xs={3} address={addressData.address}>
                                 {addressData.fun} FUN
                               </Grid>
                             </Grid>
                             <p address={addressData.address} >Exchange</p>
-                            <Grid container>
-                              <Grid item xs={3}>
+                            <Grid container address={addressData.address}>
+                              <Grid item xs={3} >
                                 {addressData.exchangerunes} RUNES
                               </Grid>
-                              <Grid item xs={3}>
+                              <Grid item xs={3} address={addressData.address}>
                                 {addressData.exchangepred} PRED
                               </Grid>
-                              <Grid item xs={3}>
+                              <Grid item xs={3} address={addressData.address}>
                                 {addressData.exchangefun} FUN
                               </Grid>
                             </Grid>
@@ -123,36 +128,41 @@ export default class MarketInfo extends Component {
             </Grid>
           </Grid>
         </Grid>
-        <Grid container>
-          {wallet.addresses.map((addressData) => {
-            if(addressData.address === wallet.currentAddressBalanceKey){
+        <Card className={classes.dashboardOrderBookTitle}>
+          <p>My Wallet Balances</p>
+        </Card>        
+        <Grid container>          
+          {wallet.addresses.map((addressData) => {              
+            if(addressData.address === wallet.currentAddressBalanceKey){                
               return (
-                <Grid item xs={12}>
-                  <Grid container>
-                    <Grid item xs={3}>
-                      <p>RUNES</p>
-                      <p>{addressData.runebase}</p>
+                <Grid item xs={12}> 
+                  <Card className={classes.dashboardOrderBook}>                 
+                    <Grid container>                    
+                      <Grid item xs={3}>
+                        <p>RUNES</p>
+                        <p>{addressData.runebase}</p>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <p>PRED</p>
+                        <p>{addressData.pred}</p>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <p>FUN</p>
+                        <p>{addressData.fun}</p>
+                      </Grid>                    
                     </Grid>
-                    <Grid item xs={3}>
-                      <p>PRED</p>
-                      <p>{addressData.pred}</p>
-                    </Grid>
-                    <Grid item xs={3}>
-                      <p>FUN</p>
-                      <p>{addressData.fun}</p>
-                    </Grid>
-                  </Grid>
+                  </Card>                  
                 </Grid>
               );}
             return null;
-          })}
+          })}       
           <Grid item xs={12}>
             <withStyles>{wallet.market}/RUNES</withStyles>
           </Grid>
           <Grid item xs={12}>
             <withStyles>Contract Address: {wallet.currentMarketContract}</withStyles>
           </Grid>
-        </Grid>
+        </Grid>        
       </div>
     );
   }  

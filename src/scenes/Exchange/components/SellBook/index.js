@@ -20,27 +20,23 @@ const messages = defineMessages({
 @withStyles(styles, { withTheme: true })
 export default class SellBook extends Component {
 
-  componentDidMount() {
-    this.props.store.allNewOrders.init();
-  }
-
   render() {
     const { classes, store: { wallet } } = this.props;
-    const { sellStore } = this.props.store;
+    const { global } = this.props.store;
     return (
       <Fragment>
         <Card className={classes.dashboardOrderBookTitle}>
           <p>People Selling {wallet.market}</p>
         </Card>
-        <Events sellStore={sellStore} />
+        <Events global={global} />
       </Fragment>
     );
   }
 }
 
-const Events = observer(({ sellStore: { list, loadMore, loading, loadingMore } }) => {
+const Events = observer(({ global: { sellOrderInfo, loading } }) => {
   if (loading) return <Loading />;
-  const newOrders = (list || []).map((event, i) => <OrderBook key={i} index={i} event={event} />); // eslint-disable-line
+  const newOrders = (sellOrderInfo || []).map((event, i) => <OrderBook key={i} index={i} event={event} />); // eslint-disable-line
   return (
     newOrders
   );

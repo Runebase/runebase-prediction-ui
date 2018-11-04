@@ -18,10 +18,6 @@ import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
-import ExchangeStore from './ExchangeStore';
-import BuyStore from './BuyStore';
-import SellStore from './SellStore';
-import ChartStore from './ChartStore';
 
 class AppStore {
   @observable loading = true;
@@ -35,15 +31,10 @@ class AppStore {
   pendingTxsSnackbar = {}
   refreshing = {}
   eventPage = {}
-  exchange = {}
   runebasePrediction = {}
   predCourt = {}
   createEvent = {}
   allEvents = {}
-  allNewOrders = {}
-  buyStore = {}
-  sellStore = {}
-  chartStore = {}
   activities = {}
 
   constructor() {
@@ -54,7 +45,6 @@ class AppStore {
     this.global = new GlobalStore(this);
     this.ui = new UiStore();
     this.wallet = new WalletStore(this);
-    this.exchange = new ExchangeStore(this);
     this.globalSnackbar = new GlobalSnackbarStore();
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
@@ -63,14 +53,9 @@ class AppStore {
 
     runInAction(() => {
       this.runebasePrediction = new RunebasePredictionStore(this);
-      this.exchange = new ExchangeStore(this);
       this.predCourt = new PredCourtStore(this);
       this.createEvent = new CreateEventStore(this);
       this.allEvents = new AllEventsStore(this);
-      this.allNewOrders = new ExchangeStore(this);
-      this.buyStore = new BuyStore(this);
-      this.sellStore = new SellStore(this);
-      this.chartStore = new ChartStore(this);
       this.activities = {
         resultSetting: new ResultSettingStore(this),
         finalize: new FinalizeStore(this),

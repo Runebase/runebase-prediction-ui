@@ -10,6 +10,34 @@ const subscriptions = {
       }
     }
   `,
+  onChartInfo: `
+    subscription OnChartInfo {
+      onChartInfo {
+        ${getTypeDef('Trade')}
+      }
+    }
+  `,
+  onMyOrderInfo: `
+    subscription OnMyOrderInfo {
+      onMyOrderInfo {
+        ${getTypeDef('NewOrder')}
+      }
+    }
+  `,
+  onBuyOrderInfo: `
+    subscription OnBuyOrderInfo {
+      onBuyOrderInfo {
+        ${getTypeDef('NewOrder')}
+      }
+    }
+  `,
+  onSellOrderInfo: `
+    subscription OnSellOrderInfo {
+      onSellOrderInfo {
+        ${getTypeDef('NewOrder')}
+      }
+    }
+  `,
 };
 
 function getSubscription(name) {
@@ -19,4 +47,8 @@ function getSubscription(name) {
 export default getSubscription;
 export const channels = {
   ON_SYNC_INFO: 'onSyncInfo',
+  ON_CHART_INFO: 'onChartInfo',
+  ON_MYORDER_INFO: 'onMyOrderInfo',
+  ON_BUYORDER_INFO: 'onBuyOrderInfo',
+  ON_SELLORDER_INFO: 'onSellOrderInfo',
 };

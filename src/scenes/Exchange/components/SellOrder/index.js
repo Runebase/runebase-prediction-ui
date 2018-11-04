@@ -52,7 +52,6 @@ export default class SellOrder extends Component {
 
     const { classes, store: { wallet } } = this.props;
     const market = this.props.store.wallet.currentMarket.toLowerCase();
-    console.log(market);
     return (      
       <Grid item xs={6}>
         <Card className={classes.dashboardOrderBookTitle}>

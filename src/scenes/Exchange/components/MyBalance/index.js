@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
 import { FastForward, AccountBalanceWallet } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
+import PropTypes from 'prop-types';
 
 import {
+  Card,
   Grid,
   withStyles,
 } from '@material-ui/core';
@@ -16,9 +18,11 @@ import RedeemExchange from './RedeemExchange';
 @inject('store')
 @observer
 export default class myBalance extends Component {
-
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
   render() {
-    const { store: { wallet } } = this.props;
+    const { classes, store: { wallet } } = this.props;
     const stylist = {
       largeIcon: {
         width: 70,
@@ -34,38 +38,45 @@ export default class myBalance extends Component {
     };
 
     return (
-      <withStyles>
+      <div>
         <Grid container>          
           <Grid item xs={12}>
             <RedeemExchange />                              
           </Grid>
           <Grid container>
+            <Grid item xs={12}>
+              <Card className={classes.dashboardOrderBookTitle}>
+                <p>My Exchange Balances</p>
+              </Card>
+            </Grid>
             {wallet.addresses.map((addressData) => {
               console.log(wallet.currentAddressBalanceKey);
               if(addressData.address === wallet.currentAddressBalanceKey){
                 return (
                   <Grid item xs={12}>
-                    <Grid container>
-                      <Grid item xs={3}>
-                        <p>RUNES</p>
-                        <p>{addressData.exchangerunes}</p>
+                    <Card className={classes.dashboardOrderBook}>
+                      <Grid container>
+                        <Grid item xs={3}>
+                          <p>RUNES</p>
+                          <p>{addressData.exchangerunes}</p>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <p>PRED</p>
+                          <p>{addressData.exchangepred}</p>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <p>FUN</p>
+                          <p>{addressData.exchangefun}</p>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={3}>
-                        <p>PRED</p>
-                        <p>{addressData.exchangepred}</p>
-                      </Grid>
-                      <Grid item xs={3}>
-                        <p>FUN</p>
-                        <p>{addressData.exchangefun}</p>
-                      </Grid>
-                    </Grid>
+                    </Card>
                   </Grid>
                 );}
               return null;
             })}
           </Grid>         
         </Grid>
-      </withStyles>
+      </div>
     );
   }
 }

@@ -21,27 +21,23 @@ const messages = defineMessages({
 @withStyles(styles, { withTheme: true })
 export default class MyOrderBook extends Component {
 
-  componentDidMount() {
-    this.props.store.allNewOrders.init();
-  }
-
   render() {
     const { classes } = this.props;
-    const { allNewOrders } = this.props.store;
+    const { global } = this.props.store;
     return (
       <Fragment>
         <Card className={classes.dashboardOrderBookTitle}>
           <p>My Open Orders</p>
         </Card>
-        <Events allNewOrders={allNewOrders} />
+        <Events allNewOrders={global} />
       </Fragment>
     );
   }
 }
 
-const Events = observer(({ allNewOrders: { list, loadMore, loading, loadingMore } }) => {
+const Events = observer(({ allNewOrders: { myOrderInfo, loadMore, loading, loadingMore } }) => {
   if (loading) return <Loading />;
-  const newOrders = (list || []).map((event, i) => <OrderBook key={i} index={i} event={event} />); // eslint-disable-line
+  const newOrders = (myOrderInfo || []).map((event, i) => <OrderBook key={i} index={i} event={event} />); // eslint-disable-line
   return (
     newOrders
   );

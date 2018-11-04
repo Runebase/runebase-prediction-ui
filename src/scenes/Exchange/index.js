@@ -19,7 +19,7 @@ import SellBook from './components/SellBook';
 export default class Exchange extends Component {
 
   render() {
-    const { loading } = this.props.store.exchange;
+    const { loading } = this.props.store.global;
     if (loading) return <Loading />;
     return (
       <Fragment>

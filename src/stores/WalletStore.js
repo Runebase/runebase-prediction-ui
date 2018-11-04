@@ -181,12 +181,14 @@ export default class {
     if (market === this.market) {
       return;
     }
+    this.app.global.getChartInfo();
+    this.app.global.getBuyOrderInfo();
+    this.app.global.getSellOrderInfo();
+
     this.currentAddressBalanceRunes = '';
     this.currentAddressBalanceToken = '';
     this.addressList = [];
-    this.market = market;   
-    this.app.buyStore.init();
-    this.app.chartStore.init(); 
+    this.market = market;  
     market = market.toLowerCase();
     addresses.forEach((address) => {
       if (address[market] || address.runebase) {
@@ -196,10 +198,15 @@ export default class {
     });   
   }
   @action changeAddress = (event) => {
-    this.currentAddressBalanceKey = event.target.attributes.getNamedItem('address').value;
+    if (event.target.attributes.getNamedItem('address').value != null) {
+      this.currentAddressBalanceKey = event.target.attributes.getNamedItem('address').value;      
+    }    
     try {
       runInAction(() => {
-        this.app.allNewOrders.init();
+        this.app.global.getMyOrderInfo();
+        this.app.global.getBuyOrderInfo();
+        this.app.global.getSellOrderInfo();
+        this.app.global.getChartInfo();
       });
     } catch (error) {
       runInAction(() => {
@@ -254,9 +261,9 @@ export default class {
     try {
       const { data: { orderExchange } } = await createOrderExchange(walletAddress, toAddress, selectedToken, amount, price, orderType);
       this.app.myWallet.history.addTransaction(new Transaction(orderExchange));
-      this.app.allNewOrders.init();
       runInAction(() => {
-        this.app.pendingTxsSnackbar.init();        
+        this.app.pendingTxsSnackbar.init();  
+        this.app.global.getMyOrderInfo();      
       });
     } catch (error) {
       runInAction(() => {
@@ -307,8 +314,8 @@ export default class {
       this.app.myWallet.history.addTransaction(new Transaction(cancelOrderExchange));
       runInAction(() => {
         this.app.pendingTxsSnackbar.init();
+        this.app.global.getMyOrderInfo();
       });
-      this.app.allNewOrders.init();
     } catch (error) {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.createTransferTx);
