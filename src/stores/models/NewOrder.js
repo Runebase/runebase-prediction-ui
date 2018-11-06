@@ -1,7 +1,3 @@
-import { observable, computed } from 'mobx';
-
-import { satoshiToDecimal } from '../../helpers/utility';
-
 /*
 * Model for NewOrders
 * 

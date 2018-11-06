@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import styles from './styles';
 import FundExchange from './FundExchange';
-import classes from './mystyle.css';
+import './mystyle.css';
 window.jQuery = $;
 window.$ = $;
 
@@ -24,11 +24,11 @@ export default class MarketInfo extends Component {
   };
   componentDidMount = () =>{
     $(() => {  
-      $(document).on('click','.addressBookSelection', function(e){ 
+      $(document).on('click','.addressBookSelection', function(){ 
         const $this = $(`#${this.id}`);
         $this.find('ul').fadeToggle(); 
       })
-        .on('click', '.addressBookSelection ul li', function(e){
+        .on('click', '.addressBookSelection ul li', function(){
           const $this = $(this);
           const $selectBox = $('.addressBookSelection');        
           $selectBox.find('.active').removeClass('active');
@@ -39,8 +39,8 @@ export default class MarketInfo extends Component {
         });
     }); 
   }
-  handleSelectChange = (event) => {
-    this.props.store.wallet.changeAddress(event);
+  handleSelectChange = (key, event) => {
+    this.props.store.wallet.changeAddress(key, event);
   }
   render() {
     const { classes, store: { wallet } } = this.props;
@@ -49,6 +49,7 @@ export default class MarketInfo extends Component {
         height: 75,
       },
     };;
+
     return (
       <div>        
         <Grid container>
@@ -70,10 +71,9 @@ export default class MarketInfo extends Component {
                 <div className="addressBookSelection" id="selectBox_addressBook_1">
                   <div className="heading">
                     {(() => {
-                      console.log(wallet.currentAddressBalanceKey);
-                      if (wallet.currentAddressBalanceKey !== '') {
+                      if (wallet.currentAddressSelected !== '') {
                         return (
-                          <div>{wallet.currentAddressBalanceKey}</div>
+                          <div>{wallet.currentAddressSelected}</div>
                         );
                       }
                       return (
@@ -82,16 +82,17 @@ export default class MarketInfo extends Component {
                     })()}
                   </div>
                   <ul id='dropdown-menu btn-block'>
-                    {wallet.addresses.map((addressData) => {
+                    {wallet.addresses.map((addressData, key) => {
+                      /* eslint-disable */
                       if(addressData.fun > 0 || addressData.runebase > 0 || addressData.pred > 0 || addressData.exchangerunes > 0 || addressData.exchangepred > 0 || addressData.exchangefun > 0){
                         return (
                           <li
-                            onClick={this.handleSelectChange}
+                            onClick={this.handleSelectChange.bind(this, key) /* eslint-disable-line no-param-reassign */ }
+                            key={key}
                             address={addressData.address} 
                             runes={addressData.runebase}
                             pred={addressData.pred}
-                            fun={addressData.fun}
-                            key={addressData.address}
+                            fun={addressData.fun}                            
                           >                      
                             {addressData.address}
                             <p address={addressData.address}>Wallet</p>  
@@ -120,6 +121,7 @@ export default class MarketInfo extends Component {
                             </Grid>
                           </li>
                         );}
+                        /* eslint-enable */
                       return null;
                     })}
                   </ul>
@@ -131,31 +133,42 @@ export default class MarketInfo extends Component {
         <Card className={classes.dashboardOrderBookTitle}>
           <p>My Wallet Balances</p>
         </Card>        
-        <Grid container>          
-          {wallet.addresses.map((addressData) => {              
-            if(addressData.address === wallet.currentAddressBalanceKey){                
+        <Grid container> 
+          {(() => {
+            if (wallet.currentAddressKey !== '') {
               return (
                 <Grid item xs={12}> 
                   <Card className={classes.dashboardOrderBook}>                 
                     <Grid container>                    
                       <Grid item xs={3}>
-                        <p>RUNES</p>
-                        <p>{addressData.runebase}</p>
+                        <p>RUNES(GAS)</p>
+                        <p>{wallet.addresses[wallet.currentAddressKey].runebase}</p>
                       </Grid>
                       <Grid item xs={3}>
                         <p>PRED</p>
-                        <p>{addressData.pred}</p>
+                        <p>{wallet.addresses[wallet.currentAddressKey].pred}</p>
                       </Grid>
                       <Grid item xs={3}>
                         <p>FUN</p>
-                        <p>{addressData.fun}</p>
+                        <p>{wallet.addresses[wallet.currentAddressKey].fun}</p>
                       </Grid>                    
                     </Grid>
                   </Card>                  
                 </Grid>
-              );}
-            return null;
-          })}       
+              );
+            }
+            return (
+              <Grid item xs={12}>
+                <Card className={classes.dashboardOrderBook}>
+                  <Grid container>
+                    <Grid item xs={12}>
+                      <p>...</p>
+                    </Grid>                      
+                  </Grid>
+                </Card>
+              </Grid>
+            );                        
+          })()}            
           <Grid item xs={12}>
             <withStyles>{wallet.market}/RUNES</withStyles>
           </Grid>

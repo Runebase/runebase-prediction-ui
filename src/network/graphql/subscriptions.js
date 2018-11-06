@@ -38,6 +38,13 @@ const subscriptions = {
       }
     }
   `,
+  onMarketInfo: `
+    subscription OnMarketInfo {
+      onMarketInfo {
+        ${getTypeDef('Market')}
+      }
+    }
+  `,
 };
 
 function getSubscription(name) {
@@ -51,4 +58,5 @@ export const channels = {
   ON_MYORDER_INFO: 'onMyOrderInfo',
   ON_BUYORDER_INFO: 'onBuyOrderInfo',
   ON_SELLORDER_INFO: 'onSellOrderInfo',
+  ON_MARKET_INFO: 'onMarketInfo',
 };

@@ -56,7 +56,8 @@ const INIT_VALUE = {
   addresses: [],
   currentAddressBalanceRunes: '',
   currentAddressBalanceToken: '',
-  currentAddressBalanceKey: '',
+  currentAddressSelected: '',
+  currentAddressKey: '',
   lastUsedAddress: '',
   walletEncrypted: false,
   encryptResult: undefined,
@@ -65,10 +66,11 @@ const INIT_VALUE = {
   unlockDialogOpen: false,
   changePassphraseResult: undefined,
   txConfirmDialogOpen: false,
-  redeemConfirmDialogOpen: false,
-  orderConfirmDialogOpen: false,
+  redeemConfirmDialogOpen: false,  
   cancelOrderConfirmDialogOpen: false,
   executeOrderConfirmDialogOpen: false,
+  buyOrderConfirmDialogOpen: false,
+  sellOrderConfirmDialogOpen: false,
 };
 
 const INIT_VALUE_DIALOG = {
@@ -85,7 +87,8 @@ export default class {
   @observable exchangeAddress = INIT_VALUE.exchangeAddress;
   @observable currentAddressBalanceRunes = INIT_VALUE.currentAddressBalanceRunes;
   @observable currentAddressBalanceToken = INIT_VALUE.currentAddressBalanceToken;
-  @observable currentAddressBalanceKey = INIT_VALUE.currentAddressBalanceKey;  
+  @observable currentAddressSelected = INIT_VALUE.currentAddressSelected;
+  @observable currentAddressKey = INIT_VALUE.currentAddressKey;   
   @observable market = INIT_VALUE.market;
   @observable marketContract = INIT_VALUE.marketContract;
   @observable addressesHasCoin = INIT_VALUE.addressesHasCoin;
@@ -101,7 +104,8 @@ export default class {
   @observable selectedToken = INIT_VALUE_DIALOG.selectedToken;
   @observable changePassphraseResult = INIT_VALUE.changePassphraseResult;
   @observable txConfirmDialogOpen = INIT_VALUE.txConfirmDialogOpen;
-  @observable orderConfirmDialogOpen = INIT_VALUE.orderConfirmDialogOpen;
+  @observable buyOrderConfirmDialogOpen = INIT_VALUE.buyOrderConfirmDialogOpen;
+  @observable sellOrderConfirmDialogOpen = INIT_VALUE.sellOrderConfirmDialogOpen;
   @observable redeemConfirmDialogOpen = INIT_VALUE.redeemConfirmDialogOpen;
   @observable cancelOrderConfirmDialogOpen = INIT_VALUE.cancelOrderConfirmDialogOpen;
   @observable executeOrderConfirmDialogOpen = INIT_VALUE.executeOrderConfirmDialogOpen;
@@ -177,14 +181,11 @@ export default class {
       });
     }
   }
+
   @action changeMarket = (market, addresses) => {
     if (market === this.market) {
       return;
     }
-    this.app.global.getChartInfo();
-    this.app.global.getBuyOrderInfo();
-    this.app.global.getSellOrderInfo();
-
     this.currentAddressBalanceRunes = '';
     this.currentAddressBalanceToken = '';
     this.addressList = [];
@@ -195,11 +196,25 @@ export default class {
         this.accountData = [address.address, market, address[market], address.runebase];
         this.addressList.push( this.accountData );
       }
-    });   
+    });
+    try {
+      runInAction(() => {
+        this.app.global.getBuyOrderInfo();
+        this.app.global.getSellOrderInfo();
+        this.app.global.getChartInfo();
+        this.app.global.getMarketInfo();
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.createTransferTx);
+      });
+    }   
   }
-  @action changeAddress = (event) => {
-    if (event.target.attributes.getNamedItem('address').value != null) {
-      this.currentAddressBalanceKey = event.target.attributes.getNamedItem('address').value;      
+
+  @action changeAddress = (key, event) => {
+    this.currentAddressKey = key;
+    if (event.currentTarget.attributes.getNamedItem('address').value != null) {
+      this.currentAddressSelected = event.currentTarget.attributes.getNamedItem('address').value;      
     }    
     try {
       runInAction(() => {
@@ -207,6 +222,7 @@ export default class {
         this.app.global.getBuyOrderInfo();
         this.app.global.getSellOrderInfo();
         this.app.global.getChartInfo();
+        this.app.global.getMarketInfo();
       });
     } catch (error) {
       runInAction(() => {
@@ -216,9 +232,21 @@ export default class {
   }
 
   @action
-  prepareOrderExchange = async (price, confirmAmount, tokenChoice, orderType) => {
-    console.log(tokenChoice);
-    this.walletAddress = this.currentAddressBalanceKey;
+  closeOrderExchange = async () => {
+    try {
+      runInAction(() => {
+        this.orderConfirmDialogOpen = false;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.transactionCost);
+      });
+    }
+  }
+
+  @action
+  prepareBuyOrderExchange = async (price, confirmAmount, tokenChoice, orderType) => {
+    this.walletAddress = this.currentAddressSelected;
     this.toAddress = this.exchangeAddress;
     this.confirmAmount = confirmAmount;
     this.tokenChoice = tokenChoice;
@@ -235,7 +263,35 @@ export default class {
       const txFees = _.map(result, (item) => new TransactionCost(item));
       runInAction(() => {
         this.txFees = txFees;
-        this.orderConfirmDialogOpen = true;
+        this.buyOrderConfirmDialogOpen = true;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.transactionCost);
+      });
+    }
+  }
+
+  @action
+  prepareSellOrderExchange = async (price, confirmAmount, tokenChoice, orderType) => {
+    this.walletAddress = this.currentAddressSelected;
+    this.toAddress = this.exchangeAddress;
+    this.confirmAmount = confirmAmount;
+    this.tokenChoice = tokenChoice;
+    this.orderType = orderType;
+    this.price = price;
+    try {
+      const { data: { result } } = await axios.post(Routes.api.transactionCost, {
+        type: TransactionType.TRANSFER,
+        token: tokenChoice,
+        amount: tokenChoice === 'PRED' || tokenChoice === 'FUN' ? decimalToSatoshi(confirmAmount) : Number(confirmAmount),
+        senderAddress: this.walletAddress,
+        receiverAddress: this.toAddress,
+      });
+      const txFees = _.map(result, (item) => new TransactionCost(item));
+      runInAction(() => {
+        this.txFees = txFees;
+        this.sellOrderConfirmDialogOpen = true;
       });
     } catch (error) {
       runInAction(() => {
@@ -251,7 +307,8 @@ export default class {
     this.createTransferOrderExchange(this.walletAddress, this.exchangeAddress, this.tokenChoice, amount, this.price, this.orderType);
     runInAction(() => {
       onOrder();
-      this.orderConfirmDialogOpen = false;
+      this.buyOrderConfirmDialogOpen = false;
+      this.sellOrderConfirmDialogOpen = false;
       Tracking.track('myWallet-withdraw');
     });
   };
@@ -274,7 +331,7 @@ export default class {
 
   @action
   prepareCancelOrderExchange = async (orderId) => {
-    this.walletAddress = this.currentAddressBalanceKey;
+    this.walletAddress = this.currentAddressSelected;
     this.toAddress = this.exchangeAddress;
     this.orderId = orderId;
     try {
@@ -325,7 +382,7 @@ export default class {
 
   @action
   prepareExecuteOrderExchange = async (orderId, exchangeAmount) => {
-    this.walletAddress = this.currentAddressBalanceKey;
+    this.walletAddress = this.currentAddressSelected;
     this.toAddress = this.exchangeAddress;
     this.orderId = orderId;
     this.exchangeAmount = exchangeAmount;
@@ -376,7 +433,6 @@ export default class {
 
   @action
   prepareDepositExchange = async (walletAddress, confirmAmount, tokenChoice) => {
-    console.log(tokenChoice);
     this.walletAddress = walletAddress;
     this.toAddress = this.exchangeAddress;
     this.confirmAmount = confirmAmount;
@@ -433,8 +489,8 @@ export default class {
     }
   }  
 
-  @computed get currentAddressSelected() {
-    return this.currentAddressBalanceKey;
+  @computed get currentAddressSelecteds() {
+    return this.currentAddressSelected;
   }
   @computed get currentAddresses() {
     return this.addressList;

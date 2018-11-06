@@ -8,7 +8,6 @@ import MyTrades from './components/MyTrades';
 import Markets from './components/Markets';
 import MarketInfo from './components/MarketInfo';
 import MyBalance from './components/MyBalance';
-import TransactionHistory from './components/TransactionHistory';
 import BuyOrder from './components/BuyOrder';
 import SellOrder from './components/SellOrder';
 import BuyBook from './components/BuyBook';
@@ -59,7 +58,6 @@ export default class Exchange extends Component {
           <Grid item xs={4}>
           </Grid>
           <Grid item xs={8}>
-            <TransactionHistory />
           </Grid>
         </Grid>
       </Fragment>

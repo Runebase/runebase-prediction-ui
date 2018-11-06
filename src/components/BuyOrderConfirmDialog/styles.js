@@ -1,6 +1,6 @@
 const styles = (theme) => ({
-  paginationbottom: {
-    display: 'none',
+  costTable: {
+    marginTop: theme.padding.sm.px,
   },
 });
 

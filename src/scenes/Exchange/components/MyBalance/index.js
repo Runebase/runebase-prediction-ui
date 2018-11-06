@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
-import { FastForward, AccountBalanceWallet } from '@material-ui/icons';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 
@@ -23,19 +22,6 @@ export default class myBalance extends Component {
   };
   render() {
     const { classes, store: { wallet } } = this.props;
-    const stylist = {
-      largeIcon: {
-        width: 70,
-        height: 70,
-        float: 'right',
-      },
-      floatright: {
-        float: 'right',
-      },
-      heightRow: {
-        height: 75,
-      },
-    };
 
     return (
       <div>
@@ -46,34 +32,44 @@ export default class myBalance extends Component {
           <Grid container>
             <Grid item xs={12}>
               <Card className={classes.dashboardOrderBookTitle}>
-                <p>My Exchange Balances</p>
+                <p>My Exchange Balances</p>                
               </Card>
             </Grid>
-            {wallet.addresses.map((addressData) => {
-              console.log(wallet.currentAddressBalanceKey);
-              if(addressData.address === wallet.currentAddressBalanceKey){
+            {(() => {
+              if (wallet.currentAddressKey !== '') {
                 return (
                   <Grid item xs={12}>
                     <Card className={classes.dashboardOrderBook}>
                       <Grid container>
                         <Grid item xs={3}>
                           <p>RUNES</p>
-                          <p>{addressData.exchangerunes}</p>
+                          <p>{wallet.addresses[wallet.currentAddressKey].exchangerunes}</p>
                         </Grid>
                         <Grid item xs={3}>
                           <p>PRED</p>
-                          <p>{addressData.exchangepred}</p>
+                          <p>{wallet.addresses[wallet.currentAddressKey].exchangepred}</p>
                         </Grid>
                         <Grid item xs={3}>
                           <p>FUN</p>
-                          <p>{addressData.exchangefun}</p>
+                          <p>{wallet.addresses[wallet.currentAddressKey].exchangefun}</p>
                         </Grid>
                       </Grid>
                     </Card>
                   </Grid>
-                );}
-              return null;
-            })}
+                );
+              }
+              return (
+                <Grid item xs={12}>
+                  <Card className={classes.dashboardOrderBook}>
+                    <Grid container>
+                      <Grid item xs={12}>
+                        <p>...</p>
+                      </Grid>                      
+                    </Grid>
+                  </Card>
+                </Grid>
+              );                        
+            })()}            
           </Grid>         
         </Grid>
       </div>

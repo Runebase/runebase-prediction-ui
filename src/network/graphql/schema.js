@@ -8,6 +8,7 @@ export const TYPE = {
   transaction: 'Transaction',
   newOrder: 'NewOrder',
   trade: 'Trade',
+  market: 'Market',
 };
 
 const TYPE_DEF = {
@@ -122,6 +123,14 @@ const TYPE_DEF = {
     time
     amount   
     blockNum
+  `,
+
+  Market: `
+    market
+    tokenName
+    price
+    change
+    volume
   `,
 
   SyncInfo: `

@@ -10,6 +10,7 @@ class GraphParser {
       Transaction: this.parseTransaction,
       NewOrder: this.parseNewOrder,
       Trade: this.parseTrade,
+      Market: this.parseMarket,
     };
     return PARSER_MAPPINGS[requestName];
   }
@@ -52,6 +53,16 @@ class GraphParser {
       time: entry.time,
       amount: entry.amount,
       blockNum: entry.blockNum,
+    }));
+  }
+
+  static parseMarket(data) {
+    return data.map((entry) => ({
+      market: entry.market,
+      tokenName: entry.tokenName,
+      price: entry.price,
+      change: entry.change,
+      volume: entry.volume,
     }));
   }
 

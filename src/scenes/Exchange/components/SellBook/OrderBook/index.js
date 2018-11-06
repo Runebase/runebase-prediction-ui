@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { inject } from 'mobx-react';
-import { FormattedMessage, injectIntl, intlShape, defineMessages } from 'react-intl';
+import { injectIntl,  defineMessages } from 'react-intl';
 import {
   Button, 
   Grid, 
@@ -11,19 +10,15 @@ import {
   ExpansionPanel, 
   ExpansionPanelSummary, 
   ExpansionPanelDetails, 
-  TextField, 
   Dialog, 
   DialogActions, 
   DialogContent, 
   DialogContentText, 
   DialogTitle, 
 } from '@material-ui/core';
-import cx from 'classnames';
-import { sum } from 'lodash';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExecuteOrderTxConfirmDialog from '../ExecuteOrderTxConfirmDialog';
 
-import EventWarning from '../../../../../components/EventWarning';
 import styles from './styles';
 import './styles.css';
 const messages = defineMessages({
@@ -39,8 +34,6 @@ const messages = defineMessages({
 export default class OrderBook extends PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    intl: intlShape.isRequired, // eslint-disable-line react/no-typos
-    index: PropTypes.number.isRequired,
     orderId: PropTypes.string,
   };
 
@@ -52,7 +45,7 @@ export default class OrderBook extends PureComponent {
     this.state = { open:1 };
   }
   onExecuteOrder = () => {
-    if (this.props.store.wallet.currentAddressBalanceKey === '') {
+    if (this.props.store.wallet.currentAddressSelected === '') {
       this.setState({ 
         openError: true,
       });
@@ -64,7 +57,7 @@ export default class OrderBook extends PureComponent {
   }
 
   addressCheck = () => {
-    if (this.props.store.wallet.currentAddressBalanceKey === '') {
+    if (this.props.store.wallet.currentAddressSelected === '') {
       this.setState({ 
         openError: true,
       });
@@ -79,9 +72,8 @@ export default class OrderBook extends PureComponent {
 
   render() {
     console.log(this.state.open);
-    const { classes, index, store: { wallet }  } = this.props;
-    const { orderId, txid, orderType, tokenName, buyToken, sellToken, amount, owner, blockNum, time, priceDiv, priceMul, price, token, type, status } = this.props.event;
-    const { locale, messages: localeMessages, formatMessage } = this.props.intl;
+    const { classes, store: { wallet }  } = this.props;
+    const { orderId, txid, orderType, tokenName, buyToken, sellToken, amount, owner, blockNum, time, price, token, type, status } = this.props.event;
     const amountToken = amount / 1e8;
     let total = amountToken * price;
     const exchangeAmount = amount;
@@ -155,7 +147,7 @@ export default class OrderBook extends PureComponent {
                 <div>
                   <Button 
                     onClick={ () =>{                      
-                      if (this.props.store.wallet.currentAddressBalanceKey === '')  {
+                      if (this.props.store.wallet.currentAddressSelected === '')  {
                         this.addressCheck();                        
                       }
                       else {

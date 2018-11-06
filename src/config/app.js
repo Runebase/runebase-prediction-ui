@@ -1,10 +1,11 @@
 module.exports = {
   intervals: { // in MS
     syncInfo: 5000,
-    chartInfo: 5000,
-    myOrderInfo: 5000,
-    buyOrderInfo: 5000,
-    sellOrderInfo: 5000,
+    chartInfo: 30000,
+    myOrderInfo: 10000,
+    buyOrderInfo: 30000,
+    sellOrderInfo: 30000,
+    marketInfo: 30000,
     tooltipDelay: 300,
     snackbarLong: 5000,
     snackbarShort: 2000,

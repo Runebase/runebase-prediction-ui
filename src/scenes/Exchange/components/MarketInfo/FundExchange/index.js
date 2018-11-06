@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
-import { FastForward, FastRewind, AccountBalanceWallet } from '@material-ui/icons';
+import { FastRewind, AccountBalanceWallet } from '@material-ui/icons';
 import FundExchangeTxConfirmDialog from '../FundExchangeTxConfirmDialog';
 
 const messages = defineMessages({
@@ -38,7 +38,7 @@ export default class FundExchange extends Component {
   }  
   
   handleClickOpenDepositChoice = () => {
-    if (this.props.store.wallet.currentAddressBalanceKey === '') {
+    if (this.props.store.wallet.currentAddressSelected === '') {
       this.setState({ 
         open: false,
         open2: false, 
@@ -77,7 +77,7 @@ export default class FundExchange extends Component {
     this.setState({ 
       open: false,
       open2: true, 
-      address: this.props.store.wallet.currentAddressBalanceKey,
+      address: this.props.store.wallet.currentAddressSelected,
     });
   };
 
@@ -101,7 +101,7 @@ export default class FundExchange extends Component {
     });
   }
   render() {
-    const { dialogVisible, classes, store: { wallet } } = this.props;
+    const { store: { wallet } } = this.props;
     const stylist = {
       largeIcon: {
         width: 70,

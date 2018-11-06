@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, defineMessages } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { inject, observer } from 'mobx-react';
 import {
-  Button,
   Grid,
   FormLabel,
   InputLabel,
@@ -12,9 +11,9 @@ import {
 } from '@material-ui/core';
 import Form from 'muicss/lib/react/form';
 import Input from 'muicss/lib/react/input';
-import Select from 'muicss/lib/react/select';
 import styles from './styles';
 import OrderExchange from './OrderExchange';
+import './style.css';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -31,70 +30,142 @@ export default class BuyOrder extends Component {
       price: 0,
       total: 0,
       orderType: 'buy',
+      hasError: false,
     };
   }
-
-  changeAmount = (event) => {
-    this.setState({
-      amount: event.target.value,
-      total: event.target.value * this.state.price,
-    });
+  changeAmount = (event, tokenAmount) => {
+    const regex = /^\d+(\.\d{1,8})?$/;
+    const validateTotal = event.target.value * this.state.price;    
+    if (event.target.value === '' || regex.test(event.target.value)) {
+      this.setState({
+        amount: event.target.value,
+        total: event.target.value * this.state.price,
+        hasError: false,
+      });
+    }    
+    if (tokenAmount < validateTotal) {
+      const newAmount = tokenAmount / this.state.price;
+      this.setState({
+        amount: newAmount,
+        total: newAmount * this.state.price, 
+        hasError: false,      
+      });
+    }
+    if (this.props.store.wallet.currentAddressSelected === '') {
+      this.setState({
+        hasError: true,        
+      });
+    }    
   }
-  changePrice = (event) => {
-    this.setState({
-      price: event.target.value,
-      total: this.state.amount * event.target.value,
-    });
+  changePrice = (event, tokenAmount) => {
+    const regex = /^\d+(\.\d{1,8})?$/;
+    const validateTotal = event.target.value * this.state.amount;
+    if (event.target.value === '' || regex.test(event.target.value)) {
+      this.setState({
+        price: event.target.value,
+        total: event.target.value * this.state.amount,
+        hasError: false,
+      });
+    }
+    if (tokenAmount < validateTotal) {
+      const newPrice = tokenAmount / this.state.amount;
+      this.setState({
+        price: newPrice,
+        total: newPrice * this.state.amount, 
+        hasError: false,      
+      });
+    }
+    if (this.props.store.wallet.currentAddressSelected === '') {
+      this.setState({
+        hasError: true,        
+      });
+    }      
   }
-  total = () => this.amount * this.price;
+  total = () => this.amount * this.price;  
   
-  render() {
 
+  render() {
     const { classes, store: { wallet } } = this.props;
-    const market = this.props.store.wallet.currentMarket.toLowerCase();
-    console.log(market);
+    const market = wallet.currentMarket.toLowerCase();
+    let tokenAmount;
+    if (wallet.currentAddressKey !== '') {
+      switch(market){
+        case 'pred':
+          tokenAmount = wallet.addresses[wallet.currentAddressKey].exchangerunes;
+          break;
+        case 'fun':
+          tokenAmount = wallet.addresses[wallet.currentAddressKey].exchangerunes;
+          break;  
+        default:
+          tokenAmount = 0;
+          break; 
+      } 
+    }
     return (      
-      <Grid item xs={6}>
+      <Grid item xs={6}>          
         <Card className={classes.dashboardOrderBookTitle}>
-          <p>Buy {this.props.store.wallet.currentMarket}</p>
-        </Card>
+          <p>Create Buy Order ({wallet.currentMarket})</p>
+        </Card>         
         <Card className={classes.dashboardOrderBook}>
           <Grid container className={classes.dashboardOrderBookWrapper}>
             <Grid item xs={12}>
               <Form className={classes.tokenSelect} onSubmit={this.handleSubmit}>
-                <h3>{this.props.store.wallet.currentMarket}/RUNES</h3>
-                <h3>{this.props.store.wallet.currentTokenAmount}</h3>
+                <h3>{wallet.currentMarket}/RUNES</h3>
+                {(() => {          
+                  if (wallet.currentAddressKey !== '') {
+                    return (<p>{tokenAmount} RUNES</p>);           
+                  }
+                  return (
+                    <p>...</p>
+                  );                        
+                })()}
+                {this.state.hasError && <span>Please select an address</span>} 
                 <Grid container>
-                  <Grid item xs={6}>
-                    <InputLabel className={classes.orderLabel}>
-                        Amount:
+                  <Grid item xs={2}>
+                    <InputLabel className='inputLabels'>
+                      Amount:
                     </InputLabel>
                   </Grid>
-                  <Grid item xs={6}>
-                    <Input type="number" step="0.1" value={this.state.amount} onChange={this.changeAmount} name="amount" />
+                  <Grid item xs={8}>
+                    <Input className='inputWidth' type="number" step="0.00000001" min="0" value={this.state.amount} onChange={ (event) => { this.changeAmount(event, tokenAmount); } } name="amount" />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <InputLabel className='inputLabels'>
+                      {wallet.market}
+                    </InputLabel>
                   </Grid>
                 </Grid>
                 <Grid container>
-                  <Grid item xs={6}>
-                    <FormLabel className={classes.orderLabel}>
-                        Price:
+                  <Grid item xs={2}>
+                    <FormLabel className='inputLabels'>
+                      Price:
                     </FormLabel>
                   </Grid>
-                  <Grid item xs={6}>
-                    <Input type="number" step="0.1" value={this.state.price} onChange={this.changePrice} name="price" />
+                  <Grid item xs={8}>
+                    <Input className='inputWidth' type="number" step="0.00000001" min="0" value={this.state.price} onChange={ (event) => { this.changePrice(event, tokenAmount); } } name="price" />
+                  </Grid>
+                  <Grid item xs={2} >
+                    <InputLabel className='inputLabels'>
+                      RUNES
+                    </InputLabel>
                   </Grid>
                 </Grid>
                 <Grid container>
-                  <Grid item xs={6}>
-                    <FormLabel className={classes.orderLabel}>
-                        Total:
+                  <Grid item xs={2}>
+                    <FormLabel className='inputLabels'>
+                      Total:
                     </FormLabel>
                   </Grid>
-                  <Grid item xs={6}>
-                    <Input type="number" step="0.1" value={this.state.total} name="total" />
+                  <Grid item xs={8}>
+                    <Input disabled className='inputWidth' value={this.state.total} name="total" />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <FormLabel className={`inputLabels ${classes.orderLabel}`}>
+                      RUNES
+                    </FormLabel>
                   </Grid>
                 </Grid>
-                <OrderExchange {...this.state} />          
+                <OrderExchange tokenAmount={tokenAmount} {...this.state} />          
               </Form>
             </Grid>
           </Grid>

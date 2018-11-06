@@ -2,8 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withStyles, Card } from '@material-ui/core';
 import { defineMessages } from 'react-intl';
-import theme from '../../../../config/theme';
-import InfiniteScroll from '../../../../components/InfiniteScroll';
 import _Loading from '../../../../components/Loading';
 import OrderBook from './OrderBook';
 import styles from './styles';
@@ -35,7 +33,7 @@ export default class MyOrderBook extends Component {
   }
 }
 
-const Events = observer(({ allNewOrders: { myOrderInfo, loadMore, loading, loadingMore } }) => {
+const Events = observer(({ allNewOrders: { myOrderInfo, loading } }) => {
   if (loading) return <Loading />;
   const newOrders = (myOrderInfo || []).map((event, i) => <OrderBook key={i} index={i} event={event} />); // eslint-disable-line
   return (

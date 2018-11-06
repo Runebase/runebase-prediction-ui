@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import { 
-  TextField, 
+import {  
   Dialog, 
   DialogActions, 
   DialogContent, 
@@ -10,12 +9,11 @@ import {
 } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
-import { FastForward, AccountBalanceWallet } from '@material-ui/icons';
-import OrderExchangeTxConfirmDialog from '../OrderExchangeTxConfirmDialog';
+import BuyOrderExchangeTxConfirmDialog from '../BuyOrderExchangeTxConfirmDialog';
 
 const messages = defineMessages({
-  orderConfirmMsgSendMsg: {
-    id: 'redeemConfirmMsg.send',
+  buyOrderConfirmMsgSendMsg: {
+    id: 'buyOrderConfirmMsg.send',
     defaultMessage: 'send to address {address}',
   },
 });
@@ -23,18 +21,18 @@ const messages = defineMessages({
 @injectIntl
 @inject('store')
 @observer
-export default class RedeemExchange extends Component {
+export default class OrderExchange extends Component {
   constructor(props) {
     super(props);
-    this.state = { open:1 };
+    this.state = { openError: false };
   }
   onOrder = () => {
-    this.setState({
-      open: 0,
+    this.setState({ 
+      openError: false, 
     });
   }
   addressCheck = () => {
-    if (this.props.store.wallet.currentAddressBalanceKey === '') {
+    if (this.props.store.wallet.currentAddressSelected === '') {
       this.setState({ 
         openError: true,
       });
@@ -46,25 +44,31 @@ export default class RedeemExchange extends Component {
       openError: false, 
     });
   };
+  
   render() {
-    const { dialogVisible, classes, store: { wallet } } = this.props;
-    console.log(this.state);
+    const { store: { wallet } } = this.props;
+    const isEnabled = 
+      this.props.amount < this.props.tokenAmount &&
+      this.props.tokenAmount > 0 &&
+      this.props.amount > 0;
+
     return (      
       <div>
 
-        <Button 
+        <Button
+          disabled={!isEnabled} 
           onClick={ () =>{                      
-            if (this.props.store.wallet.currentAddressBalanceKey === '')  {
+            if (this.props.store.wallet.currentAddressSelected === '')  {
               this.addressCheck();                        
             }
             else {
-              wallet.prepareOrderExchange(this.props.price, this.props.amount, wallet.currentMarket, this.props.orderType);
+              wallet.prepareBuyOrderExchange(this.props.price, this.props.amount, wallet.currentMarket, this.props.orderType);
             }                      
           }}
           color="primary">
           Buy {wallet.currentMarket}
         </Button>
-        <OrderExchangeTxConfirmDialog onOrder={this.onOrder} id={messages.orderConfirmMsgSendMsg.id} />
+        <BuyOrderExchangeTxConfirmDialog onOrder={this.onOrder} id={messages.buyOrderConfirmMsgSendMsg.id} />
         <Dialog
           open={this.state.openError}
           onClose={this.handleClose}

@@ -5,13 +5,15 @@ import _ from 'lodash';
 import SyncInfo from './models/SyncInfo';
 import Trade from './models/Trade';
 import NewOrder from './models/NewOrder';
-import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes, queryAllTrades, queryAllNewOrders } from '../network/graphql/queries';
+import Market from './models/Market';
+import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes, queryAllTrades, queryAllNewOrders, queryAllMarkets } from '../network/graphql/queries';
 import getSubscription, { channels } from '../network/graphql/subscriptions';
 import apolloClient from '../network/graphql';
 import AppConfig from '../config/app';
 
 
 const INIT_VALUES = {
+  marketInfo: '',
   myOrderInfo: '',
   buyOrderInfo: '',
   sellOrderInfo: '',
@@ -32,8 +34,10 @@ let syncChartInterval;
 let syncMyOrderInterval;
 let syncSellOrderInterval;
 let syncBuyOrderInterval;
+let syncMarketInterval;
 
 export default class GlobalStore {
+  @observable marketInfo = INIT_VALUES.marketInfo
   @observable buyOrderInfo = INIT_VALUES.buyOrderInfo
   @observable sellOrderInfo = INIT_VALUES.sellOrderInfo
   @observable myOrderInfo = INIT_VALUES.myOrderInfo
@@ -76,6 +80,10 @@ export default class GlobalStore {
     this.getSyncInfo();
     this.subscribeSyncInfo();
 
+    // Call MarketsInfo once to init the wallet addresses used by other stores
+    this.getMarketInfo();
+    this.subscribeMarketInfo();
+
     // Call ChartInfo once to init the wallet addresses used by other stores
     this.getChartInfo();
     this.subscribeChartInfo();
@@ -99,7 +107,61 @@ export default class GlobalStore {
     syncMyOrderInterval = setInterval(this.getMyOrderInfo, AppConfig.intervals.myOrderInfo);
     syncBuyOrderInterval = setInterval(this.getBuyOrderInfo, AppConfig.intervals.buyOrderInfo);
     syncSellOrderInterval = setInterval(this.getSellOrderInfo, AppConfig.intervals.sellOrderInfo);
+    syncMarketInterval = setInterval(this.getMarketInfo, AppConfig.intervals.marketInfo);
   }
+
+  /*
+  *
+  *
+  */
+
+  @action
+  onMarketInfo = (marketInfo) => {
+    if (marketInfo.error) {
+      console.error(marketInfo.error.message); // eslint-disable-line no-console
+    } else {
+      const result = _.uniqBy(marketInfo, 'market').map((market) => new Market(market, this.app));    
+      const resultOrder = _.orderBy(result, ['market'], 'desc');
+      this.marketInfo = resultOrder;
+    }
+  }
+  /*
+  *
+  *
+  */
+  @action
+  getMarketInfo = async () => {
+    try {
+      const orderBy = { field: 'market', direction: 'DESC' };
+      const filters = [];
+      const marketInfo = await queryAllMarkets(filters, orderBy, 0, 0);
+      this.onMarketInfo(marketInfo);
+    } catch (error) {
+      this.onMarketInfo({ error });
+    }
+  }
+  /*
+  *
+  *
+  */
+  subscribeMarketInfo = () => {
+    const self = this;
+    apolloClient.subscribe({
+      query: getSubscription(channels.ON_MARKET_INFO),
+    }).subscribe({
+      next({ data, errors }) {
+        if (errors && errors.length > 0) {
+          self.onMarketInfo({ error: errors[0] });
+        } else {
+          self.onMarketInfo(data.onMarketInfo);
+        }
+      },
+      error(err) {
+        self.onMarketInfo({ error: err.message });
+      },
+    });
+  }
+
 
   /*
   *
@@ -228,7 +290,7 @@ export default class GlobalStore {
   getMyOrderInfo = async () => {
     try {
       const orderBy = { field: 'orderId', direction: this.app.sortBy };
-      const filters = [{ owner: this.app.wallet.currentAddressBalanceKey }];
+      const filters = [{ owner: this.app.wallet.currentAddressSelected }];
       const myOrderInfo = await queryAllNewOrders(filters, orderBy, 0, 0);  
 
       this.onMyOrderInfo(myOrderInfo);
@@ -278,7 +340,6 @@ export default class GlobalStore {
   @action
   getChartInfo = async () => {
     try {
-      const market = this.app.wallet.market;
       const orderBy = { field: 'time', direction: 'ASC' };
       const filters = [{ tokenName: this.app.wallet.market }];
       const chartInfo = await queryAllTrades(filters, orderBy, 0, 0);
@@ -326,7 +387,6 @@ export default class GlobalStore {
       this.syncBlockTime = blockTime;
       this.peerNodeCount = peerNodeCount || 0;
       this.app.wallet.addresses = balances;
-      console.log(this.app.wallet.addresses);
       this.app.wallet.exchangeAddresses = exchangeBalances;
     }
   }

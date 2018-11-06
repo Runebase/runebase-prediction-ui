@@ -18,6 +18,27 @@ const styles = (theme) => ({
     background: '#F9F9F9',
     textAlign: 'center',
   },
+  orderInput: {
+    border: '1px solid #000',
+    background: '#F9F9F9',
+    textAlign: 'center',
+    width: '70%',
+  },
+  orderLabel: {
+    background: '#F9F9F9',
+    textAlign: 'center',
+    width: '70%',
+  },
+  tokenSelect: {
+    background: '#F9F9F9',
+    textAlign: 'center',
+    width: '100%',
+  },
+  tokenOption: {
+    background: '#F9F9F9',
+    textAlign: 'center',
+    width: '100%',
+  },
 });
 
 export default styles;

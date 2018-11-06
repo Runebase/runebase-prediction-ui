@@ -1,0 +1,60 @@
+import React, { PureComponent } from 'react';
+import { inject } from 'mobx-react';
+import { injectIntl } from 'react-intl';
+import { Card, Grid, Typography } from '@material-ui/core';
+import classNames from 'classnames/bind';
+import './styles.css';
+
+@injectIntl
+@inject('store')
+export default class MarketView extends PureComponent {
+
+  render() {
+    const { market, tokenName, price, change, volume } = this.props.event;
+    const { store: { wallet } } = this.props;
+    let active = false;
+    if (market === wallet.market) {
+      active = true;
+    }
+    const triggerActive = classNames(
+      'marketCard',
+      {
+        'activeCard': active,
+        'notSelected': !active,
+      }
+    );
+    return (
+      <div>
+        <Card className={triggerActive} onClick={() => this.props.store.wallet.changeMarket(market, this.props.store.wallet.addresses)}>
+          <Grid container>
+            <Grid item xs={3}>
+              <p className='textCenter'>{tokenName}</p>
+            </Grid>
+            <Grid item xs={6}>
+              <p className='textCenter'>{market}/RUNES</p>
+            </Grid>
+          </Grid>
+          <Grid container>
+            <Grid item xs={3} className='fullheight'>
+              <div className='fullWidth'>
+                <img alt={tokenName} src={require('../images/PRED.png')} />
+              </div>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography className='textCenter'>price</Typography>
+              <Typography className='textCenter'>{price}</Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography className='textCenter'>change</Typography>
+              <Typography className='textCenter'>{change}%</Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography className='textCenter'>Volume</Typography>
+              <Typography className='textCenter'>{volume}</Typography>
+            </Grid>
+          </Grid>      
+        </Card>
+      </div>
+    );
+  }
+}

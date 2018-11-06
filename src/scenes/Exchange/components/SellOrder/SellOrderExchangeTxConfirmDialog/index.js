@@ -2,19 +2,19 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import { OrderConfirmDialog } from 'components';
+import { SellOrderConfirmDialog } from 'components';
 
-const OrderTxConfirmDialog = inject('store')(injectIntl(observer(({ store: { wallet },  intl, id, onOrder}) => {
+const SellOrderTxConfirmDialog = inject('store')(injectIntl(observer(({ store: { wallet },  intl, id, onOrder}) => {
   return (    
-    <OrderConfirmDialog
-      onClose={() => wallet.redeemConfirmDialogOpen = false}
+    <SellOrderConfirmDialog
+      onClose={() => wallet.sellOrderConfirmDialogOpen = false}
       onConfirm={wallet.confirmOrderExchange.bind(this, onOrder)}
       txFees={wallet.txFees}
-      open={wallet.orderConfirmDialogOpen}
+      open={wallet.sellOrderConfirmDialogOpen}
       txToken={wallet.selectedToken}
       txAmount={wallet.depositAmount}
       txDesc={intl.formatMessage({ id }, { address: wallet.toAddress })}
     />
   );
 })));
-export default OrderTxConfirmDialog;
+export default SellOrderTxConfirmDialog;

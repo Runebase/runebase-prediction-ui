@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import {  
+import { 
+  TextField, 
   Dialog, 
   DialogActions, 
   DialogContent, 
@@ -9,6 +10,7 @@ import {
 } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
+import { FastForward, AccountBalanceWallet } from '@material-ui/icons';
 import SellOrderExchangeTxConfirmDialog from '../SellOrderExchangeTxConfirmDialog';
 
 const messages = defineMessages({
@@ -21,14 +23,14 @@ const messages = defineMessages({
 @injectIntl
 @inject('store')
 @observer
-export default class OrderExchange extends Component {
+export default class RedeemExchange extends Component {
   constructor(props) {
     super(props);
-    this.state = { openError: false };
+    this.state = { open:1 };
   }
   onOrder = () => {
-    this.setState({ 
-      openError: false,
+    this.setState({
+      open: 0,
     });
   }
   addressCheck = () => {
@@ -45,23 +47,17 @@ export default class OrderExchange extends Component {
     });
   };
   render() {
-    const { store: { wallet } } = this.props;
-    const isEnabled = 
-      this.props.amount < this.props.tokenAmount &&
-      this.props.tokenAmount > 0 &&
-      this.props.amount > 0;
-
+    const { dialogVisible, classes, store: { wallet } } = this.props;
+    console.log(this.state);
     return (      
       <div>
-
-        <Button
-          disabled={!isEnabled} 
+        <Button 
           onClick={ () =>{                      
             if (this.props.store.wallet.currentAddressSelected === '')  {
               this.addressCheck();                        
             }
             else {
-              wallet.prepareSellOrderExchange(this.props.price, this.props.amount, wallet.currentMarket, this.props.orderType);
+              wallet.prepareOrderExchange(this.props.price, this.props.amount, wallet.currentMarket, this.props.orderType);
             }                      
           }}
           color="primary">
