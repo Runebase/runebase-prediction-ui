@@ -15,6 +15,8 @@ import AppConfig from '../config/app';
 const INIT_VALUES = {
   marketInfo: '',
   myOrderInfo: '',
+  fulfilledOrderInfo: '',
+  canceledOrderInfo: '',
   buyOrderInfo: '',
   sellOrderInfo: '',
   chartInfo: '',
@@ -41,6 +43,8 @@ export default class GlobalStore {
   @observable buyOrderInfo = INIT_VALUES.buyOrderInfo
   @observable sellOrderInfo = INIT_VALUES.sellOrderInfo
   @observable myOrderInfo = INIT_VALUES.myOrderInfo
+  @observable fulfilledOrderInfo = INIT_VALUES.fulfilledOrderInfo
+  @observable canceledOrderInfo = INIT_VALUES.canceledOrderInfo
   @observable chartInfo = INIT_VALUES.chartInfo
   @observable syncPercent = INIT_VALUES.syncPercent
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
@@ -186,7 +190,7 @@ export default class GlobalStore {
   getBuyOrderInfo = async () => {
     try {
       const orderBy = { field: 'price', direction: 'DESC' };
-      const filters = [{ orderType: "BUYORDER", tokenName: this.app.wallet.market }];
+      const filters = [{ orderType: 'BUYORDER', tokenName: this.app.wallet.market, status: 'ACTIVE' }];
       const buyOrderInfo = await queryAllNewOrders(filters, orderBy, 0, 0);
       this.onBuyOrderInfo(buyOrderInfo);
     } catch (error) {
@@ -238,7 +242,7 @@ export default class GlobalStore {
   getSellOrderInfo = async () => {
     try {
       const orderBy = { field: 'price', direction: 'ASC' };
-      const filters = [{ orderType: "SELLORDER", tokenName: this.app.wallet.market }];
+      const filters = [{ orderType: "SELLORDER", tokenName: this.app.wallet.market, status: 'ACTIVE' }];
       const sellOrderInfo = await queryAllNewOrders(filters, orderBy, 0, 0);
       this.onSellOrderInfo(sellOrderInfo);
     } catch (error) {
@@ -277,9 +281,36 @@ export default class GlobalStore {
     if (myOrderInfo.error) {
       console.error(myOrderInfo.error.message); // eslint-disable-line no-console
     } else {
-      const result = _.uniqBy(myOrderInfo, 'txid').map((newOrder) => new NewOrder(newOrder, this.app));   
-      const resultOrder =  _.orderBy(result, ['orderId'], this.app.sortBy.toLowerCase());
-      this.myOrderInfo = resultOrder;
+      /* Map */
+      const result = _.uniqBy(myOrderInfo, 'txid').map((newOrder) => new NewOrder(newOrder, this.app));  
+
+      /* Filter & sort current orders */
+      let myOrders = _.map(result, orders => {
+        if (orders.status === "ACTIVE" ||  orders.status === "PENDING" || orders.status === "PENDINGCANCEL") return orders;
+      });
+      myOrders = _.without(myOrders, undefined);
+      myOrders = _.orderBy(myOrders, ['time'], 'desc');
+
+      /* Filter & sort fulfilled Orders */
+
+      let ordersFulfilled = _.map(result, orders => {
+        if (orders.status === "FULFILLED") return orders;
+      });
+      ordersFulfilled = _.without(ordersFulfilled, undefined);
+      ordersFulfilled = _.orderBy(ordersFulfilled, ['time'], 'desc'); 
+
+      /* Filter & sort canceled Orders */
+
+      let ordersCanceled = _.map(result, orders => {
+        if (orders.status === "CANCELED") return orders;
+      });
+      ordersCanceled = _.without(ordersCanceled, undefined);
+      ordersCanceled = _.orderBy(ordersCanceled, ['time'], 'desc'); 
+
+      /* set results */
+      this.myOrderInfo = myOrders;
+      this.fulfilledOrderInfo = ordersFulfilled;
+      this.canceledOrderInfo = ordersCanceled;
     }
   }
   /*

@@ -107,6 +107,7 @@ const TYPE_DEF = {
     priceDiv
     time
     amount
+    startAmount
     blockNum
   `,
 

@@ -33,16 +33,10 @@ export default class SellBook extends Component {
   }
 }
 
-const Events = observer(({ global: { sellOrderInfo, loading } }) => {
-  if (loading) return <Loading />;
+const Events = observer(({ global: { sellOrderInfo } }) => {
   const newOrders = (sellOrderInfo || []).map((event, i) => <OrderBook key={i} index={i} event={event} />); // eslint-disable-line
   return (
     newOrders
   );
 });
 
-const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text={messages.loadAllNewOrdersMsg} /></Row>);
-
-const Row = withStyles(styles)(({ classes, ...props }) => (
-  <div className={classes.row} {...props} />
-));

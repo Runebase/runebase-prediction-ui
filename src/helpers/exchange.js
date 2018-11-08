@@ -1,9 +1,31 @@
 import _ from 'lodash';
 
-export function getMarkets() {
-  const data = [
-    {id: 'PRED', token: 'PRED/RUNES', price: '0.2', vol: '5', chg: '2000', name: 'Prediction Token'},
-    {id: 'FUN', token: 'FUN/RUNES', price: '2', vol: '3', chg: '3000', name: 'Fun Token'},
-  ]; 
-  return data;
+export function getImage3(token) {
+  let image;
+  switch(token) {
+    case 'PRED':
+      image = '../../../images/PRED.png';
+      break;
+  	case 'FUN':
+      image = '../../../images/FUN.png';
+  	  break;
+  	default:
+      image = ``;
+  } 
+  return image;
+}
+
+export function getImage2(token) {
+  let image;
+  switch(token) {
+    case 'PRED':
+      image = '../../images/PRED.png';
+      break;
+  	case 'FUN':
+      image = '../../images/FUN.png';
+  	  break;
+  	default:
+      image = ``;
+  } 
+  return image;
 }

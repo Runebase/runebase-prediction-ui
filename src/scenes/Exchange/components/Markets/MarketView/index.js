@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Card, Grid, Typography } from '@material-ui/core';
 import classNames from 'classnames/bind';
 import './styles.css';
+import { TokenImage } from '../../../helpers';
 
 @injectIntl
 @inject('store')
@@ -37,7 +38,7 @@ export default class MarketView extends PureComponent {
           <Grid container>
             <Grid item xs={3} className='fullheight'>
               <div className='fullWidth'>
-                <img alt={tokenName} src={require('../images/PRED.png')} />
+                <TokenImage token={market} />
               </div>
             </Grid>
             <Grid item xs={2}>

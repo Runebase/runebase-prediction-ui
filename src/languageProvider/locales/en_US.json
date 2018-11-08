@@ -371,6 +371,22 @@
   "cancelOrderConfirm.message": "You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.",
   "cancelOrderConfirm.title": "Please Confirm Your Order",
   "cancelOrderConfirm.messageWithFee": "You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} RUNES. Any unused transaction fees will be refunded to you. Please click OK to continue.",
+  
+  "sellOrderConfirmMsg.send": "send to address {address}",
+  "sellOrderConfirm.message": "You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.",
+  
+  "buyOrderConfirmMsg.send": "send to address {address}",
+  "buyOrderConfirm.message": "You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.",
+  
+  "str.execute": "execute",
+  "myTrade": "My Trade",
+  "myTrades": "My Trades",
+
+  "executeOrderConfirmMsg.send": "send to address {address}",
+  "executeOrderConfirm.message": "You are about to {txDesc} for {txAmount} {txToken}. Please click OK to continue.",
+  "executeOrderConfirm.title": "Please Confirm Your Order",
+  "executeOrderConfirm.messageWithFee": "You are about to {txDesc} for {txAmount} {txToken} with a maximum transaction fee of {txFee} RUNES. Any unused transaction fees will be refunded to you. Please click OK to continue.",
+
   "wallet.changePassphrase": "Change Passphrase",
   "wallet.encrypt": "Encrypt",
   "wallet.encryptLabel": "Please enter passphrase to encrypt your wallet",

@@ -170,10 +170,10 @@ export default class MarketInfo extends Component {
             );                        
           })()}            
           <Grid item xs={12}>
-            <withStyles>{wallet.market}/RUNES</withStyles>
+            <div>{wallet.market}/RUNES</div>
           </Grid>
           <Grid item xs={12}>
-            <withStyles>Contract Address: {wallet.currentMarketContract}</withStyles>
+            <div>Contract Address: {wallet.currentMarketContract}</div>
           </Grid>
         </Grid>        
       </div>
