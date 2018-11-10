@@ -1,0 +1,6 @@
+.BUYORDER{
+  box-shadow: inset 8px 0 10px -6px blue, inset -8px 0 10px -6px blue;  
+}
+.root{
+ box-shadow: inset -8px 0 10px -6px black;
+}

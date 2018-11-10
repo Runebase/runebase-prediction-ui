@@ -100,7 +100,7 @@ export default class ExecuteOrderConfirmDialog extends Component {
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={onClose}>
-            <FormattedMessage id="str.execute" defaultMessage="Execute" />
+            <FormattedMessage id="str.cancel" defaultMessage="Cancel" />
           </Button>
           <Button color="primary" onClick={onConfirm}>
             <FormattedMessage id="str.confirm" defaultMessage="OK" />

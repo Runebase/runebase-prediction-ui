@@ -19,6 +19,8 @@ const INIT_VALUES = {
   canceledOrderInfo: '',
   buyOrderInfo: '',
   sellOrderInfo: '',
+  selectedOrderInfo: '',
+  selectedOrderId: 0,
   chartInfo: '',
   syncPercent: 0,
   syncBlockNum: 0,
@@ -35,10 +37,13 @@ let syncInfoInterval;
 let syncChartInterval;
 let syncMyOrderInterval;
 let syncSellOrderInterval;
+let syncSelectedOrderInterval;
 let syncBuyOrderInterval;
 let syncMarketInterval;
 
 export default class GlobalStore {
+  @observable selectedOrderId = INIT_VALUES.selectedOrderId
+  @observable selectedOrderInfo = INIT_VALUES.selectedOrderInfo
   @observable marketInfo = INIT_VALUES.marketInfo
   @observable buyOrderInfo = INIT_VALUES.buyOrderInfo
   @observable sellOrderInfo = INIT_VALUES.sellOrderInfo
@@ -104,6 +109,10 @@ export default class GlobalStore {
     this.getSellOrderInfo();
     this.subscribeSellOrderInfo();
 
+    // Call SellOrders once to init the wallet addresses used by other stores
+    this.getSelectedOrderInfo();
+    this.subscribeSelectedOrderInfo();
+
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
     syncInfoInterval = setInterval(this.getSyncInfo, AppConfig.intervals.syncInfo);
@@ -111,7 +120,69 @@ export default class GlobalStore {
     syncMyOrderInterval = setInterval(this.getMyOrderInfo, AppConfig.intervals.myOrderInfo);
     syncBuyOrderInterval = setInterval(this.getBuyOrderInfo, AppConfig.intervals.buyOrderInfo);
     syncSellOrderInterval = setInterval(this.getSellOrderInfo, AppConfig.intervals.sellOrderInfo);
+    syncSelectedOrderInterval = setInterval(this.getSelectedOrderInfo, AppConfig.intervals.selectedOrderInfo);
     syncMarketInterval = setInterval(this.getMarketInfo, AppConfig.intervals.marketInfo);
+  }
+
+  /*
+  *
+  *
+  */
+
+  @action
+  setSelectedOrderId = (orderId) => {
+    this.selectedOrderId = orderId;
+    console.log(this.selectedOrderInfo);
+  }
+
+  /*
+  *
+  *
+  */
+
+  @action
+  onSelectedOrderInfo = (selectedOrderInfo) => {
+    if (selectedOrderInfo.error) {
+      console.error(selectedOrderInfo.error.message); // eslint-disable-line no-console
+    } else {
+      this.selectedOrderInfo = selectedOrderInfo[0];
+    }
+  }
+  /*
+  *
+  *
+  */
+  @action
+  getSelectedOrderInfo = async () => {
+    try {
+      const orderBy = { field: 'price', direction: 'ASC' };
+      const filters = [{ orderId: this.selectedOrderId }];
+      const selectedOrderInfo = await queryAllNewOrders(filters, orderBy, 0, 0);
+      this.onSelectedOrderInfo(selectedOrderInfo);
+    } catch (error) {
+      this.onSelectedOrderInfo({ error });
+    }
+  }
+  /*
+  *
+  *
+  */
+  subscribeSelectedOrderInfo = () => {
+    const self = this;
+    apolloClient.subscribe({
+      query: getSubscription(channels.ON_SELECTEDORDER_INFO),
+    }).subscribe({
+      next({ data, errors }) {
+        if (errors && errors.length > 0) {
+          self.onSelectedOrderInfo({ error: errors[0] });
+        } else {
+          self.onSelectedOrderInfo(data.onSelectedOrderInfo);
+        }
+      },
+      error(err) {
+        self.onSelectedOrderInfo({ error: err.message });
+      },
+    });
   }
 
   /*

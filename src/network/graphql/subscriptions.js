@@ -45,6 +45,13 @@ const subscriptions = {
       }
     }
   `,
+  onSelectedOrderInfo: `
+    subscription OnSelectedOrderInfo {
+      onSelectedOrderInfo {
+        ${getTypeDef('NewOrder')}
+      }
+    }
+  `,
 };
 
 function getSubscription(name) {
@@ -58,5 +65,6 @@ export const channels = {
   ON_MYORDER_INFO: 'onMyOrderInfo',
   ON_BUYORDER_INFO: 'onBuyOrderInfo',
   ON_SELLORDER_INFO: 'onSellOrderInfo',
+  ON_SELECTEDORDER_INFO: 'onSelectedOrderInfo',
   ON_MARKET_INFO: 'onMarketInfo',
 };

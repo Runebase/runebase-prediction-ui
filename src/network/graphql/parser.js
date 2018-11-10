@@ -52,7 +52,7 @@ class GraphParser {
       priceDiv: entry.priceDiv,
       time: entry.time,
       amount: entry.amount,
-      startAmount: entry.amount,
+      startAmount: entry.startAmount,
       blockNum: entry.blockNum,
     }));
   }

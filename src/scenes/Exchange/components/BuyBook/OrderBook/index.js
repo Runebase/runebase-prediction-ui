@@ -3,9 +3,25 @@ import PropTypes from 'prop-types';
 import { Icon } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import { inject } from 'mobx-react';
+import _ from 'lodash';
 import { injectIntl, defineMessages } from 'react-intl';
-import { Button, Grid, Typography, withStyles, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {
+  Divider,
+  withMobileDialog,
+  Input, 
+  Button, 
+  Grid, 
+  Typography, 
+  withStyles, 
+  ExpansionPanel, 
+  ExpansionPanelSummary, 
+  ExpansionPanelDetails,Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogContentText, 
+  DialogTitle } from '@material-ui/core';
+import Slider from '@material-ui/lab/Slider';
+import { Clear } from '@material-ui/icons';
 import ExecuteOrderTxConfirmDialog from '../ExecuteOrderTxConfirmDialog';
 import { TokenImage, OrderTypeIcon, StatusIcon } from '../../../helpers';
 
@@ -22,7 +38,7 @@ const messages = defineMessages({
 @injectIntl
 @inject('store')
 @withStyles(styles, { withTheme: true })
-export default class OrderBook extends PureComponent {
+class OrderBook extends PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     orderId: PropTypes.string,
@@ -31,151 +47,336 @@ export default class OrderBook extends PureComponent {
   static defaultProps = {
     orderId: undefined,
   };
+  constructor(props) {
+    super(props);
+    this.state = { 
+      openError: false,
+      exchangeAmount: 0, 
+      total: 0,
+      open: false,
+    };
+  }
 
+  handleClickOpen = async (orderId) => {
+    try {
+      const response = await this.props.store.global.setSelectedOrderId(orderId);
+      const response2 = await this.props.store.global.getSelectedOrderInfo();
+      this.setState({ open: true });
+    } catch(error) {
+      console.log('error');
+    }    
+  };
+
+  onExecuteOrder = () => {
+    if (this.props.store.wallet.currentAddressSelected === '') {
+      this.setState({ 
+        openError: true,
+      });
+    }
+  }
+
+  addressCheck = () => {
+    if (this.props.store.wallet.currentAddressSelected === '') {
+      this.setState({ 
+        openError: true,
+      });
+    }
+  }
+
+  handleClose = () => {
+    this.setState({ 
+      openError: false,
+      open: false, 
+    });
+  };
+
+  handleChange = (event, value, price) => {
+    const newTotal= value * price;
+    this.setState({ 
+      exchangeAmount: value, 
+      total: newTotal.toFixed(8),
+    });
+  };
+
+  changeAmount = (event, price, walletAmount, amountToken, maxSlider) => {
+    const regex = /^[0-9]+(\.\d{1,8})?$/;
+    let total;
+    total = event.target.value * price;
+    if (this.props.store.wallet.currentAddressSelected === '') {
+      this.setState({
+        hasError: true,        
+      });
+    }
+    else{
+      if (event.target.value === '' || regex.test(event.target.value)) {        
+        this.setState({
+          exchangeAmount: event.target.value,
+          total: total.toFixed(8),
+          hasError: false,
+        });      
+      }
+      if (total > walletAmount) {
+        total = maxSlider * price;
+        this.setState({
+          exchangeAmount: maxSlider,
+          total: total.toFixed(8),
+          hasError: false,
+        });
+      }
+    }            
+  }
 
   render() {
-    const { classes } = this.props;
-    const { store: { wallet } } = this.props;
+    const { classes, fullScreen } = this.props;
+    const { store: { wallet, global } } = this.props;
     const { orderId, txid, buyToken, sellToken, amount, startAmount, owner, blockNum, time, price, token, type, status } = this.props.event;
-    const amountToken = amount / 1e8;
-    const startAmountToken = startAmount / 1e8;
-    const filled = startAmount - amount;
-    let total = amountToken * price;
-    total = total.toFixed(8);
-    const exchangeAmount = amount;
+    const amountTokenLabel = amount / 1e8;
+    const amountToken = global.selectedOrderInfo.amount / 1e8;
+    const startAmountToken = global.selectedOrderInfo.startAmount / 1e8;
+    const filled = (global.selectedOrderInfo.startAmount - global.selectedOrderInfo.amount) / 1e8;
+    let total = amountToken;
+    total = total.toFixed(8).replace(/\.?0+$/, "");;
+    const exchangeAmount = this.state.exchangeAmount * 1e8;
+    let walletAmount;
+    let availableGasAmount;
+    let maxSlider;
+
+    if (wallet.currentAddressKey !== '') {
+      switch(token){
+        case 'PRED':
+          walletAmount = wallet.addresses[wallet.currentAddressKey].exchangepred;
+          availableGasAmount = wallet.addresses[wallet.currentAddressKey].runebase;
+          break;
+        case 'FUN':
+          walletAmount = wallet.addresses[wallet.currentAddressKey].exchangefun;
+          availableGasAmount = wallet.addresses[wallet.currentAddressKey].runebase;
+          break;  
+        default:
+          walletAmount = 0;
+          availableGasAmount = wallet.addresses[wallet.currentAddressKey].runebase;
+          break; 
+      } 
+    }
+
+    let maxAmount = walletAmount; 
+    maxAmount = _.floor(maxAmount, 3);
+    if (maxAmount < total) {
+      maxSlider = maxAmount;
+      maxSlider = maxSlider.toFixed(8).replace(/\.?0+$/, "");;
+    }
+    else{
+      maxSlider = amountToken;
+    }
     return (
       <div className={`classes.root ${type}`}>
-        <ExpansionPanel className={type}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Grid container className='centerText' wrap="nowrap"> 
-              <Grid item xs={2} zeroMinWidth>
-                <Typography noWrap>orderId</Typography>
-                <Typography noWrap>{orderId}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography noWrap>token</Typography>
-                <Typography noWrap>{token}</Typography> 
-              </Grid>
-              <Grid item xs={2}>
-                <Typography noWrap>amount</Typography>
-                <Typography noWrap>{amountToken}</Typography> 
-              </Grid>
-              <Grid item xs={2}>
-                <Typography noWrap>price</Typography>
-                <Typography noWrap>{price}</Typography> 
-              </Grid>
-              <Grid item xs={2}>
-                <Typography noWrap>type</Typography>
-                <Typography noWrap>{type}</Typography> 
-              </Grid>
-              <Grid item xs={2}>
-                <Typography noWrap>status</Typography>
-                <Typography noWrap>{status}</Typography> 
-              </Grid>
-            </Grid>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.dashboardOrderBookWrapper} >
-    
-            <Grid container className='centerText' >
-              <Grid item xs={12}>
-                <Grid container justify="center">
-                  <Grid item xs={3}>
-                    <p>{token}/RUNES</p>
-                    <div className='fullwidth'>
-                      <TokenImage token={token} />
-                    </div>                
+        <Dialog
+          open={this.state.openError}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Withdraw</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please select an address first.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>            
+            <Button onClick={this.handleClose}>Close</Button>
+          </DialogActions>
+        </Dialog> 
+        <div className={type}>
+          <div>
+            <Grid container className='centerText gridLabelContainer' wrap="nowrap">
+              <Grid item xs={9} zeroMinWidth>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Grid container>
+                      <Grid item xs={4} zeroMinWidth>
+                        <Typography className='listLabel'>orderId</Typography>
+                        <Typography className='listInfo'>{orderId}</Typography>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <Typography className='listLabel'>status</Typography>
+                        <Typography className='listInfo'>{status}</Typography> 
+                      </Grid>                  
+                      <Grid item xs={4}>
+                        <Typography className='listLabel'>amount</Typography>
+                        <Typography className='listInfo'>{amountTokenLabel}</Typography> 
+                      </Grid>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={3} className='inheritHeight'>
-                    <p>{type}</p>
-                    <OrderTypeIcon orderType={type} />                
-                  </Grid>
-                  <Grid item xs={3} className='inheritHeight'>
-                    <p>{status}</p>
-                    <StatusIcon status={status} />
+                  <Grid item xs={12} className='spacingOrdersLabel'>
+                    <Grid container>                  
+                      <Grid item xs={4}>
+                        <Typography className='listLabel'>token</Typography>
+                        <Typography className='listInfo'>{token}</Typography> 
+                      </Grid>
+                      <Grid item xs={4}>
+                        <Typography className='listLabel'>type</Typography>
+                        <Typography className='listInfo'>{type}</Typography> 
+                      </Grid>                  
+                      <Grid item xs={4}>
+                        <Typography className='listLabel'>price</Typography>
+                        <Typography className='listInfo'>{price}</Typography> 
+                      </Grid>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>                
-                <Grid container className='spacingOrderBook vcenter'>
-                  <Grid item xs={3} className='inheritHeight ordersRoundBox'>
-                    <Typography variant='title' className='ordersPropertyLabel'>amount</Typography>
-                    <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{amountToken}</Typography>
-                  </Grid>
-                  <Grid item xs={3} className='inheritHeight ordersRoundBox'>
-                    <Typography variant='title' className='ordersPropertyLabel'>price</Typography>
-                    <div className='verticalCenter'>
-                      <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{price}</Typography>
-                    </div>
-                  </Grid>
-                  <Grid item xs={3} className='inheritHeight ordersRoundBox'>
-                    <Typography variant='title' className='ordersPropertyLabel'>total</Typography>
-                    <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{total}</Typography>
-                  </Grid>
-                  <Grid item xs={3} className='inheritHeight ordersRoundBox'>
-                    <Typography variant='title' className='ordersPropertyLabel'>filled</Typography> 
-                    <div className='ordersPropertyContent inheritHeight'>
-                      <Grid container>
-                        <Grid item xs={12}>
-                          <Typography variant='subheading'>{filled}</Typography>
-                        </Grid>
-                        <span className='divider'></span> 
-                        <Grid item xs={12}>
-                          <Typography variant='subheading'>{startAmountToken}</Typography>
-                        </Grid>
-                      </Grid>  
-                    </div> 
-                  </Grid>
-                </Grid>                
-              </Grid>
+              <Grid item xs={3} className='buttonCell'>
+                <button
+                  /* ClassName Negative for SellBook */
+                  className="ui negative button"
+                  onClick={ () => this.handleClickOpen(orderId) } >
+                  Sell
+                </button>
+              </Grid>              
+            </Grid>
+          </div>          
+        </div>
+        <Dialog
+          fullScreen={fullScreen}
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="responsive-dialog-title"
+          className="xParent"
+        >
+          <Clear className='cancelIconRed xOrder' onClick={this.handleClose} />
+          <DialogTitle id="responsive-dialog-title">Order Id: {global.selectedOrderInfo.orderId}</DialogTitle>
+          <DialogContent>
               
-              <Grid item xs={12}className='spacingOrderBook'>
-                <Typography variant='subheading' className=''>owner:</Typography>
-                <Typography className={classes.root}><a href={`https://explorer.runebase.io/address/${owner}`}>{owner}</a></Typography>                            
-              </Grid>
-              <Grid item xs={12} className='spacingOrderBook'>
-                <Typography variant='subheading' className={classes.root}>txid:</Typography>  
-                <Typography className={classes.root}><a href={`https://explorer.runebase.io/tx/${txid}`}>{txid}</a></Typography>    
-              </Grid>               
-              <Grid item xs={6} className='spacingOrderBook'>
-                <Typography variant='subheading'>created time</Typography>
-                <Typography>{time}</Typography>                
-              </Grid>
-              <Grid item xs={6} className='spacingOrderBook'>
-                <Typography variant='subheading'>created blockNum</Typography>
-                <Typography>{blockNum}</Typography>
-              </Grid>
-              <form>
-                <div data-role="rangeslider">
-                  <input type="range" name="range-1a" id="range-1a" min="0" max="100" value="40" data-popup-enabled="true" data-show-value="true" />
+            <div className={classes.dashboardOrderBookWrapper} >        
+              <Grid container className='centerText xOverflow'>
+                  
+                <Grid item xs={12}>
+                  <Grid container justify="center">
+                    <Grid item xs={3}>
+                      <p>{global.selectedOrderInfo.token}/RUNES</p>
+                      <div className='fullwidth'>
+                        <TokenImage token={global.selectedOrderInfo.token} />
+                      </div>                
+                    </Grid>
+                    <Grid item xs={3} className='inheritHeight'>
+                      <p>{global.selectedOrderInfo.type}</p>
+                      <OrderTypeIcon orderType={global.selectedOrderInfo.type} />                
+                    </Grid>
+                    <Grid item xs={3} className='inheritHeight'>
+                      <p>{global.selectedOrderInfo.status}</p>
+                      <StatusIcon status={global.selectedOrderInfo.status} />
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>                
+                  <Grid container className='spacingOrderBook vcenter'>
+                    <Grid item xs={3} className='inheritHeight ordersRoundBox'>
+                      <Typography variant='title' className='ordersPropertyLabel'>amount</Typography>
+                      <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{amountToken}</Typography>
+                    </Grid>
+                    <Grid item xs={3} className='inheritHeight ordersRoundBox'>
+                      <Typography variant='title' className='ordersPropertyLabel'>price</Typography>
+                      <div className='verticalCenter'>
+                        <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{global.selectedOrderInfo.price}</Typography>
+                      </div>
+                    </Grid>
+                    <Grid item xs={3} className='inheritHeight ordersRoundBox'>
+                      <Typography variant='title' className='ordersPropertyLabel'>total</Typography>
+                      <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{total}</Typography>
+                    </Grid>
+                    <Grid item xs={3} className='inheritHeight ordersRoundBox'>
+                      <Typography variant='title' className='ordersPropertyLabel'>filled</Typography> 
+                      <div className='ordersPropertyContent inheritHeight'>
+                        <Grid container>
+                          <Grid item xs={12}>
+                            <Typography variant='subheading'>{filled}</Typography>
+                          </Grid>
+                          <span className='filledDivider'></span> 
+                          <Grid item xs={12}>
+                            <Typography variant='subheading'>{startAmountToken}</Typography>
+                          </Grid>
+                        </Grid>  
+                      </div> 
+                    </Grid>
+                  </Grid>                
+                </Grid>
+                  
+                <Grid item xs={12}className='spacingOrderBook'>
+                  <div className="ui horizontal divider">
+                    Owner
+                  </div>
+                  <Typography className={classes.root}><a href={`https://explorer.runebase.io/address/${global.selectedOrderInfo.owner}`}>{global.selectedOrderInfo.owner}</a></Typography>                            
+                </Grid>
+                <Grid item xs={12} className='spacingOrderBook'>
+                  <div className="ui horizontal divider">
+                    TX ID
+                  </div>
+                  <Typography className={classes.root}><a href={`https://explorer.runebase.io/tx/${global.selectedOrderInfo.txid}`}>{global.selectedOrderInfo.txid}</a></Typography>    
+                </Grid>               
+                <Grid item xs={6} className='spacingOrderBook'>
+                  <Typography variant='subheading' className={classes.root}>Created Time</Typography>  
+                  <Typography>{global.selectedOrderInfo.time}</Typography>                
+                </Grid>
+                <Grid item xs={6} className='spacingOrderBook'>
+                  <Typography variant='subheading' className={classes.root}>Created BlockNum</Typography>  
+                  <Typography>{global.selectedOrderInfo.blockNum}</Typography>
+                </Grid>
+                <div className="ui horizontal divider">
+                  Trade
                 </div>
-              </form>
-              <Grid item xs={12}>
-                <div>
-                  <Button 
-                    onClick={ () =>{                      
-                      if (this.props.store.wallet.currentAddressSelected === '')  {
-                        this.addressCheck();                        
-                      }
-                      else {
-                        wallet.prepareExecuteOrderExchange(orderId, exchangeAmount); 
-                      }                      
-                    }} 
-                    color="primary">
-                    Execute Order
-                  </Button>
-                  <ExecuteOrderTxConfirmDialog onExecuteOrder={this.onExecuteOrder} id={messages.executeOrderConfirmMsgSendMsg.id} />
+                <Grid item xs={6}>
+                  <Typography variant='subheading' className={classes.root}>{global.selectedOrderInfo.token} Available</Typography>  
+                  <Typography>{walletAmount}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant='subheading' className={classes.root}>Gas Available</Typography>  
+                  <Typography>{availableGasAmount}</Typography>
+                </Grid>
+                <div className="ui horizontal divider">
                 </div>
+                <Typography variant='subheading' className={classes.root}>Amount</Typography>
+                <Grid item xs={12}>
+                  <Slider
+                    className='sliderAmount'
+                    max={maxSlider}
+                    value={this.state.exchangeAmount}
+                    aria-labelledby="label"
+                    onChange={ (e, val) => this.handleChange(e, val, price) }
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Input className='inputWidth inputOrderSpacing' type="number" step="0.00000001" min="0" max={amountToken} value={this.state.exchangeAmount} onChange={ (event) => { this.changeAmount(event, price, walletAmount, amountToken, maxSlider); } } name="amount" />
+                </Grid>
+                <Grid item xs={12}>
+                  {this.state.hasError && <span>Please select an address</span>} 
+                  {this.state.total && <span className='messageStyle'>Sell <span className='fat'>{this.state.exchangeAmount}</span> {token} for <span className='fat'>{this.state.total}</span> RUNES</span>}
+                </Grid>
+                <Grid item xs={12}>
+                  <div>
+                    <button 
+                      className="ui negative button buyButton"
+                      onClick={ () =>{                      
+                        if (this.props.store.wallet.currentAddressSelected === '')  {
+                          this.addressCheck();                        
+                        }
+                        else {
+                          wallet.prepareExecuteOrderExchange(global.selectedOrderInfo.orderId, exchangeAmount.toString()); 
+                        }                      
+                      }}>
+                        Sell
+                    </button>
+                    <ExecuteOrderTxConfirmDialog onExecuteOrder={this.onExecuteOrder} id={messages.executeOrderConfirmMsgSendMsg.id} />
+                  </div>
+                </Grid>
               </Grid>
-            </Grid>
-            <Grid container>
-              
-            </Grid>
-            <Grid container>
-              
-            </Grid>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+            </div>
+          </DialogContent>            
+        </Dialog>
       </div>
     );
   }
 }
+
+OrderBook.propTypes = {
+  fullScreen: PropTypes.bool.isRequired,
+};
+
+export default withMobileDialog()(OrderBook);

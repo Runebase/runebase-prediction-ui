@@ -5,6 +5,7 @@ module.exports = {
     myOrderInfo: 10000,
     buyOrderInfo: 30000,
     sellOrderInfo: 30000,
+    selectedOrderInfo: 30000,
     marketInfo: 30000,
     tooltipDelay: 300,
     snackbarLong: 5000,

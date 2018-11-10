@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Done, DoneAll, Clear } from '@material-ui/icons';
 import { Icon } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 
-export class TokenImage extends Component {
+export class TokenImage extends PureComponent {
   static propTypes = {
     token: PropTypes.string,
   };
@@ -23,7 +23,7 @@ export class TokenImage extends Component {
   }
 }
 
-export class OrderTypeIcon extends Component {
+export class OrderTypeIcon extends PureComponent {
   static propTypes = {
     orderType: PropTypes.string,
   };
@@ -42,7 +42,7 @@ export class OrderTypeIcon extends Component {
   }
 }
 
-export class StatusIcon extends Component {
+export class StatusIcon extends PureComponent {
   static propTypes = {
     status: PropTypes.string,
   };

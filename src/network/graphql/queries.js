@@ -127,17 +127,6 @@ class GraphQuery {
     return GraphParser.getParser(this.type)(res.data[this.queryName]);
   }
 
-  async execute2() {
-    const query = this.build();
-    if (process.env.REACT_APP_ENV === 'dev') {
-      window.queries += `\n${query}`;
-    }
-    const res = await client.query({
-      query: gql`${query}`,
-      fetchPolicy: 'network-only',
-    });
-    return GraphParser.getParser(this.type)(res.data[this.queryName]);
-  }
 }
 /*
 * Queries allOrders from GraphQL with optional filters.

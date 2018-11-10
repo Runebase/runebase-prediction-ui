@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withStyles, Card } from '@material-ui/core';
 import { defineMessages } from 'react-intl';
+import ReactPaginate from 'react-paginate';
 import _Loading from '../../../../components/Loading';
 import OrderBook from './OrderBook';
 import styles from './styles';

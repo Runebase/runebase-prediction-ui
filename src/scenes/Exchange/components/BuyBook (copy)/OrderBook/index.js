@@ -4,28 +4,17 @@ import { Icon } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import { inject } from 'mobx-react';
 import { injectIntl, defineMessages } from 'react-intl';
-import { 
-  Button, 
-  Grid, 
-  Typography, 
-  withStyles, 
-  ExpansionPanel, 
-  ExpansionPanelSummary, 
-  ExpansionPanelDetails,Dialog, 
-  DialogActions, 
-  DialogContent, 
-  DialogContentText, 
-  DialogTitle } from '@material-ui/core';
+import { Button, Grid, Typography, withStyles, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import CancelOrderTxConfirmDialog from '../CancelOrderTxConfirmDialog';
+import ExecuteOrderTxConfirmDialog from '../ExecuteOrderTxConfirmDialog';
 import { TokenImage, OrderTypeIcon, StatusIcon } from '../../../helpers';
 
 
 import styles from './styles';
 import './styles.css';
 const messages = defineMessages({
-  cancelOrderConfirmMsgSendMsg: {
-    id: 'cancelOrderConfirmMsg.send',
+  executeOrderConfirmMsgSendMsg: {
+    id: 'executeOrderConfirmMsg.send',
     defaultMessage: 'send to address {address}',
   },
 });
@@ -38,62 +27,25 @@ export default class OrderBook extends PureComponent {
     classes: PropTypes.object.isRequired,
     orderId: PropTypes.string,
   };
-  constructor(props) {
-    super(props);
-    this.state = { openError: false };
-  }
+
   static defaultProps = {
     orderId: undefined,
   };
-  onCancelOrder = () => {
-    if (this.props.store.wallet.currentAddressSelected === '') {
-      this.setState({ 
-        openError: true,
-      });
-    }
-  }
 
-  addressCheck = () => {
-    if (this.props.store.wallet.currentAddressSelected === '') {
-      this.setState({ 
-        openError: true,
-      });
-    }
-  }
-
-  handleClose = () => {
-    this.setState({ 
-      openError: false, 
-    });
-  };
 
   render() {
     const { classes } = this.props;
     const { store: { wallet } } = this.props;
-    const { orderId, txid, buyToken, sellToken, amount, startAmount, owner, blockNum, time, price, token, type, status } = this.props.order;
+    const { orderId, txid, buyToken, sellToken, amount, startAmount, owner, blockNum, time, price, token, type, status } = this.props.event;
     const amountToken = amount / 1e8;
     const startAmountToken = startAmount / 1e8;
     const filled = startAmount - amount;
     let total = amountToken * price;
     total = total.toFixed(8);
+    const exchangeAmount = amount;
     return (
-      <div className={`classes.root ${status}`}>
-        <Dialog
-          open={this.state.openError}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">Withdraw</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Please select an address first.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>            
-            <Button onClick={this.handleClose}>Close</Button>
-          </DialogActions>
-        </Dialog> 
-        <ExpansionPanel className={status}>
+      <div className={`classes.root ${type}`}>
+        <ExpansionPanel className={type}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Grid container className='centerText' wrap="nowrap"> 
               <Grid item xs={2} zeroMinWidth>
@@ -192,12 +144,26 @@ export default class OrderBook extends PureComponent {
                 <Typography variant='subheading'>created blockNum</Typography>
                 <Typography>{blockNum}</Typography>
               </Grid>
+              <form>
+                <div data-role="rangeslider">
+                  <input type="range" name="range-1a" id="range-1a" min="0" max="100" value="40" data-popup-enabled="true" data-show-value="true" />
+                </div>
+              </form>
               <Grid item xs={12}>
                 <div>
-                  <Button onClick={ () =>  wallet.prepareCancelOrderExchange(orderId) } color="primary">
-                    Cancel Order
+                  <Button 
+                    onClick={ () =>{                      
+                      if (this.props.store.wallet.currentAddressSelected === '')  {
+                        this.addressCheck();                        
+                      }
+                      else {
+                        wallet.prepareExecuteOrderExchange(orderId, exchangeAmount); 
+                      }                      
+                    }} 
+                    color="primary">
+                    Execute Order
                   </Button>
-                  <CancelOrderTxConfirmDialog onCancelOrder={this.onCancelOrder} id={messages.cancelOrderConfirmMsgSendMsg.id} />
+                  <ExecuteOrderTxConfirmDialog onExecuteOrder={this.onExecuteOrder} id={messages.executeOrderConfirmMsgSendMsg.id} />
                 </div>
               </Grid>
             </Grid>
