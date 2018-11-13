@@ -10,6 +10,7 @@ import { createTransferTx, createTransferExchange, createRedeemExchange, createO
 import { decimalToSatoshi } from '../helpers/utility';
 import Tracking from '../helpers/mixpanelUtil';
 
+
 // TODO: ADD ERROR TEXT FIELD FOR WITHDRAW DIALOGS, ALSO INTL TRANSLATION UPDATE
 const messages = defineMessages({
   withdrawDialogInvalidAddressMsg: {
@@ -47,6 +48,7 @@ const messages = defineMessages({
 });
 
 const INIT_VALUE = {
+  txSentDialogOpen: false,
   market: 'PRED',
   exchangeAddress: '5dNoKDt3fQFKMXeUR21SoappnLg9YEggMU',
   marketContract: '66cf6409b12e09d9d16395d2f0b224e56c3dc3a2',
@@ -84,6 +86,7 @@ const INIT_VALUE_DIALOG = {
 };
 
 export default class {
+  @observable txSentDialogOpen = INIT_VALUE.txSentDialogOpen;
   @observable exchangeAddress = INIT_VALUE.exchangeAddress;
   @observable currentAddressBalanceRunes = INIT_VALUE.currentAddressBalanceRunes;
   @observable currentAddressBalanceToken = INIT_VALUE.currentAddressBalanceToken;
@@ -126,7 +129,21 @@ export default class {
     );
   }
   @action
+  closeTxDialog = async () => {
+    try {
+      runInAction(() => {
+        this.txSentDialogOpen = false;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.app.ui.setError(error.message, Routes.api.createTransferTx);
+      });
+    }
+  }
+
+  @action
   prepareRedeemExchange = async (walletAddress, confirmAmount, tokenChoice) => {
+    this.txid = null;
     this.walletAddress = walletAddress;
     this.toAddress = this.exchangeAddress;
     this.confirmAmount = confirmAmount;
@@ -173,6 +190,8 @@ export default class {
       const { data: { redeemExchange } } = await createRedeemExchange(walletAddress, toAddress, selectedToken, amount);
       this.app.myWallet.history.addTransaction(new Transaction(redeemExchange));
       runInAction(() => {
+        this.txid = redeemExchange.txid;
+        this.txSentDialogOpen = true;
         this.app.pendingTxsSnackbar.init();
       });
     } catch (error) {
@@ -251,6 +270,7 @@ export default class {
 
   @action
   prepareBuyOrderExchange = async (price, confirmAmount, tokenChoice, orderType) => {
+    this.txid = null;
     this.walletAddress = this.currentAddressSelected;
     this.toAddress = this.exchangeAddress;
     this.confirmAmount = confirmAmount;
@@ -279,6 +299,7 @@ export default class {
 
   @action
   prepareSellOrderExchange = async (price, confirmAmount, tokenChoice, orderType) => {
+    this.txid = null;
     this.walletAddress = this.currentAddressSelected;
     this.toAddress = this.exchangeAddress;
     this.confirmAmount = confirmAmount;
@@ -324,11 +345,13 @@ export default class {
       const { data: { orderExchange } } = await createOrderExchange(walletAddress, toAddress, selectedToken, amount, price, orderType);
       this.app.myWallet.history.addTransaction(new Transaction(orderExchange));
       runInAction(() => {
+        this.txid = orderExchange.txid;
+        this.txSentDialogOpen = true;
         this.app.pendingTxsSnackbar.init();  
         this.app.activeOrderStore.getActiveOrderInfo();    
       });
     } catch (error) {
-      runInAction(() => {
+      runInAction(() => {        
         this.app.ui.setError(error.message, Routes.api.createTransferTx);
       });
     }
@@ -336,6 +359,7 @@ export default class {
 
   @action
   prepareCancelOrderExchange = async (orderId) => {
+    this.txid = null;
     this.walletAddress = this.currentAddressSelected;
     this.toAddress = this.exchangeAddress;
     this.orderId = orderId;
@@ -375,6 +399,8 @@ export default class {
       const { data: { cancelOrderExchange } } = await createCancelOrderExchange(walletAddress, orderId);
       this.app.myWallet.history.addTransaction(new Transaction(cancelOrderExchange));
       runInAction(() => {
+        this.txid = cancelOrderExchange.txid;
+        this.txSentDialogOpen = true;
         this.app.pendingTxsSnackbar.init();
         this.app.activeOrderStore.getActiveOrderInfo();
       });
@@ -387,6 +413,7 @@ export default class {
 
   @action
   prepareExecuteOrderExchange = async (orderId, exchangeAmount) => {
+    this.txid = null;
     this.walletAddress = this.currentAddressSelected;
     this.toAddress = this.exchangeAddress;
     this.orderId = orderId;
@@ -427,6 +454,8 @@ export default class {
       const { data: { executeOrderExchange } } = await createExecuteOrderExchange(walletAddress, orderId, exchangeAmount);
       this.app.myWallet.history.addTransaction(new Transaction(executeOrderExchange));
       runInAction(() => {
+        this.txid = executeOrderExchange.txid;
+        this.txSentDialogOpen = true;
         this.app.pendingTxsSnackbar.init();
       });
     } catch (error) {
@@ -438,6 +467,7 @@ export default class {
 
   @action
   prepareDepositExchange = async (walletAddress, confirmAmount, tokenChoice) => {
+    this.txid = null;
     this.walletAddress = walletAddress;
     this.toAddress = this.exchangeAddress;
     this.confirmAmount = confirmAmount;
@@ -473,7 +503,7 @@ export default class {
     }
     this.createTransferTransactionExchange(this.walletAddress, this.exchangeAddress, this.tokenChoice, amount);
     runInAction(() => {
-      onWithdraw();
+      onWithdraw();      
       this.txConfirmDialogOpen = false;
       Tracking.track('myWallet-withdraw');
     });
@@ -485,6 +515,8 @@ export default class {
       const { data: { transferExchange } } = await createTransferExchange(walletAddress, toAddress, selectedToken, amount);
       this.app.myWallet.history.addTransaction(new Transaction(transferExchange));
       runInAction(() => {
+        this.txid = transferExchange.txid;
+        this.txSentDialogOpen = true;
         this.app.pendingTxsSnackbar.init();
       });
     } catch (error) {

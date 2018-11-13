@@ -11,6 +11,7 @@ import {
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
 import { FastForward, AccountBalance } from '@material-ui/icons';
+import { TxSentDialog } from 'components';
 import RedeemExchangeTxConfirmDialog from '../RedeemExchangeTxConfirmDialog';
 
 const messages = defineMessages({
@@ -91,6 +92,13 @@ export default class RedeemExchange extends Component {
       open: false,
       open2: false,
     });
+  }
+  closeAll = () => {
+    this.setState({
+      open: false,
+      open2: false,
+    });
+    this.props.store.wallet.closeTxDialog();
   }
   render() {
     const { store: { wallet } } = this.props;
@@ -188,6 +196,13 @@ export default class RedeemExchange extends Component {
           </DialogActions>
         </Dialog>
         <RedeemExchangeTxConfirmDialog onRedeem={this.onRedeem} id={messages.redeemConfirmMsgSendMsg.id} />
+        {wallet.txSentDialogOpen && (
+          <TxSentDialog
+            txid={wallet.txid}
+            open={wallet.txSentDialogOpen}
+            onClose={this.closeAll}
+          />
+        )}
       </div>
     );
   }

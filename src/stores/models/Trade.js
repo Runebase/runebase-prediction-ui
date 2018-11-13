@@ -6,8 +6,6 @@
 export default class Trade {
   from = ''
   to = ''
-  xFrom = ''
-  xTo = ''
   status = ''
   soldTokens = ''
   boughtTokens = ''  
@@ -27,8 +25,6 @@ export default class Trade {
     this.app = app;
     this.from = Trade.from;
     this.to = Trade.to;
-    this.xFrom = Trade.xFrom;
-    this.xTo = Trade.xTo;
     this.status = Trade.status;
     this.soldTokens = Trade.soldTokens;
     this.boughtTokens = Trade.boughtTokens;    

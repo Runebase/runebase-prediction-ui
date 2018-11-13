@@ -23,6 +23,7 @@ import {
 import Slider from '@material-ui/lab/Slider';
 import { Clear } from '@material-ui/icons';
 import {BigNumber} from 'bignumber.js';
+import { TxSentDialog } from 'components';
 import ExecuteOrderTxConfirmDialog from '../ExecuteOrderTxConfirmDialog';
 import { TokenImage, OrderTypeIcon, StatusIcon } from '../../../helpers';
 
@@ -69,6 +70,10 @@ class OrderBook extends PureComponent {
   };
 
   onExecuteOrder = () => {
+    this.setState({ 
+      openError: false,
+      open: false, 
+    });
     if (this.props.store.wallet.currentAddressSelected === '') {
       this.setState({ 
         openError: true,
@@ -90,6 +95,14 @@ class OrderBook extends PureComponent {
       open: false, 
     });
   };
+
+  closeAll = () => {
+    this.setState({
+      open: false,
+      openError: false,
+    });
+    this.props.store.wallet.closeTxDialog();
+  }
 
   handleChange = (event, value, price) => {
     const newTotal= value * price;

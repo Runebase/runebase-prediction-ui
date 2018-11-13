@@ -11,6 +11,7 @@ import {
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
 import { FastRewind, AccountBalanceWallet } from '@material-ui/icons';
+import { TxSentDialog } from 'components';
 import FundExchangeTxConfirmDialog from '../FundExchangeTxConfirmDialog';
 
 const messages = defineMessages({
@@ -100,6 +101,15 @@ export default class FundExchange extends Component {
       open2: false,
     });
   }
+
+  closeAll = () => {
+    this.setState({
+      open: false,
+      open2: false,
+    });
+    this.props.store.wallet.closeTxDialog();
+  }
+
   render() {
     const { store: { wallet } } = this.props;
     const stylist = {
@@ -194,6 +204,13 @@ export default class FundExchange extends Component {
           </DialogActions>
         </Dialog>
         <FundExchangeTxConfirmDialog onWithdraw={this.onWithdraw} id={messages.txConfirmMsgSendMsg.id} />
+        {wallet.txSentDialogOpen && (
+          <TxSentDialog
+            txid={wallet.txid}
+            open={wallet.txSentDialogOpen}
+            onClose={this.closeAll}
+          />
+        )}
       </div>
     );
   }

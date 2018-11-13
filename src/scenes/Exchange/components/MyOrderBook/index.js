@@ -48,8 +48,8 @@ export default class MyOrderBook extends Component {
     this.props.store.fulfilledOrderStore.skip = this.props.store.fulfilledOrderStore.skip + 10;
     await this.props.store.fulfilledOrderStore.getActiveOrderInfo();
     this.setState({
-      isButtonDisabledActivePrev: this.props.store.fulfilledOrderStore.hasLess,
-      isButtonDisabledActiveNext: this.props.store.fulfilledOrderStore.hasMore,
+      isButtonDisabledFulfilledPrev: this.props.store.fulfilledOrderStore.hasLess,
+      isButtonDisabledFulfilledNext: this.props.store.fulfilledOrderStore.hasMore,
     });
   }
   

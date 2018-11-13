@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
+import { TxSentDialog } from 'components';
 import SellOrderExchangeTxConfirmDialog from '../SellOrderExchangeTxConfirmDialog';
 
 const messages = defineMessages({
@@ -44,6 +45,11 @@ export default class OrderExchange extends Component {
       openError: false, 
     });
   };
+
+  closeAll = () => {
+    this.props.store.wallet.closeTxDialog();
+  }
+
   render() {
     const { store: { wallet } } = this.props;
     const isEnabled = 
@@ -82,7 +88,14 @@ export default class OrderExchange extends Component {
           <DialogActions>            
             <Button onClick={this.handleClose}>Close</Button>
           </DialogActions>
-        </Dialog> 
+        </Dialog>
+        {wallet.txSentDialogOpen && (
+          <TxSentDialog
+            txid={wallet.txid}
+            open={wallet.txSentDialogOpen}
+            onClose={this.closeAll}
+          />
+        )} 
       </div>
     );
   }
