@@ -13,6 +13,7 @@ export default class MarketView extends PureComponent {
   render() {
     const { market, tokenName, price, change, volume } = this.props.event;
     const { store: { wallet } } = this.props;
+    const fixedVolume = parseFloat(volume).toFixed(2);
     let active = false;
     if (market === wallet.market) {
       active = true;

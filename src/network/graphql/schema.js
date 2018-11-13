@@ -97,7 +97,6 @@ const TYPE_DEF = {
     owner
     token
     tokenName
-    status
     price
     type
     orderType
@@ -109,12 +108,15 @@ const TYPE_DEF = {
     amount
     startAmount
     blockNum
+    status
   `,
 
   Trade: `
+    txid
     date
     from
     to
+    status
     soldTokens
     boughtTokens    
     tokenName
@@ -433,6 +435,10 @@ const ENUMS = {
     'WITHDRAW',
     'SUCCESS',
     'FAIL',
+    'ACTIVE',
+    'CANCELED',
+    'FULFILLED',
+    'PENDINGCANCEL',
   ],
 
   type: [

@@ -17,10 +17,31 @@ const subscriptions = {
       }
     }
   `,
-  onMyOrderInfo: `
-    subscription OnMyOrderInfo {
-      onMyOrderInfo {
+  onActiveOrderInfo: `
+    subscription OnActiveOrderInfo {
+      onActiveOrderInfo {
         ${getTypeDef('NewOrder')}
+      }
+    }
+  `,
+  onFulfilledOrderInfo: `
+    subscription OnFulfilledOrderInfo {
+      onFulfilledOrderInfo {
+        ${getTypeDef('NewOrder')}
+      }
+    }
+  `,
+  onCanceledOrderInfo: `
+    subscription OnCanceledOrderInfo {
+      onCanceledOrderInfo {
+        ${getTypeDef('NewOrder')}
+      }
+    }
+  `,
+  onMyTradeInfo: `
+    subscription OnMyTradeInfo {
+      onMyTradeInfo {
+        ${getTypeDef('Trade')}
       }
     }
   `,
@@ -63,6 +84,10 @@ export const channels = {
   ON_SYNC_INFO: 'onSyncInfo',
   ON_CHART_INFO: 'onChartInfo',
   ON_MYORDER_INFO: 'onMyOrderInfo',
+  ON_ACTIVEORDER_INFO: 'onActiveOrderInfo',
+  ON_FULFILLEDORDER_INFO: 'onFulfilledOrderInfo',
+  ON_CANCELEDORDER_INFO: 'onCanceledOrderInfo',
+  ON_MYTRADE_INFO: 'onMyTradeInfo',
   ON_BUYORDER_INFO: 'onBuyOrderInfo',
   ON_SELLORDER_INFO: 'onSellOrderInfo',
   ON_SELECTEDORDER_INFO: 'onSelectedOrderInfo',

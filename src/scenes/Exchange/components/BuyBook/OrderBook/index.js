@@ -93,7 +93,7 @@ class OrderBook extends PureComponent {
   handleChange = (event, value, price) => {
     const newTotal= value * price;
     this.setState({ 
-      exchangeAmount: value, 
+      exchangeAmount: value.toFixed(8), 
       total: newTotal.toFixed(8),
     });
   };
@@ -337,6 +337,7 @@ class OrderBook extends PureComponent {
                   <Slider
                     className='sliderAmount'
                     max={maxSlider}
+                    step={0.00000001}
                     value={this.state.exchangeAmount}
                     aria-labelledby="label"
                     onChange={ (e, val) => this.handleChange(e, val, price) }

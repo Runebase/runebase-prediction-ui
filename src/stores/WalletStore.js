@@ -199,8 +199,8 @@ export default class {
     });
     try {
       runInAction(() => {
-        this.app.global.getBuyOrderInfo();
-        this.app.global.getSellOrderInfo();
+        this.app.buyStore.getBuyOrderInfo();
+        this.app.sellStore.getSellOrderInfo();
         this.app.global.getChartInfo();
         this.app.global.getMarketInfo();
       });
@@ -218,9 +218,14 @@ export default class {
     }    
     try {
       runInAction(() => {
-        this.app.global.getMyOrderInfo();
-        this.app.global.getBuyOrderInfo();
-        this.app.global.getSellOrderInfo();
+        this.app.buyStore.getBuyOrderInfo();
+        this.app.sellStore.getSellOrderInfo();
+
+        this.app.activeOrderStore.getActiveOrderInfo();
+        this.app.fulfilledOrderStore.getFulfilledOrderInfo();
+        this.app.canceledOrderStore.getCanceledOrderInfo();
+
+        this.app.myTradeStore.getMyTradeInfo();
         this.app.global.getChartInfo();
         this.app.global.getMarketInfo();
       });
@@ -320,7 +325,7 @@ export default class {
       this.app.myWallet.history.addTransaction(new Transaction(orderExchange));
       runInAction(() => {
         this.app.pendingTxsSnackbar.init();  
-        this.app.global.getMyOrderInfo();      
+        this.app.activeOrderStore.getActiveOrderInfo();    
       });
     } catch (error) {
       runInAction(() => {
@@ -371,7 +376,7 @@ export default class {
       this.app.myWallet.history.addTransaction(new Transaction(cancelOrderExchange));
       runInAction(() => {
         this.app.pendingTxsSnackbar.init();
-        this.app.global.getMyOrderInfo();
+        this.app.activeOrderStore.getActiveOrderInfo();
       });
     } catch (error) {
       runInAction(() => {

@@ -69,9 +69,11 @@ class GraphParser {
 
   static parseTrade(data) {
     return data.map((entry) => ({
+      txid: entry.txid,
       date: entry.date,
       from: entry.from,
       to: entry.to,
+      status: entry.status,
       soldTokens: entry.soldTokens,
       boughtTokens: entry.boughtTokens,
       tokenName: entry.tokenName,

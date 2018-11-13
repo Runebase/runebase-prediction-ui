@@ -18,6 +18,14 @@ import PendingTxsSnackbarStore from '../components/PendingTxsSnackbar/store';
 import CreateEventStore from '../scenes/CreateEvent/store';
 import EventPageStore from '../scenes/Event/store';
 import WalletHistoryStore from '../scenes/Wallet/History/store';
+import BuyStore from './BuyStore';
+import SellStore from './SellStore';
+import MyTradeStore from './MyTradeStore';
+import ActiveOrderStore from './ActiveOrderStore';
+import FulfilledOrderStore from './FulfilledOrderStore';
+import CanceledOrderStore from './CanceledOrderStore';
+
+
 
 class AppStore {
   @observable loading = true;
@@ -36,6 +44,12 @@ class AppStore {
   createEvent = {}
   allEvents = {}
   activities = {}
+  buyStore = {}
+  sellStore = {}
+  myTradeStore = {}
+  activeOrderStore = {}
+  fulfilledOrderStore = {}
+  canceledOrderStore = {}
 
   constructor() {
     // block content until all stores are initialized
@@ -49,9 +63,15 @@ class AppStore {
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
     this.refreshing = new RefreshingStore();
-    this.eventPage = new EventPageStore(this);
+    this.eventPage = new EventPageStore(this);    
 
     runInAction(() => {
+      this.buyStore = new BuyStore(this);
+      this.sellStore = new SellStore(this);
+      this.myTradeStore = new MyTradeStore(this);
+      this.canceledOrderStore = new CanceledOrderStore(this);
+      this.fulfilledOrderStore = new FulfilledOrderStore(this);
+      this.activeOrderStore = new ActiveOrderStore(this);
       this.runebasePrediction = new RunebasePredictionStore(this);
       this.predCourt = new PredCourtStore(this);
       this.createEvent = new CreateEventStore(this);

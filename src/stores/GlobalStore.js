@@ -14,11 +14,6 @@ import AppConfig from '../config/app';
 
 const INIT_VALUES = {
   marketInfo: '',
-  myOrderInfo: '',
-  fulfilledOrderInfo: '',
-  canceledOrderInfo: '',
-  buyOrderInfo: '',
-  sellOrderInfo: '',
   selectedOrderInfo: '',
   selectedOrderId: 0,
   chartInfo: '',
@@ -35,21 +30,13 @@ const INIT_VALUES = {
 };
 let syncInfoInterval;
 let syncChartInterval;
-let syncMyOrderInterval;
-let syncSellOrderInterval;
 let syncSelectedOrderInterval;
-let syncBuyOrderInterval;
 let syncMarketInterval;
 
 export default class GlobalStore {
   @observable selectedOrderId = INIT_VALUES.selectedOrderId
   @observable selectedOrderInfo = INIT_VALUES.selectedOrderInfo
   @observable marketInfo = INIT_VALUES.marketInfo
-  @observable buyOrderInfo = INIT_VALUES.buyOrderInfo
-  @observable sellOrderInfo = INIT_VALUES.sellOrderInfo
-  @observable myOrderInfo = INIT_VALUES.myOrderInfo
-  @observable fulfilledOrderInfo = INIT_VALUES.fulfilledOrderInfo
-  @observable canceledOrderInfo = INIT_VALUES.canceledOrderInfo
   @observable chartInfo = INIT_VALUES.chartInfo
   @observable syncPercent = INIT_VALUES.syncPercent
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
@@ -97,18 +84,6 @@ export default class GlobalStore {
     this.getChartInfo();
     this.subscribeChartInfo();
 
-    // Call MyOrders once to init the wallet addresses used by other stores
-    this.getMyOrderInfo();
-    this.subscribeMyOrderInfo();
-
-    // Call BuyOrders once to init the wallet addresses used by other stores
-    this.getBuyOrderInfo();
-    this.subscribeBuyOrderInfo();
-
-    // Call SellOrders once to init the wallet addresses used by other stores
-    this.getSellOrderInfo();
-    this.subscribeSellOrderInfo();
-
     // Call SellOrders once to init the wallet addresses used by other stores
     this.getSelectedOrderInfo();
     this.subscribeSelectedOrderInfo();
@@ -117,12 +92,11 @@ export default class GlobalStore {
     // We use this to update the percentage of the loading screen
     syncInfoInterval = setInterval(this.getSyncInfo, AppConfig.intervals.syncInfo);
     syncChartInterval = setInterval(this.getChartInfo, AppConfig.intervals.chartInfo);
-    syncMyOrderInterval = setInterval(this.getMyOrderInfo, AppConfig.intervals.myOrderInfo);
-    syncBuyOrderInterval = setInterval(this.getBuyOrderInfo, AppConfig.intervals.buyOrderInfo);
-    syncSellOrderInterval = setInterval(this.getSellOrderInfo, AppConfig.intervals.sellOrderInfo);
     syncSelectedOrderInterval = setInterval(this.getSelectedOrderInfo, AppConfig.intervals.selectedOrderInfo);
     syncMarketInterval = setInterval(this.getMarketInfo, AppConfig.intervals.marketInfo);
   }
+
+
 
   /*
   *
@@ -132,7 +106,6 @@ export default class GlobalStore {
   @action
   setSelectedOrderId = (orderId) => {
     this.selectedOrderId = orderId;
-    console.log(this.selectedOrderInfo);
   }
 
   /*
@@ -237,190 +210,6 @@ export default class GlobalStore {
     });
   }
 
-
-  /*
-  *
-  *
-  */
-
-  @action
-  onBuyOrderInfo = (buyOrderInfo) => {
-    if (buyOrderInfo.error) {
-      console.error(buyOrderInfo.error.message); // eslint-disable-line no-console
-    } else {
-      const result = _.uniqBy(buyOrderInfo, 'orderId').map((newOrder) => new NewOrder(newOrder, this.app));    
-      const resultOrder = _.orderBy(result, ['price'], 'desc');
-      this.buyOrderInfo = resultOrder;
-    }
-  }
-  /*
-  *
-  *
-  */
-  @action
-  getBuyOrderInfo = async () => {
-    try {
-      const orderBy = { field: 'price', direction: 'DESC' };
-      const filters = [{ orderType: 'BUYORDER', tokenName: this.app.wallet.market, status: 'ACTIVE' }];
-      const buyOrderInfo = await queryAllNewOrders(filters, orderBy, 0, 0);
-      this.onBuyOrderInfo(buyOrderInfo);
-    } catch (error) {
-      this.onBuyOrderInfo({ error });
-    }
-  }
-  /*
-  *
-  *
-  */
-  subscribeBuyOrderInfo = () => {
-    const self = this;
-    apolloClient.subscribe({
-      query: getSubscription(channels.ON_BUYORDER_INFO),
-    }).subscribe({
-      next({ data, errors }) {
-        if (errors && errors.length > 0) {
-          self.onBuyOrderInfo({ error: errors[0] });
-        } else {
-          self.onBuyOrderInfo(data.onBuyOrderInfo);
-        }
-      },
-      error(err) {
-        self.onBuyOrderInfo({ error: err.message });
-      },
-    });
-  }
-
-  /*
-  *
-  *
-  */
-
-  @action
-  onSellOrderInfo = (sellOrderInfo) => {
-    if (sellOrderInfo.error) {
-      console.error(sellOrderInfo.error.message); // eslint-disable-line no-console
-    } else {
-      const result = _.uniqBy(sellOrderInfo, 'orderId').map((newOrder) => new NewOrder(newOrder, this.app));    
-      const resultOrder =  _.orderBy(result, ['price'], 'asc');
-      this.sellOrderInfo = resultOrder;
-    }
-  }
-  /*
-  *
-  *
-  */
-  @action
-  getSellOrderInfo = async () => {
-    try {
-      const orderBy = { field: 'price', direction: 'ASC' };
-      const filters = [{ orderType: "SELLORDER", tokenName: this.app.wallet.market, status: 'ACTIVE' }];
-      const sellOrderInfo = await queryAllNewOrders(filters, orderBy, 0, 0);
-      this.onSellOrderInfo(sellOrderInfo);
-    } catch (error) {
-      this.onSellOrderInfo({ error });
-    }
-  }
-  /*
-  *
-  *
-  */
-  subscribeSellOrderInfo = () => {
-    const self = this;
-    apolloClient.subscribe({
-      query: getSubscription(channels.ON_SELLORDER_INFO),
-    }).subscribe({
-      next({ data, errors }) {
-        if (errors && errors.length > 0) {
-          self.onSellOrderInfo({ error: errors[0] });
-        } else {
-          self.onSellOrderInfo(data.onSellOrderInfo);
-        }
-      },
-      error(err) {
-        self.onSellOrderInfo({ error: err.message });
-      },
-    });
-  }
-
-  /*
-  *
-  *
-  */
-
-  @action
-  onMyOrderInfo = (myOrderInfo) => {
-    if (myOrderInfo.error) {
-      console.error(myOrderInfo.error.message); // eslint-disable-line no-console
-    } else {
-      /* Map */
-      const result = _.uniqBy(myOrderInfo, 'txid').map((newOrder) => new NewOrder(newOrder, this.app));  
-
-      /* Filter & sort current orders */
-      let myOrders = _.map(result, orders => {
-        if (orders.status === "ACTIVE" ||  orders.status === "PENDING" || orders.status === "PENDINGCANCEL") return orders;
-      });
-      myOrders = _.without(myOrders, undefined);
-      myOrders = _.orderBy(myOrders, ['time'], 'desc');
-
-      /* Filter & sort fulfilled Orders */
-
-      let ordersFulfilled = _.map(result, orders => {
-        if (orders.status === "FULFILLED") return orders;
-      });
-      ordersFulfilled = _.without(ordersFulfilled, undefined);
-      ordersFulfilled = _.orderBy(ordersFulfilled, ['time'], 'desc'); 
-
-      /* Filter & sort canceled Orders */
-
-      let ordersCanceled = _.map(result, orders => {
-        if (orders.status === "CANCELED") return orders;
-      });
-      ordersCanceled = _.without(ordersCanceled, undefined);
-      ordersCanceled = _.orderBy(ordersCanceled, ['time'], 'desc'); 
-
-      /* set results */
-      this.myOrderInfo = myOrders;
-      this.fulfilledOrderInfo = ordersFulfilled;
-      this.canceledOrderInfo = ordersCanceled;
-    }
-  }
-  /*
-  *
-  *
-  */
-  @action
-  getMyOrderInfo = async () => {
-    try {
-      const orderBy = { field: 'orderId', direction: this.app.sortBy };
-      const filters = [{ owner: this.app.wallet.currentAddressSelected }];
-      const myOrderInfo = await queryAllNewOrders(filters, orderBy, 0, 0);  
-
-      this.onMyOrderInfo(myOrderInfo);
-    } catch (error) {
-      this.onMyOrderInfo({ error });
-    }
-  }
-  /*
-  *
-  *
-  */
-  subscribeMyOrderInfo = () => {
-    const self = this;
-    apolloClient.subscribe({
-      query: getSubscription(channels.ON_MYORDER_INFO),
-    }).subscribe({
-      next({ data, errors }) {
-        if (errors && errors.length > 0) {
-          self.onMyOrderInfo({ error: errors[0] });
-        } else {
-          self.onMyOrderInfo(data.onMyOrderInfo);
-        }
-      },
-      error(err) {
-        self.onMyOrderInfo({ error: err.message });
-      },
-    });
-  }
   /*
   *
   *

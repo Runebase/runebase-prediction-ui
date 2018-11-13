@@ -22,6 +22,7 @@ import {
   DialogTitle } from '@material-ui/core';
 import Slider from '@material-ui/lab/Slider';
 import { Clear } from '@material-ui/icons';
+import {BigNumber} from 'bignumber.js';
 import ExecuteOrderTxConfirmDialog from '../ExecuteOrderTxConfirmDialog';
 import { TokenImage, OrderTypeIcon, StatusIcon } from '../../../helpers';
 
@@ -93,7 +94,7 @@ class OrderBook extends PureComponent {
   handleChange = (event, value, price) => {
     const newTotal= value * price;
     this.setState({ 
-      exchangeAmount: value, 
+      exchangeAmount: value.toFixed(8), 
       total: newTotal.toFixed(8),
     });
   };
@@ -118,7 +119,7 @@ class OrderBook extends PureComponent {
       if (total > walletAmount) {
         total = maxSlider * price;
         this.setState({
-          exchangeAmount: maxSlider,
+          exchangeAmount: maxSlider.toFixed(8),
           total: total.toFixed(8),
           hasError: false,
         });
@@ -158,11 +159,11 @@ class OrderBook extends PureComponent {
       } 
     }
 
-    let maxAmount = walletAmount / price; 
-    maxAmount = _.floor(maxAmount, 3);
+    const maxAmount = walletAmount / price; 
+    /* maxAmount = _.floor(maxAmount, 3); */
     if (maxAmount < total) {
       maxSlider = maxAmount;
-      maxSlider = maxSlider.toFixed(8).replace(/\.?0+$/, "");;
+      maxSlider = maxSlider.toFixed(8).replace(/\.?0+$/, "");
     }
     else{
       maxSlider = amountToken;
@@ -338,6 +339,7 @@ class OrderBook extends PureComponent {
                   <Slider
                     className='sliderAmount'
                     max={maxSlider}
+                    step={0.00000001}
                     value={this.state.exchangeAmount}
                     aria-labelledby="label"
                     onChange={ (e, val) => this.handleChange(e, val, price) }
@@ -359,7 +361,8 @@ class OrderBook extends PureComponent {
                           this.addressCheck();                        
                         }
                         else {
-                          wallet.prepareExecuteOrderExchange(global.selectedOrderInfo.orderId, exchangeAmount.toString()); 
+                          const bign = Math.round(exchangeAmount);
+                          wallet.prepareExecuteOrderExchange(global.selectedOrderInfo.orderId, bign.toString()); 
                         }                      
                       }}>
                         Buy
