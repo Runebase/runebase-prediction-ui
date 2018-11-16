@@ -35,18 +35,20 @@ export default class BuyHistory extends Component {
           <p>Buy History ({ wallet.currentMarket })</p>
         </Card>
         <Trades buyHistoryStore={buyHistoryStore} />
-        <button
-          disabled={!buyHistoryStore.hasLess} 
-          onClick={this.handlePrevious}
-        >
-          Previous Page
-        </button>
-        <button 
-          onClick={this.handleNext}
-          disabled={!buyHistoryStore.hasMore}
-        >
-          Next Page
-        </button>
+        <div className='centerText'>
+          <button
+            disabled={!buyHistoryStore.hasLess} 
+            onClick={this.handlePrevious}
+          >
+            Previous Page
+          </button>
+          <button 
+            onClick={this.handleNext}
+            disabled={!buyHistoryStore.hasMore}
+          >
+            Next Page
+          </button>
+        </div>
       </Fragment>
     );
   }

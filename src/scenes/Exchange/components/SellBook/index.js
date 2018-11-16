@@ -40,18 +40,20 @@ export default class SellBook extends Component {
           <p>People Selling {wallet.market}</p>
         </Card>
         <SellOrders sellStore={sellStore} />
-        <button
-          disabled={sellStore.hasMoreSellOrders} 
-          onClick={this.handlePrevious}
-        >
-          Previous Page
-        </button>
-        <button 
-          onClick={this.handleNext}
-          disabled={!sellStore.hasMoreSellOrders}
-        >
-          Next Page
-        </button>
+        <div className='centerText'>
+          <button
+            disabled={!sellStore.hasLess} 
+            onClick={this.handlePrevious}
+          >
+            Previous Page
+          </button>
+          <button 
+            onClick={this.handleNext}
+            disabled={!sellStore.hasMore}
+          >
+            Next Page
+          </button>
+        </div>
       </Fragment>
     );
   }

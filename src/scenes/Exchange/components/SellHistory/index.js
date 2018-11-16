@@ -35,18 +35,20 @@ export default class SellHistory extends Component {
           <p>Sell History ({ wallet.currentMarket })</p>
         </Card>
         <Trades sellHistoryStore={sellHistoryStore} />
-        <button
-          disabled={!sellHistoryStore.hasLess} 
-          onClick={this.handlePrevious}
-        >
-          Previous Page
-        </button>
-        <button 
-          onClick={this.handleNext}
-          disabled={!sellHistoryStore.hasMore}
-        >
-          Next Page
-        </button>
+        <div className='centerText'>
+          <button
+            disabled={!sellHistoryStore.hasLess} 
+            onClick={this.handlePrevious}
+          >
+            Previous Page
+          </button>
+          <button 
+            onClick={this.handleNext}
+            disabled={!sellHistoryStore.hasMore}
+          >
+            Next Page
+          </button>
+        </div>
       </Fragment>
     );
   }

@@ -5,3 +5,6 @@
 .react-swipeable-view-container > div[aria-hidden="true"] {
     height: 0;
 }
+.centerText{
+	text-align: center;
+}

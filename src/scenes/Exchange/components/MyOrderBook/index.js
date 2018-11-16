@@ -94,54 +94,56 @@ export default class MyOrderBook extends Component {
           <OrdersFulFilled fulfilledOrderStore={fulfilledOrderStore} />
           <OrdersCanceled canceledOrderStore={canceledOrderStore} />
         </SwipeableViews>
-        {this.state.value === 0 &&
-          <div>
-            <button
-              disabled={!activeOrderStore.hasLess} 
-              onClick={this.handleActivePrevious}
-            >
-              Previous Page 
-            </button>
-            <button
-              onClick={this.handleActiveNext}
-              disabled={!activeOrderStore.hasMore}
-            >
-              Next Page
-            </button>
-          </div>
-        }
-        {this.state.value === 1 &&
-          <div>
-            <button
-              disabled={!fulfilledOrderStore.hasLess}
-              onClick={this.handleFulfilledPrevious}
-            >
-              Previous Page
-            </button>
-            <button 
-              onClick={this.handleFulfilledNext}
-              disabled={!fulfilledOrderStore.hasMore}
-            >
-              Next Page
-            </button>
-          </div>
-        }
-        {this.state.value === 2 &&
-          <div>
-            <button
-              disabled={!canceledOrderStore.hasLess} 
-              onClick={this.handleCanceledPrevious}
-            >
-              Previous Page
-            </button>
-            <button 
-              onClick={this.handleCanceledNext}
-              disabled={!canceledOrderStore.hasMore}
-            >
-              Next Page
-            </button>
-          </div>
-        }         
+        <div className='centerText'>
+          {this.state.value === 0 &&
+            <div>
+              <button
+                disabled={!activeOrderStore.hasLess} 
+                onClick={this.handleActivePrevious}
+              >
+                Previous Page 
+              </button>
+              <button
+                onClick={this.handleActiveNext}
+                disabled={!activeOrderStore.hasMore}
+              >
+                Next Page
+              </button>
+            </div>
+          }
+          {this.state.value === 1 &&
+            <div>
+              <button
+                disabled={!fulfilledOrderStore.hasLess}
+                onClick={this.handleFulfilledPrevious}
+              >
+                Previous Page
+              </button>
+              <button 
+                onClick={this.handleFulfilledNext}
+                disabled={!fulfilledOrderStore.hasMore}
+              >
+                Next Page
+              </button>
+            </div>
+          }
+          {this.state.value === 2 &&
+            <div>
+              <button
+                disabled={!canceledOrderStore.hasLess} 
+                onClick={this.handleCanceledPrevious}
+              >
+                Previous Page
+              </button>
+              <button 
+                onClick={this.handleCanceledNext}
+                disabled={!canceledOrderStore.hasMore}
+              >
+                Next Page
+              </button>
+            </div>
+          }
+        </div>         
       </Fragment>
     );
   }

@@ -9,8 +9,8 @@ import {
   withStyles,
 } from '@material-ui/core';
 
-import styles from './styles';
 import RedeemExchange from './RedeemExchange';
+import styles from './styles.css';
 
 @injectIntl
 @withStyles(styles, { withTheme: true })
@@ -22,6 +22,8 @@ export default class myBalance extends Component {
   };
   render() {
     const { classes, store: { wallet } } = this.props;
+    const hasPred = (wallet.market === 'PRED') ? 'MarketBalanceActive' :'NotSoActive';
+    const hasFun = (wallet.market === 'FUN') ? 'MarketBalanceActive' :'NotSoActive';
 
     return (
       <div>
@@ -31,7 +33,7 @@ export default class myBalance extends Component {
           </Grid>
           <Grid container>
             <Grid item xs={12}>
-              <Card className={classes.dashboardOrderBookTitle}>
+              <Card className='dashboardOrderBookTitle'>
                 <p>My Exchange Balances</p>                
               </Card>
             </Grid>
@@ -39,17 +41,17 @@ export default class myBalance extends Component {
               if (wallet.currentAddressKey !== '') {
                 return (
                   <Grid item xs={12}>
-                    <Card className={classes.dashboardOrderBook}>
+                    <Card className='dashboardOrderBook'>
                       <Grid container>
                         <Grid item xs={3}>
                           <p>RUNES</p>
                           <p>{wallet.addresses[wallet.currentAddressKey].exchangerunes}</p>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={3} className={hasPred}>
                           <p>PRED</p>
                           <p>{wallet.addresses[wallet.currentAddressKey].exchangepred}</p>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={3} className={hasFun}>
                           <p>FUN</p>
                           <p>{wallet.addresses[wallet.currentAddressKey].exchangefun}</p>
                         </Grid>

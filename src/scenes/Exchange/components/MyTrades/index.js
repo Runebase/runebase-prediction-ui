@@ -36,18 +36,20 @@ export default class MyTrades extends Component {
           <p>My Trades</p>
         </Card>
         <Trades myTradeStore={myTradeStore} />
-        <button
-          disabled={!myTradeStore.hasLess} 
-          onClick={this.handlePrevious}
-        >
-          Previous Page
-        </button>
-        <button 
-          onClick={this.handleNext}
-          disabled={!myTradeStore.hasMore}
-        >
-          Next Page
-        </button>
+        <div className='centerText'>
+          <button
+            disabled={!myTradeStore.hasLess} 
+            onClick={this.handlePrevious}
+          >
+            Previous Page
+          </button>
+          <button 
+            onClick={this.handleNext}
+            disabled={!myTradeStore.hasMore}
+          >
+            Next Page
+          </button>
+        </div>
       </Fragment>
     );
   }

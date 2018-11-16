@@ -42,18 +42,20 @@ export default class BuyBook extends Component {
           <p>People Buying {wallet.market}</p>
         </Card>
         <Events buyStore={buyStore} />
-        <button
-          disabled={!buyStore.hasLess} 
-          onClick={this.handlePrevious}
-        >
-          Previous Page
-        </button>
-        <button 
-          onClick={this.handleNext}
-          disabled={!buyStore.hasMore}
-        >
-          Next Page
-        </button>
+        <div className='centerText'>
+          <button
+            disabled={!buyStore.hasLess} 
+            onClick={this.handlePrevious}
+          >
+            Previous Page
+          </button>
+          <button 
+            onClick={this.handleNext}
+            disabled={!buyStore.hasMore}
+          >
+            Next Page
+          </button>
+        </div>
       </Fragment>
     );
   }
