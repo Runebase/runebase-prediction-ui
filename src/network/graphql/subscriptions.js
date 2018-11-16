@@ -45,6 +45,20 @@ const subscriptions = {
       }
     }
   `,
+  onBuyHistoryInfo: `
+    subscription OnBuyHistoryInfo {
+      onBuyHistoryInfo {
+        ${getTypeDef('Trade')}
+      }
+    }
+  `,
+  onSellHistoryInfo: `
+    subscription OnSellHistoryInfo {
+      onSellHistoryInfo {
+        ${getTypeDef('Trade')}
+      }
+    }
+  `,
   onBuyOrderInfo: `
     subscription OnBuyOrderInfo {
       onBuyOrderInfo {
@@ -88,6 +102,8 @@ export const channels = {
   ON_FULFILLEDORDER_INFO: 'onFulfilledOrderInfo',
   ON_CANCELEDORDER_INFO: 'onCanceledOrderInfo',
   ON_MYTRADE_INFO: 'onMyTradeInfo',
+  ON_SELLHISTORY_INFO: 'onSellHistoryInfo',
+  ON_BUYHISTORY_INFO: 'onBuyHistoryInfo',
   ON_BUYORDER_INFO: 'onBuyOrderInfo',
   ON_SELLORDER_INFO: 'onSellOrderInfo',
   ON_SELECTEDORDER_INFO: 'onSelectedOrderInfo',

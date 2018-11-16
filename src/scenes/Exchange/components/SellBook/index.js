@@ -6,7 +6,7 @@ import { defineMessages } from 'react-intl';
 import theme from '../../../../config/theme';
 import OrderBook from './OrderBook';
 import _Loading from '../../../../components/Loading';
-import styles from './styles';
+import './style.css';
 
 
 const messages = defineMessages({
@@ -18,33 +18,17 @@ const messages = defineMessages({
 
 @inject('store')
 @observer
-@withStyles(styles, { withTheme: true })
 export default class SellBook extends Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      isButtonDisabledPrev: this.props.store.sellStore.hasLess,
-      isButtonDisabledNext: this.props.store.sellStore.hasMore,
-    };
-  }
   componentDidMount() {
     this.props.store.sellStore.init();
   }
   handleNext = async () => {
     this.props.store.sellStore.skip = this.props.store.sellStore.skip + 10;
     await this.props.store.sellStore.getSellOrderInfo();
-    this.setState({
-      isButtonDisabledPrev: this.props.store.sellStore.hasLess,
-      isButtonDisabledNext: this.props.store.sellStore.hasMore,
-    });
   }
   handlePrevious = async () => {
     this.props.store.sellStore.skip = this.props.store.sellStore.skip - 10;
     await this.props.store.sellStore.getSellOrderInfo();
-    this.setState({
-      isButtonDisabledPrev: this.props.store.sellStore.hasLess,
-      isButtonDisabledNext: this.props.store.sellStore.hasMore,
-    });
   }
 
   render() {
@@ -52,19 +36,19 @@ export default class SellBook extends Component {
     const { sellStore, wallet } = this.props.store;
     return (
       <Fragment>
-        <Card className={classes.dashboardOrderBookTitle}>
+        <Card className='dashboardOrderBookTitle'>
           <p>People Selling {wallet.market}</p>
         </Card>
         <SellOrders sellStore={sellStore} />
         <button
-          disabled={!this.state.isButtonDisabledPrev} 
+          disabled={sellStore.hasMoreSellOrders} 
           onClick={this.handlePrevious}
         >
           Previous Page
         </button>
         <button 
           onClick={this.handleNext}
-          disabled={!this.state.isButtonDisabledNext}
+          disabled={!sellStore.hasMoreSellOrders}
         >
           Next Page
         </button>
@@ -81,9 +65,9 @@ const SellOrders = observer(({ sellStore: { sellOrderInfo, loadMoreEvents, loadi
   );
 });
 
-const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text={messages.loadAllEventsMsg} /></Row>);
+const Loading = withStyles()(({ classes }) => <Row><_Loading className={classes.loading} text={messages.loadAllNewOrdersMsg} /></Row>);
 
-const Row = withStyles(styles)(({ classes, ...props }) => (
+const Row = withStyles()(({ classes, ...props }) => (
   <div className={classes.row} {...props} />
 ));
 

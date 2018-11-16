@@ -11,8 +11,8 @@ const INIT_VALUES = {
   loaded: true, // INIT_VALUESial loaded state
   loadingMore: false, // for scroll laoding animation
   activeOrderInfo: '',
-  hasMoreActiveOrders: true, // has more activeOrders to fetch?
-  hasLessActiveOrders: true, // has more activeOrders to fetch?
+  hasMoreActiveOrders: false, // has more activeOrders to fetch?
+  hasLessActiveOrders: false, // has more activeOrders to fetch?
   skip: 0, // skip
 };
 
@@ -46,19 +46,23 @@ export default class {
     this.getActiveOrderInfo();
     this.subscribeActiveOrderInfo();
     syncActiveOrderInterval = setInterval(this.getActiveOrderInfo, AppConfig.intervals.activeOrderInfo);
+    if (this.app.wallet.currentAddressSelected === '') {
+      this.hasLessActiveOrders = false;
+      this.hasMoreActiveOrders = false;
+    }
   }
 
   @action
-  init = async (limit = this.limit) => {
+  init = async (limit = this.limit) => {    
     Object.assign(this, INIT_VALUES); // reset all properties
     this.app.ui.location = Routes.EXCHANGE;
-    this.activeOrderInfo = await this.getActiveOrderInfo(limit);
+    this.activeOrderInfo = await this.getActiveOrderInfo(limit, 0);
     runInAction(() => {
       this.loading = false;
     });
   }
 
-
+  @action
   getActiveOrderInfo = async (limit = this.limit, skip = this.skip) => {
     if (this.app.wallet.currentAddressSelected !== '') {
       const orderBy = { field: 'time', direction: this.app.sortBy };

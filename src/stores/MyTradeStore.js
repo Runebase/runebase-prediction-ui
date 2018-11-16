@@ -11,8 +11,8 @@ const INIT_VALUES = {
   loaded: true, // INIT_VALUESial loaded state
   loadingMore: false, // for scroll laoding animation
   myTradeInfo: '',
-  hasMoreMyTrades: true, // has more buyOrders to fetch?
-  hasLessMyTrades: true, // has more buyOrders to fetch?
+  hasMoreMyTrades: false, // has more buyOrders to fetch?
+  hasLessMyTrades: false, // has more buyOrders to fetch?
   skip: 0, // skip
 };
 
@@ -60,7 +60,7 @@ export default class {
 
   getMyTradeInfo = async (limit = this.limit, skip = this.skip) => {
     try {
-      const orderBy = { field: 'time', direction: 'ASC' };
+      const orderBy = { field: 'date', direction: 'DESC' };
       let myTradeInfo = [];
       const filters = [{ from: this.app.wallet.addresses[this.app.wallet.currentAddressKey].address }, { to: this.app.wallet.addresses[this.app.wallet.currentAddressKey].address }]; /* Filter From and To,  unique by txid */
       myTradeInfo = await queryAllTrades(filters, orderBy, limit, skip);
@@ -83,8 +83,8 @@ export default class {
     if (myTradeInfo.error) {
       console.error(myTradeInfo.error.message); // eslint-disable-line no-console
     } else {
-      const result = _.uniqBy(myTradeInfo, 'time').map((trade) => new Trade(trade, this.app)); 
-      const resultOrder = _.orderBy(result, ['time'], 'desc');
+      const result = _.uniqBy(myTradeInfo, 'txid').map((trade) => new Trade(trade, this.app)); 
+      const resultOrder = _.orderBy(result, ['date'], 'desc');
       this.myTradeInfo = resultOrder;
     }    
   }

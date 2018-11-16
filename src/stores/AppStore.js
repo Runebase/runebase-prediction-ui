@@ -24,6 +24,8 @@ import MyTradeStore from './MyTradeStore';
 import ActiveOrderStore from './ActiveOrderStore';
 import FulfilledOrderStore from './FulfilledOrderStore';
 import CanceledOrderStore from './CanceledOrderStore';
+import BuyHistoryStore from './BuyHistoryStore';
+import SellHistoryStore from './SellHistoryStore';
 
 
 
@@ -47,6 +49,8 @@ class AppStore {
   buyStore = {}
   sellStore = {}
   myTradeStore = {}
+  sellHistoryStore = {}
+  buyHistoryStore = {}
   activeOrderStore = {}
   fulfilledOrderStore = {}
   canceledOrderStore = {}
@@ -69,6 +73,8 @@ class AppStore {
       this.buyStore = new BuyStore(this);
       this.sellStore = new SellStore(this);
       this.myTradeStore = new MyTradeStore(this);
+      this.sellHistoryStore = new SellHistoryStore(this);
+      this.buyHistoryStore = new BuyHistoryStore(this);
       this.canceledOrderStore = new CanceledOrderStore(this);
       this.fulfilledOrderStore = new FulfilledOrderStore(this);
       this.activeOrderStore = new ActiveOrderStore(this);

@@ -17,6 +17,8 @@ const INIT_VALUES = {
 };
 
 let syncSellOrderInterval;
+
+
 export default class {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
@@ -57,17 +59,22 @@ export default class {
       this.loading = false;
     });
   }
-
+  
+  @action
   getSellOrderInfo = async (limit = this.limit, skip = this.skip) => {
+    this.skip = skip;
     const orderBy = { field: 'price', direction: 'ASC' };
     let sellOrders = [];
     const filters = [{ orderType: "SELLORDER", tokenName: this.app.wallet.market, status: 'ACTIVE' }];
     sellOrders = await queryAllNewOrders(filters, orderBy, limit, skip);
-    if (sellOrders.length < limit) this.hasMoreSellOrders = false;
-    if (sellOrders.length === limit) this.hasMoreSellOrders = true;
-    if (this.skip === 0) this.hasLessSellOrders = false;
-    if (this.skip > 0) this.hasLessSellOrders = true;
+    
     this.onSellOrderInfo(sellOrders);
+    runInAction(() => {
+      if (sellOrders.length < limit) this.hasMoreSellOrders = false;
+      if (sellOrders.length === limit) this.hasMoreSellOrders = true;
+      if (this.skip === 0) this.hasLessSellOrders = false;
+      if (this.skip > 0) this.hasLessSellOrders = true;
+    });
   }
 
   @action

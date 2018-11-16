@@ -12,6 +12,8 @@ import BuyOrder from './components/BuyOrder';
 import SellOrder from './components/SellOrder';
 import BuyBook from './components/BuyBook';
 import SellBook from './components/SellBook';
+import SellHistory from './components/SellHistory';
+import BuyHistory from './components/BuyHistory';
 
 @inject('store')
 @observer
@@ -52,12 +54,14 @@ export default class Exchange extends Component {
                 <BuyBook />
               </Grid>
             </Grid>
-          </Grid>
-        </Grid>        
-        <Grid container>
-          <Grid item xs={4}>
-          </Grid>
-          <Grid item xs={8}>
+            <Grid container>
+              <Grid item xs={6}>
+                <SellHistory />
+              </Grid>
+              <Grid item xs={6}>
+                <BuyHistory />
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Fragment>

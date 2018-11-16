@@ -8,6 +8,8 @@ module.exports = {
     canceledOrderInfo: 30000,
     buyOrderInfo: 30000,
     myTradeInfo: 3000,
+    sellHistoryInfo: 30000,
+    buyHistoryInfo: 30000,
     sellOrderInfo: 30000,
     selectedOrderInfo: 30000,
     marketInfo: 30000,

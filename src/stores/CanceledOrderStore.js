@@ -11,8 +11,8 @@ const INIT_VALUES = {
   loaded: true, // INIT_VALUESial loaded state
   loadingMore: false, // for scroll laoding animation
   canceledOrderInfo: '',
-  hasMoreCanceledOrders: true, // has more activeOrders to fetch?
-  hasLessCanceledOrders: true, // has more activeOrders to fetch?
+  hasMoreCanceledOrders: false, // has more activeOrders to fetch?
+  hasLessCanceledOrders: false, // has more activeOrders to fetch?
   skip: 0, // skip
 };
 

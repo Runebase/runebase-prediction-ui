@@ -11,8 +11,8 @@ const INIT_VALUES = {
   loaded: true, // INIT_VALUESial loaded state
   loadingMore: false, // for scroll laoding animation
   fulfilledOrderInfo: '',
-  hasMoreFulfilledOrders: true, // has more fulfilledOrders to fetch?
-  hasLessFulfilledOrders: true, // has more fulfilledOrders to fetch?
+  hasMoreFulfilledOrders: false, // has more fulfilledOrders to fetch?
+  hasLessFulfilledOrders: false, // has more fulfilledOrders to fetch?
   skip: 0, // skip
 };
 

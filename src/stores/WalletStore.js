@@ -222,6 +222,9 @@ export default class {
         this.app.sellStore.getSellOrderInfo();
         this.app.global.getChartInfo();
         this.app.global.getMarketInfo();
+
+        this.app.buyHistoryStore.getBuyHistoryInfo();
+        this.app.sellHistoryStore.getSellHistoryInfo();
       });
     } catch (error) {
       runInAction(() => {
@@ -239,6 +242,9 @@ export default class {
       runInAction(() => {
         this.app.buyStore.getBuyOrderInfo();
         this.app.sellStore.getSellOrderInfo();
+
+        this.app.buyHistoryStore.getBuyHistoryInfo();
+        this.app.sellHistoryStore.getSellHistoryInfo();
 
         this.app.activeOrderStore.getActiveOrderInfo();
         this.app.fulfilledOrderStore.getFulfilledOrderInfo();

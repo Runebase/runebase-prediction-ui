@@ -1,83 +1,58 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
+import { observable, autorun } from "mobx";
 import { withStyles, Card, Typography, Tab, Tabs, AppBar } from '@material-ui/core';
 import { defineMessages } from 'react-intl';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import _Loading from '../../../../components/Loading';
 import OrderBook from './OrderBook';
-import styles from './styles';
-import './styles.css';
+import styles from './styles.css';
 
 @inject('store')
 @observer
-@withStyles(styles, { withTheme: true })
+
 export default class MyOrderBook extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isButtonDisabledActivePrev: this.props.store.activeOrderStore.hasLess,
-      isButtonDisabledActiveNext: this.props.store.activeOrderStore.hasMore,
-      isButtonDisabledFulfilledPrev: this.props.store.fulfilledOrderStore.hasLess,
-      isButtonDisabledFulfilledNext: this.props.store.fulfilledOrderStore.hasMore,
-      isButtonDisabledCanceledPrev: this.props.store.canceledOrderStore.hasLess,
-      isButtonDisabledCanceledNext: this.props.store.canceledOrderStore.hasMore,
       value: 0,
     };
   }
+  componentDidMount() {
+    this.props.store.activeOrderStore.init();
+    this.props.store.fulfilledOrderStore.init();
+    this.props.store.canceledOrderStore.init();
+  }
 
-  handleActiveNext = async () => {
+  handleActiveNext = async () => {    
     this.props.store.activeOrderStore.skip = this.props.store.activeOrderStore.skip + 10;
-    await this.props.store.activeOrderStore.getActiveOrderInfo();
-    this.setState({
-      isButtonDisabledActivePrev: this.props.store.activeOrderStore.hasLess,
-      isButtonDisabledActiveNext: this.props.store.activeOrderStore.hasMore,
-    });
+    await this.props.store.activeOrderStore.getActiveOrderInfo(); 
   }
   
   handleActivePrevious = async () => {    
     this.props.store.activeOrderStore.skip = this.props.store.activeOrderStore.skip - 10;
-    await this.props.store.activeOrderStore.getActiveOrderInfo();
-    this.setState({
-      isButtonDisabledActivePrev: this.props.store.activeOrderStore.hasLess,
-      isButtonDisabledActiveNext: this.props.store.activeOrderStore.hasMore,
-    });
+    await this.props.store.activeOrderStore.getActiveOrderInfo();    
   }
 
   handleFulfilledNext = async () => {
     this.props.store.fulfilledOrderStore.skip = this.props.store.fulfilledOrderStore.skip + 10;
-    await this.props.store.fulfilledOrderStore.getActiveOrderInfo();
-    this.setState({
-      isButtonDisabledFulfilledPrev: this.props.store.fulfilledOrderStore.hasLess,
-      isButtonDisabledFulfilledNext: this.props.store.fulfilledOrderStore.hasMore,
-    });
+    await this.props.store.fulfilledOrderStore.getFulfilledOrderInfo();
   }
   
   handleFulfilledPrevious = async () => {    
     this.props.store.fulfilledOrderStore.skip = this.props.store.fulfilledOrderStore.skip - 10;
     await this.props.store.fulfilledOrderStore.getFulfilledOrderInfo();
-    this.setState({
-      isButtonDisabledFulfilledPrev: this.props.store.fulfilledOrderStore.hasLess,
-      isButtonDisabledFulfilledNext: this.props.store.fulfilledOrderStore.hasMore,
-    });
   }
 
   handleCanceledNext = async () => {
     this.props.store.canceledOrderStore.skip = this.props.store.canceledOrderStore.skip + 10;
     await this.props.store.canceledOrderStore.getCanceledOrderInfo();
-    this.setState({
-      isButtonDisabledCanceledPrev: this.props.store.canceledOrderStore.hasLess,
-      isButtonDisabledCanceledNext: this.props.store.canceledOrderStore.hasMore,
-    });
   }
   
   handleCanceledPrevious = async () => {    
     this.props.store.canceledOrderStore.skip = this.props.store.canceledOrderStore.skip - 10;
     await this.props.store.canceledOrderStore.getCanceledOrderInfo();
-    this.setState({
-      isButtonDisabledCanceledPrev: this.props.store.canceledOrderStore.hasLess,
-      isButtonDisabledCanceledNext: this.props.store.canceledOrderStore.hasMore,
-    });
   }
 
   handleChange = (event, value) => {
@@ -87,13 +62,14 @@ export default class MyOrderBook extends Component {
   handleChangeIndex = index => {
     this.setState({ value: index });
   };
-
+ 
   render() {
     const { classes, theme } = this.props;
-    const { global, activeOrderStore, fulfilledOrderStore, canceledOrderStore } = this.props.store;
+    const {  activeOrderStore, fulfilledOrderStore, canceledOrderStore } = this.props.store;
+    
     return (
       <Fragment>
-        <Card className={classes.dashboardOrderBookTitle}>
+        <Card className='dashboardOrderBookTitle'>
           <p>My Orders</p>
         </Card>
         <AppBar position="static" color="default">
@@ -110,7 +86,7 @@ export default class MyOrderBook extends Component {
           </Tabs>
         </AppBar>
         <SwipeableViews
-          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+          axis='x-reverse'
           index={this.state.value}
           onChangeIndex={this.handleChangeIndex}
         >
@@ -121,14 +97,14 @@ export default class MyOrderBook extends Component {
         {this.state.value === 0 &&
           <div>
             <button
-              disabled={!this.state.isButtonDisabledActivePrev} 
+              disabled={!activeOrderStore.hasLess} 
               onClick={this.handleActivePrevious}
             >
               Previous Page 
             </button>
             <button
               onClick={this.handleActiveNext}
-              disabled={!this.state.isButtonDisabledActiveNext}
+              disabled={!activeOrderStore.hasMore}
             >
               Next Page
             </button>
@@ -137,14 +113,14 @@ export default class MyOrderBook extends Component {
         {this.state.value === 1 &&
           <div>
             <button
-              disabled={!this.state.isButtonDisabledFulfilledPrev} 
+              disabled={!fulfilledOrderStore.hasLess}
               onClick={this.handleFulfilledPrevious}
             >
               Previous Page
             </button>
             <button 
               onClick={this.handleFulfilledNext}
-              disabled={!this.state.isButtonDisabledFulfilledNext}
+              disabled={!fulfilledOrderStore.hasMore}
             >
               Next Page
             </button>
@@ -153,14 +129,14 @@ export default class MyOrderBook extends Component {
         {this.state.value === 2 &&
           <div>
             <button
-              disabled={!this.state.isButtonDisabledCanceledPrev} 
+              disabled={!canceledOrderStore.hasLess} 
               onClick={this.handleCanceledPrevious}
             >
               Previous Page
             </button>
             <button 
               onClick={this.handleCanceledNext}
-              disabled={!this.state.isButtonDisabledCanceledNext}
+              disabled={!canceledOrderStore.hasMore}
             >
               Next Page
             </button>
