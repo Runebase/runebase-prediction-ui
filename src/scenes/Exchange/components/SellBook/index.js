@@ -23,11 +23,11 @@ export default class SellBook extends Component {
     this.props.store.sellStore.init();
   }
   handleNext = async () => {
-    this.props.store.sellStore.skip = this.props.store.sellStore.skip + 10;
+    this.props.store.sellStore.skip = this.props.store.sellStore.skip + 5;
     await this.props.store.sellStore.getSellOrderInfo();
   }
   handlePrevious = async () => {
-    this.props.store.sellStore.skip = this.props.store.sellStore.skip - 10;
+    this.props.store.sellStore.skip = this.props.store.sellStore.skip - 5;
     await this.props.store.sellStore.getSellOrderInfo();
   }
 

@@ -10,13 +10,6 @@ const subscriptions = {
       }
     }
   `,
-  onChartInfo: `
-    subscription OnChartInfo {
-      onChartInfo {
-        ${getTypeDef('Trade')}
-      }
-    }
-  `,
   onActiveOrderInfo: `
     subscription OnActiveOrderInfo {
       onActiveOrderInfo {
@@ -96,7 +89,6 @@ function getSubscription(name) {
 export default getSubscription;
 export const channels = {
   ON_SYNC_INFO: 'onSyncInfo',
-  ON_CHART_INFO: 'onChartInfo',
   ON_MYORDER_INFO: 'onMyOrderInfo',
   ON_ACTIVEORDER_INFO: 'onActiveOrderInfo',
   ON_FULFILLEDORDER_INFO: 'onFulfilledOrderInfo',

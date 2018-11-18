@@ -16,7 +16,6 @@ const INIT_VALUES = {
   marketInfo: '',
   selectedOrderInfo: '',
   selectedOrderId: 0,
-  chartInfo: '',
   syncPercent: 0,
   syncBlockNum: 0,
   syncBlockTime: '',
@@ -37,7 +36,6 @@ export default class GlobalStore {
   @observable selectedOrderId = INIT_VALUES.selectedOrderId
   @observable selectedOrderInfo = INIT_VALUES.selectedOrderInfo
   @observable marketInfo = INIT_VALUES.marketInfo
-  @observable chartInfo = INIT_VALUES.chartInfo
   @observable syncPercent = INIT_VALUES.syncPercent
   @observable syncBlockNum = INIT_VALUES.syncBlockNum
   @observable syncBlockTime = INIT_VALUES.syncBlockTime
@@ -80,9 +78,6 @@ export default class GlobalStore {
     this.getMarketInfo();
     this.subscribeMarketInfo();
 
-    // Call ChartInfo once to init the wallet addresses used by other stores
-    this.getChartInfo();
-    this.subscribeChartInfo();
 
     // Call SellOrders once to init the wallet addresses used by other stores
     this.getSelectedOrderInfo();
@@ -91,7 +86,6 @@ export default class GlobalStore {
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
     syncInfoInterval = setInterval(this.getSyncInfo, AppConfig.intervals.syncInfo);
-    syncChartInterval = setInterval(this.getChartInfo, AppConfig.intervals.chartInfo);
     syncSelectedOrderInterval = setInterval(this.getSelectedOrderInfo, AppConfig.intervals.selectedOrderInfo);
     syncMarketInterval = setInterval(this.getMarketInfo, AppConfig.intervals.marketInfo);
   }
@@ -206,58 +200,6 @@ export default class GlobalStore {
       },
       error(err) {
         self.onMarketInfo({ error: err.message });
-      },
-    });
-  }
-
-  /*
-  *
-  *
-  */
-
-  @action
-  onChartInfo = (chartInfo) => {
-    if (chartInfo.error) {
-      console.error(chartInfo.error.message); // eslint-disable-line no-console
-    } else {
-      const result = _.uniqBy(chartInfo, 'time').map((trade) => new Trade(trade, this.app));
-      this.chartInfo = result;
-    }
-  }
-  /*
-  *
-  *
-  */
-  @action
-  getChartInfo = async () => {
-    try {
-      const orderBy = { field: 'time', direction: 'ASC' };
-      const filters = [{ tokenName: this.app.wallet.market }];
-      const chartInfo = await queryAllTrades(filters, orderBy, 0, 0);
-      this.onChartInfo(chartInfo);
-    } catch (error) {
-      this.onChartInfo({ error });
-    }
-  }
-
-  /*
-  *
-  *
-  */
-  subscribeChartInfo = () => {
-    const self = this;
-    apolloClient.subscribe({
-      query: getSubscription(channels.ON_CHART_INFO),
-    }).subscribe({
-      next({ data, errors }) {
-        if (errors && errors.length > 0) {
-          self.onChartInfo({ error: errors[0] });
-        } else {
-          self.onChartInfo(data.onChartInfo);
-        }
-      },
-      error(err) {
-        self.onChartInfo({ error: err.message });
       },
     });
   }

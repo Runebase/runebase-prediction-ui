@@ -26,6 +26,7 @@ import FulfilledOrderStore from './FulfilledOrderStore';
 import CanceledOrderStore from './CanceledOrderStore';
 import BuyHistoryStore from './BuyHistoryStore';
 import SellHistoryStore from './SellHistoryStore';
+import PriceChartStore from './PriceChartStore';
 
 
 
@@ -54,6 +55,7 @@ class AppStore {
   activeOrderStore = {}
   fulfilledOrderStore = {}
   canceledOrderStore = {}
+  priceChartStore = {}
 
   constructor() {
     // block content until all stores are initialized
@@ -70,6 +72,7 @@ class AppStore {
     this.eventPage = new EventPageStore(this);    
 
     runInAction(() => {
+      this.priceChartStore = new PriceChartStore(this);
       this.buyStore = new BuyStore(this);
       this.sellStore = new SellStore(this);
       this.myTradeStore = new MyTradeStore(this);

@@ -2,6 +2,8 @@ import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import _ from 'lodash';
 import { defineMessages } from 'react-intl';
+import { tsvParse, csvParse } from  "d3-dsv";
+import { timeParse } from "d3-time-format";
 
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy, Phases } from '../constants';
@@ -38,6 +40,36 @@ const messages = defineMessages({
     defaultMessage: 'Left',
   },
 });
+
+/*
+/
+/ FETCHES CHARTINFO
+/
+*/
+
+function parseData(parse) {
+  return function(d) {
+    d.date = parse(d.date);
+    d.open = +d.open;
+    d.high = +d.high;
+    d.low = +d.low;
+    d.close = +d.close;
+    d.volume = +d.volume;
+
+    return d;
+  };
+}
+
+const parseDate = timeParse("%Y-%m-%d");
+
+export function getChartData(market) {
+
+  const promiseMSFT = fetch(market, {cache: "no-store"})
+    .then(response => response.text())
+    .then(data => tsvParse(data, parseData(parseDate)));
+  return promiseMSFT;
+}
+
 /*
 * Calculates the estimated block based on current block and future date.
 * @param currentBlock {Number} The current block number.

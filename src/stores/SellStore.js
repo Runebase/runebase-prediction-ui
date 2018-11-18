@@ -32,7 +32,7 @@ export default class {
     return this.hasLessSellOrders;
   }
   @observable skip = INIT_VALUES.skip
-  limit = 10
+  limit = 5
 
   constructor(app) {
     this.app = app;

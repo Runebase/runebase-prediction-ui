@@ -1,22 +1,20 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import { TypeChooser } from "react-stockcharts/lib/helper";
+import { inject, observer } from 'mobx-react';
 import Chart from './Chart';
-import { getData } from "./utils";
 
+
+@inject('store')
+@observer
 export default class ChartComponent extends Component {
-  componentDidMount() {
-    getData().then(data => {
-      this.setState({ data });
-    });
-  }
   /* Create reaction on blocksync get new TSV file */
   render() {
-    if (this.state == null) {
+    const { store: { priceChartStore } } = this.props;
+    if (priceChartStore.chartInfo == null) {
       return <div>Loading...</div>;
     }
     return (
-      <Chart type='SVG' data={this.state.data} />   
+      <Chart type='SVG' data={ priceChartStore.chartInfo } />   
     );
   }
 }

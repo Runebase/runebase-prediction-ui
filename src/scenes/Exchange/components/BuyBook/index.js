@@ -25,11 +25,11 @@ export default class BuyBook extends Component {
   }
 
   handleNext = async () => {
-    this.props.store.buyStore.skip = this.props.store.buyStore.skip + 10;
+    this.props.store.buyStore.skip = this.props.store.buyStore.skip + 5;
     await this.props.store.buyStore.getBuyOrderInfo();
   }
   handlePrevious = async () => {    
-    this.props.store.buyStore.skip = this.props.store.buyStore.skip - 10;
+    this.props.store.buyStore.skip = this.props.store.buyStore.skip - 5;
     await this.props.store.buyStore.getBuyOrderInfo();
   }
   
