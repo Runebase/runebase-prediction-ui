@@ -159,7 +159,7 @@ class CandleStickChartWithMACDIndicator extends React.Component {
         <Chart
           id={2} height={75}
           yExtents={[d => d.volume, smaVolume50.accessor()]}
-          origin={(w, h) => [0, h - 150]}
+          origin={(w, h) => [0, h - 225]}
         >
           <YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 

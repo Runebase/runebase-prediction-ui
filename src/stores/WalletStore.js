@@ -73,6 +73,7 @@ const INIT_VALUE = {
   executeOrderConfirmDialogOpen: false,
   buyOrderConfirmDialogOpen: false,
   sellOrderConfirmDialogOpen: false,
+  hasEnoughGasCoverage: false,
 };
 
 const INIT_VALUE_DIALOG = {
@@ -85,7 +86,8 @@ const INIT_VALUE_DIALOG = {
   },
 };
 
-export default class {
+export default class {  
+  @observable hasEnoughGasCoverage = INIT_VALUE.hasEnoughGasCoverage;
   @observable txSentDialogOpen = INIT_VALUE.txSentDialogOpen;
   @observable exchangeAddress = INIT_VALUE.exchangeAddress;
   @observable currentAddressBalanceRunes = INIT_VALUE.currentAddressBalanceRunes;
@@ -470,24 +472,39 @@ export default class {
     this.toAddress = this.exchangeAddress;
     this.confirmAmount = confirmAmount;
     this.tokenChoice = tokenChoice;
-    try {
-      const { data: { result } } = await axios.post(Routes.api.transactionCost, {
-        type: TransactionType.TRANSFER,
-        token: tokenChoice,
-        amount: tokenChoice === 'PRED' || tokenChoice === 'FUN' ? decimalToSatoshi(confirmAmount) : Number(confirmAmount),
-        senderAddress: walletAddress,
-        receiverAddress: this.toAddress,
-      });
-      const txFees = _.map(result, (item) => new TransactionCost(item));
-      runInAction(() => {
-        this.txFees = txFees;
-        this.txConfirmDialogOpen = true;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.app.ui.setError(error.message, Routes.api.transactionCost);
-      });
-    }
+    const calc = (this.addresses[this.currentAddressKey].runebase - confirmAmount);
+    console.log(calc);
+    console.log(tokenChoice);
+    console.log(this.addresses[this.currentAddressKey].runebase);
+    console.log(confirmAmount);
+    if (tokenChoice === 'RUNES' && calc < 2) {
+      this.hasEnoughGasCoverage = true;
+      console.log(this.hasEnoughGasCoverage);
+    }else if (tokenChoice !== 'RUNES' && this.addresses[this.currentAddressKey].runebase < 2) {
+      this.hasEnoughGasCoverage = true;
+      console.log('this.hasEnoughGasCoverage');
+      console.log(this.hasEnoughGasCoverage);
+    }else{
+      try {
+        console.log('fuckelse');
+        const { data: { result } } = await axios.post(Routes.api.transactionCost, {
+          type: TransactionType.TRANSFER,
+          token: tokenChoice,
+          amount: tokenChoice === 'PRED' || tokenChoice === 'FUN' ? decimalToSatoshi(confirmAmount) : Number(confirmAmount),
+          senderAddress: walletAddress,
+          receiverAddress: this.toAddress,
+        });
+        const txFees = _.map(result, (item) => new TransactionCost(item));
+        runInAction(() => {
+          this.txFees = txFees;
+          this.txConfirmDialogOpen = true;
+        });
+      } catch (error) {
+        runInAction(() => {
+          this.app.ui.setError(error.message, Routes.api.transactionCost);
+        });
+      }
+    }    
   }
 
   @action

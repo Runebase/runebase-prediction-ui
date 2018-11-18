@@ -7,6 +7,7 @@ import {
   Grid,
   withStyles,
 } from '@material-ui/core';
+import 'semantic-ui-css/semantic.min.css';
 import styles from './styles';
 import FundExchange from './FundExchange';
 import './mystyle.css';
@@ -63,20 +64,14 @@ export default class MarketInfo extends Component {
         <Grid container>
           <Grid item xs={3}>
             <Grid container>
-              <Grid item xs={12} style={stylist.heightRow}>
-                <FundExchange />                        
-              </Grid>
-            </Grid>
-            <Grid container>
               <Grid item xs={12}>
-                <p>Desposit</p>
+                <FundExchange />                        
               </Grid>
             </Grid>
           </Grid>
           <Grid item xs={9}>
             <Grid container>
               <Grid item xs={12}>
-
                 <DropDownAddresses 
                   show={this.state.show}
                   handleToggle={this.handleToggle}

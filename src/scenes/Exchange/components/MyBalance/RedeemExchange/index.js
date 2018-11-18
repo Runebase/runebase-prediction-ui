@@ -112,11 +112,17 @@ export default class RedeemExchange extends Component {
       },
     };
     return (      
-      <div>
-        <div style={{ float: 'right', textAlign: 'right' }}>        
-          <AccountBalance onClick={this.handleClickOpenRedeemChoice}  style={stylist.largeIcon}></AccountBalance>
-          <FastForward onClick={this.handleClickOpenRedeemChoice}  style={stylist.largeIcon}></FastForward>
-          <p style={{ width: '100%', textAlign: 'left' }}>Withdraw</p>
+      <div>          
+        
+        <div style={{ float: 'right' }}>        
+          <button
+            className="ui negative button noMargin"
+            onClick={this.handleClickOpenRedeemChoice}
+          >
+            <span className='verticalTextButton rightPadMidBut'>Withdraw</span> 
+            <AccountBalance className='verticalTextButton'></AccountBalance>
+            <FastForward className='verticalTextButton'></FastForward>
+          </button> 
         </div>
         <Dialog
           open={this.state.openError}

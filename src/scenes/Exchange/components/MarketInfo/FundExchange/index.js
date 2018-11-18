@@ -13,6 +13,7 @@ import { inject, observer } from 'mobx-react';
 import { FastRewind, AccountBalanceWallet } from '@material-ui/icons';
 import { TxSentDialog } from 'components';
 import FundExchangeTxConfirmDialog from '../FundExchangeTxConfirmDialog';
+import './styles.css';
 
 const messages = defineMessages({
   txConfirmMsgSendMsg: {
@@ -53,25 +54,23 @@ export default class FundExchange extends Component {
     });
   };
 
-  handleClickOpenDepositDialog = (event) => {
-    /* Needs Fix -> If Address Has enough tokens or runes */
-    
+  handleClickOpenDepositDialog = (event) => {    
     if (event.target.value === 'RUNES') {
       this.setState({ 
         tokenChoice: 'RUNES',
-        available: this.props.store.wallet.currentAddressBalanceRunes,
+        available: this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].runebase,
       });
     }
     if (event.target.value === 'PRED') {
       this.setState({ 
         tokenChoice: 'PRED',
-        available: this.props.store.wallet.currentAddressBalanceToken, 
+        available: this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].pred,
       });
     }
     if (event.target.value === 'FUN') {
       this.setState({ 
         tokenChoice: 'FUN',
-        available: this.props.store.wallet.currentAddressBalanceToken, 
+        available: this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].fun,
       });
     }
 
@@ -83,17 +82,30 @@ export default class FundExchange extends Component {
   };
 
   handleClose = () => {
+    this.props.store.wallet.hasEnoughGasCoverage = false;
     this.setState({ 
       open: false,
-      open2: false, 
+      open2: false,
       openError: false,
+      amount: 0,
+      tokenChoice: '',
+      address: '',
+      available: '',
     });
   };
 
   handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
+    const regex = /^\d+(\.\d{1,8})?$/;     
+    if (event.target.value === '' || regex.test(event.target.value)) {
+      this.setState({
+        [name]: event.target.value,
+      });
+    }
+    if (this.state.available > 2 && this.state.available < event.target.value) {
+      this.setState({
+        [name]: this.state.available - 2,
+      });
+    }    
   };
   onWithdraw = () => {
     this.setState({
@@ -123,8 +135,15 @@ export default class FundExchange extends Component {
     };
     return (      
       <div>
-        <FastRewind onClick={this.handleClickOpenDepositChoice} style={stylist.largeIcon}>Deposit</FastRewind> 
-        <AccountBalanceWallet onClick={this.handleClickOpenDepositChoice} style={stylist.largeIcon}></AccountBalanceWallet>
+        <button
+          className="ui positive button"
+          onClick={this.handleClickOpenDepositChoice}
+        >
+          <FastRewind className='verticalTextButton'></FastRewind>
+          <AccountBalanceWallet className='verticalTextButton'></AccountBalanceWallet>
+          <span className='verticalTextButton leftPadMidBut'>Deposit</span>  
+        </button>    
+        
         <Dialog
           open={this.state.openError}
           onClose={this.handleClose}
@@ -180,14 +199,14 @@ export default class FundExchange extends Component {
             <DialogContentText>
               {this.state.available} {this.state.tokenChoice}
             </DialogContentText>
-            <TextField
+            <input
               id="standard-number"
               label="Amount"
               value={this.state.amount}
               onChange={this.handleChange('amount')}
               type="number"
               min={0}
-              max={20}
+              max={this.state.available}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -203,6 +222,24 @@ export default class FundExchange extends Component {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Dialog
+          open={wallet.hasEnoughGasCoverage}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title2"
+        >
+          <DialogTitle id="form-dialog-title2">Warning</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              You need to leave atleast 2 RUNES in your wallet to cover GAS fees.              
+            </DialogContentText>       
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>        
         <FundExchangeTxConfirmDialog onWithdraw={this.onWithdraw} id={messages.txConfirmMsgSendMsg.id} />
         {wallet.txSentDialogOpen && (
           <TxSentDialog
