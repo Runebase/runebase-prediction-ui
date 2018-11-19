@@ -9,7 +9,6 @@ import { TokenImage } from '../../../helpers';
 @injectIntl
 @inject('store')
 export default class MarketView extends PureComponent {
-
   render() {
     const { market, tokenName, price, change, volume } = this.props.event;
     const { store: { wallet } } = this.props;
@@ -21,8 +20,8 @@ export default class MarketView extends PureComponent {
     const triggerActive = classNames(
       'marketCard',
       {
-        'activeCard': active,
-        'notSelected': !active,
+        activeCard: active,
+        notSelected: !active,
       }
     );
     return (
@@ -54,7 +53,7 @@ export default class MarketView extends PureComponent {
               <Typography className='textCenter'>Volume</Typography>
               <Typography className='textCenter'>{fixedVolume}</Typography>
             </Grid>
-          </Grid>      
+          </Grid>
         </Card>
       </div>
     );

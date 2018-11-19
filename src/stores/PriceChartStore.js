@@ -31,7 +31,7 @@ export default class {
     this.app.ui.location = Routes.EXCHANGE;
     const currentMarket = `http://localhost:8989/Test${this.app.wallet.currentMarket}.tsv`;
     getChartData(currentMarket).then(data => {
-      this.onChartInfo(data); 
+      this.onChartInfo(data);
     });
     runInAction(() => {
       this.loading = false;
@@ -44,7 +44,6 @@ export default class {
       console.error(data.error.message); // eslint-disable-line no-console
     } else {
       this.chartInfo = data;
-    }    
+    }
   }
-
 }

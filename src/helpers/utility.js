@@ -2,8 +2,8 @@ import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
 import _ from 'lodash';
 import { defineMessages } from 'react-intl';
-import { tsvParse, csvParse } from  "d3-dsv";
-import { timeParse } from "d3-time-format";
+import { tsvParse } from 'd3-dsv';
+import { timeParse } from 'd3-time-format';
 
 import { getIntlProvider } from './i18nUtil';
 import { OracleStatus, SortBy, Phases } from '../constants';
@@ -48,7 +48,7 @@ const messages = defineMessages({
 */
 
 function parseData(parse) {
-  return function(d) {
+  return function (d) {
     d.date = parse(d.date);
     d.open = +d.open;
     d.high = +d.high;
@@ -60,11 +60,10 @@ function parseData(parse) {
   };
 }
 
-const parseDate = timeParse("%Y-%m-%d");
+const parseDate = timeParse('%Y-%m-%d');
 
 export function getChartData(market) {
-
-  const promiseMSFT = fetch(market, {cache: "no-store"})
+  const promiseMSFT = fetch(market, { cache: 'no-store' })
     .then(response => response.text())
     .then(data => tsvParse(data, parseData(parseDate)));
   return promiseMSFT;

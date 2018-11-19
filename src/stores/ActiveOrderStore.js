@@ -53,7 +53,7 @@ export default class {
   }
 
   @action
-  init = async (limit = this.limit) => {    
+  init = async (limit = this.limit) => {
     Object.assign(this, INIT_VALUES); // reset all properties
     this.app.ui.location = Routes.EXCHANGE;
     this.activeOrderInfo = await this.getActiveOrderInfo(limit, 0);
@@ -68,7 +68,7 @@ export default class {
       const orderBy = { field: 'time', direction: this.app.sortBy };
       let activeOrders = [];
       const pending = 'PENDING';
-      const filters = [ 
+      const filters = [
         { owner: this.app.wallet.currentAddressSelected, status: 'ACTIVE' },
         { owner: this.app.wallet.currentAddressSelected, status: 'PENDING' },
         { owner: this.app.wallet.currentAddressSelected, status: 'PENDINGCANCEL' },
@@ -78,22 +78,19 @@ export default class {
       if (activeOrders.length === limit) this.hasMoreActiveOrders = true;
       if (this.skip === 0) this.hasLessActiveOrders = false;
       if (this.skip > 0) this.hasLessActiveOrders = true;
-      this.onActiveOrderInfo(activeOrders); 
-    }    
+      this.onActiveOrderInfo(activeOrders);
+    }
   }
-
-
 
   @action
   onActiveOrderInfo = (activeOrderInfo) => {
     if (activeOrderInfo.error) {
       console.error(activeOrderInfo.error.message); // eslint-disable-line no-console
     } else {
-      const result = _.uniqBy(activeOrderInfo, 'txid').map((newOrder) => new NewOrder(newOrder, this.app));    
+      const result = _.uniqBy(activeOrderInfo, 'txid').map((newOrder) => new NewOrder(newOrder, this.app));
       const resultOrder = _.orderBy(result, ['time'], 'desc');
       this.activeOrderInfo = resultOrder;
-
-    }    
+    }
   }
 
   subscribeActiveOrderInfo = () => {

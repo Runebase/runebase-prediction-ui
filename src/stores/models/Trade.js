@@ -1,16 +1,16 @@
 /*
 * Model for Trades
-* 
-* 
+*
+*
 */
 export default class Trade {
   from = ''
   to = ''
   status = ''
   soldTokens = ''
-  boughtTokens = ''  
+  boughtTokens = ''
   tokenName = ''
-  orderType = '' 
+  orderType = ''
   price = ''
   orderId = ''
   time = ''
@@ -20,21 +20,21 @@ export default class Trade {
   // for invalid option
   localizedInvalid = {};
 
-  constructor(Trade, app) {
-    Object.assign(this, Trade);
+  constructor(trade, app) {
+    Object.assign(this, trade);
     this.app = app;
-    this.from = Trade.from;
-    this.to = Trade.to;
-    this.status = Trade.status;
-    this.soldTokens = Trade.soldTokens;
-    this.boughtTokens = Trade.boughtTokens;    
-    this.tokenName = Trade.tokenName;
-    this.orderType = Trade.orderType;   
-    this.price = Trade.price;
-    this.orderId = Trade.orderId;
-    this.time = Trade.time;
-    this.amount = Trade.amount;
-    this.blockNum = Trade.blockNum;
+    this.from = trade.from;
+    this.to = trade.to;
+    this.status = trade.status;
+    this.soldTokens = trade.soldTokens;
+    this.boughtTokens = trade.boughtTokens;
+    this.tokenName = trade.tokenName;
+    this.orderType = trade.orderType;
+    this.price = trade.price;
+    this.orderId = trade.orderId;
+    this.time = trade.time;
+    this.amount = trade.amount;
+    this.blockNum = trade.blockNum;
     this.localizedInvalid = {
       en: 'Invalid',
       zh: '无效',

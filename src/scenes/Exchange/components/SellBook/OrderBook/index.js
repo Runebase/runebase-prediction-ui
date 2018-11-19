@@ -1,28 +1,22 @@
-import React, { PureComponent, Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Icon } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import { inject } from 'mobx-react';
-import _ from 'lodash';
 import { injectIntl, defineMessages } from 'react-intl';
 import {
-  Divider,
   withMobileDialog,
-  Input, 
-  Button, 
-  Grid, 
-  Typography, 
-  withStyles, 
-  ExpansionPanel, 
-  ExpansionPanelSummary, 
-  ExpansionPanelDetails,Dialog, 
-  DialogActions, 
-  DialogContent, 
-  DialogContentText, 
+  Input,
+  Button,
+  Grid,
+  Typography,
+  withStyles,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
   DialogTitle } from '@material-ui/core';
 import Slider from '@material-ui/lab/Slider';
 import { Clear } from '@material-ui/icons';
-import {BigNumber} from 'bignumber.js';
 import { TxSentDialog } from 'components';
 import ExecuteOrderTxConfirmDialog from '../ExecuteOrderTxConfirmDialog';
 import { TokenImage, OrderTypeIcon, StatusIcon } from '../../../helpers';
@@ -51,9 +45,9 @@ class OrderBook extends PureComponent {
   };
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       openError: false,
-      exchangeAmount: 0, 
+      exchangeAmount: 0,
       total: 0,
       open: false,
     };
@@ -61,21 +55,21 @@ class OrderBook extends PureComponent {
 
   handleClickOpen = async (orderId) => {
     try {
-      const response = await this.props.store.global.setSelectedOrderId(orderId);
-      const response2 = await this.props.store.global.getSelectedOrderInfo();
+      await this.props.store.global.setSelectedOrderId(orderId);
+      await this.props.store.global.getSelectedOrderInfo();
       this.setState({ open: true });
-    } catch(error) {
+    } catch (error) {
       console.log('error');
-    }    
+    }
   };
 
   onExecuteOrder = () => {
-    this.setState({ 
+    this.setState({
       openError: false,
-      open: false, 
+      open: false,
     });
     if (this.props.store.wallet.currentAddressSelected === '') {
-      this.setState({ 
+      this.setState({
         openError: true,
       });
     }
@@ -83,16 +77,16 @@ class OrderBook extends PureComponent {
 
   addressCheck = () => {
     if (this.props.store.wallet.currentAddressSelected === '') {
-      this.setState({ 
+      this.setState({
         openError: true,
       });
     }
   }
 
   handleClose = () => {
-    this.setState({ 
+    this.setState({
       openError: false,
-      open: false, 
+      open: false,
     });
   };
 
@@ -105,9 +99,9 @@ class OrderBook extends PureComponent {
   }
 
   handleChange = (event, value, price) => {
-    const newTotal= value * price;
-    this.setState({ 
-      exchangeAmount: value.toFixed(8), 
+    const newTotal = value * price;
+    this.setState({
+      exchangeAmount: value.toFixed(8),
       total: newTotal.toFixed(8),
     });
   };
@@ -118,16 +112,15 @@ class OrderBook extends PureComponent {
     total = event.target.value * price;
     if (this.props.store.wallet.currentAddressSelected === '') {
       this.setState({
-        hasError: true,        
+        hasError: true,
       });
-    }
-    else{
-      if (event.target.value === '' || regex.test(event.target.value)) {        
+    } else {
+      if (event.target.value === '' || regex.test(event.target.value)) {
         this.setState({
           exchangeAmount: event.target.value,
           total: total.toFixed(8),
           hasError: false,
-        });      
+        });
       }
       if (total > walletAmount) {
         total = maxSlider * price;
@@ -137,7 +130,7 @@ class OrderBook extends PureComponent {
           hasError: false,
         });
       }
-    }            
+    }
   }
 
   render() {
@@ -149,14 +142,14 @@ class OrderBook extends PureComponent {
     const startAmountToken = global.selectedOrderInfo.startAmount / 1e8;
     const filled = (global.selectedOrderInfo.startAmount - global.selectedOrderInfo.amount) / 1e8;
     let total = amountToken * global.selectedOrderInfo.price;
-    total = total.toFixed(8).replace(/\.?0+$/, "");;
+    total = total.toFixed(8).replace(/\.?0+$/, '');
     const exchangeAmount = this.state.exchangeAmount * 1e8;
     let walletAmount;
     let availableGasAmount;
     let maxSlider;
 
     if (wallet.currentAddressKey !== '') {
-      switch(token){
+      switch (token) {
         case 'PRED':
           walletAmount = wallet.addresses[wallet.currentAddressKey].exchangerunes;
           availableGasAmount = wallet.addresses[wallet.currentAddressKey].runebase;
@@ -164,21 +157,19 @@ class OrderBook extends PureComponent {
         case 'FUN':
           walletAmount = wallet.addresses[wallet.currentAddressKey].exchangerunes;
           availableGasAmount = wallet.addresses[wallet.currentAddressKey].runebase;
-          break;  
+          break;
         default:
           walletAmount = 0;
           availableGasAmount = wallet.addresses[wallet.currentAddressKey].runebase;
-          break; 
-      } 
+          break;
+      }
     }
 
-    const maxAmount = walletAmount / price; 
-    /* maxAmount = _.floor(maxAmount, 3); */
+    const maxAmount = walletAmount / price;
     if (maxAmount < total) {
       maxSlider = maxAmount;
-      maxSlider = maxSlider.toFixed(8).replace(/\.?0+$/, "");
-    }
-    else{
+      maxSlider = maxSlider.toFixed(8).replace(/\.?0+$/, '');
+    } else {
       maxSlider = amountToken;
     }
     return (
@@ -194,10 +185,10 @@ class OrderBook extends PureComponent {
               Please select an address first.
             </DialogContentText>
           </DialogContent>
-          <DialogActions>            
+          <DialogActions>
             <Button onClick={this.handleClose}>Close</Button>
           </DialogActions>
-        </Dialog> 
+        </Dialog>
         <div className={type}>
           <div>
             <Grid container className='centerText gridLabelContainer' wrap="nowrap">
@@ -211,27 +202,27 @@ class OrderBook extends PureComponent {
                       </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>status</Typography>
-                        <Typography className='listInfo'>{status}</Typography> 
-                      </Grid>                  
+                        <Typography className='listInfo'>{status}</Typography>
+                      </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>amount</Typography>
-                        <Typography className='listInfo'>{amountTokenLabel}</Typography> 
+                        <Typography className='listInfo'>{amountTokenLabel}</Typography>
                       </Grid>
                     </Grid>
                   </Grid>
                   <Grid item xs={12} className='spacingOrdersLabel'>
-                    <Grid container>                  
+                    <Grid container>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>token</Typography>
-                        <Typography className='listInfo'>{token}</Typography> 
+                        <Typography className='listInfo'>{token}</Typography>
                       </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>type</Typography>
-                        <Typography className='listInfo'>{type}</Typography> 
-                      </Grid>                  
+                        <Typography className='listInfo'>{type}</Typography>
+                      </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>price</Typography>
-                        <Typography className='listInfo'>{price}</Typography> 
+                        <Typography className='listInfo'>{price}</Typography>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -239,14 +230,14 @@ class OrderBook extends PureComponent {
               </Grid>
               <Grid item xs={3} className='buttonCell'>
                 <button
-                  /* ClassName Negative for BuyBook */
                   className="ui positive button"
-                  onClick={ () => this.handleClickOpen(orderId) } >
+                  onClick={() => this.handleClickOpen(orderId)}
+                >
                   Buy
                 </button>
-              </Grid>              
+              </Grid>
             </Grid>
-          </div>          
+          </div>
         </div>
         <Dialog
           fullScreen={fullScreen}
@@ -258,21 +249,19 @@ class OrderBook extends PureComponent {
           <Clear className='cancelIconRed xOrder' onClick={this.handleClose} />
           <DialogTitle id="responsive-dialog-title">Order Id: {global.selectedOrderInfo.orderId}</DialogTitle>
           <DialogContent>
-              
-            <div className={classes.dashboardOrderBookWrapper} >        
+            <div className={classes.dashboardOrderBookWrapper} >
               <Grid container className='centerText xOverflow'>
-                  
                 <Grid item xs={12}>
                   <Grid container justify="center">
                     <Grid item xs={3}>
                       <p>{global.selectedOrderInfo.token}/RUNES</p>
                       <div className='fullwidth'>
                         <TokenImage token={global.selectedOrderInfo.token} />
-                      </div>                
+                      </div>
                     </Grid>
                     <Grid item xs={3} className='inheritHeight'>
                       <p>{global.selectedOrderInfo.type}</p>
-                      <OrderTypeIcon orderType={global.selectedOrderInfo.type} />                
+                      <OrderTypeIcon orderType={global.selectedOrderInfo.type} />
                     </Grid>
                     <Grid item xs={3} className='inheritHeight'>
                       <p>{global.selectedOrderInfo.status}</p>
@@ -280,7 +269,7 @@ class OrderBook extends PureComponent {
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid item xs={12}>                
+                <Grid item xs={12}>
                   <Grid container className='spacingOrderBook vcenter'>
                     <Grid item xs={3} className='inheritHeight ordersRoundBox'>
                       <Typography variant='title' className='ordersPropertyLabel'>amount</Typography>
@@ -298,51 +287,50 @@ class OrderBook extends PureComponent {
                       <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>RUNES</Typography>
                     </Grid>
                     <Grid item xs={3} className='inheritHeight ordersRoundBox'>
-                      <Typography variant='title' className='ordersPropertyLabel'>filled</Typography> 
+                      <Typography variant='title' className='ordersPropertyLabel'>filled</Typography>
                       <div className='ordersPropertyContent inheritHeight'>
                         <Grid container>
                           <Grid item xs={12}>
                             <Typography variant='subheading'>{filled}</Typography>
                           </Grid>
-                          <span className='filledDivider'></span> 
+                          <span className='filledDivider'></span>
                           <Grid item xs={12}>
                             <Typography variant='subheading'>{startAmountToken}</Typography>
                           </Grid>
-                        </Grid>  
-                      </div> 
+                        </Grid>
+                      </div>
                     </Grid>
-                  </Grid>                
+                  </Grid>
                 </Grid>
-                  
                 <Grid item xs={12}className='spacingOrderBook'>
                   <div className="ui horizontal divider">
                     Owner
                   </div>
-                  <Typography className={classes.root}><a href={`https://explorer.runebase.io/address/${global.selectedOrderInfo.owner}`}>{global.selectedOrderInfo.owner}</a></Typography>                            
+                  <Typography className={classes.root}><a href={`https://explorer.runebase.io/address/${global.selectedOrderInfo.owner}`}>{global.selectedOrderInfo.owner}</a></Typography>
                 </Grid>
                 <Grid item xs={12} className='spacingOrderBook'>
                   <div className="ui horizontal divider">
                     TX ID
                   </div>
-                  <Typography className={classes.root}><a href={`https://explorer.runebase.io/tx/${global.selectedOrderInfo.txid}`}>{global.selectedOrderInfo.txid}</a></Typography>    
-                </Grid>               
-                <Grid item xs={6} className='spacingOrderBook'>
-                  <Typography variant='subheading' className={classes.root}>Created Time</Typography>  
-                  <Typography>{global.selectedOrderInfo.time}</Typography>                
+                  <Typography className={classes.root}><a href={`https://explorer.runebase.io/tx/${global.selectedOrderInfo.txid}`}>{global.selectedOrderInfo.txid}</a></Typography>
                 </Grid>
                 <Grid item xs={6} className='spacingOrderBook'>
-                  <Typography variant='subheading' className={classes.root}>Created BlockNum</Typography>  
+                  <Typography variant='subheading' className={classes.root}>Created Time</Typography>
+                  <Typography>{global.selectedOrderInfo.time}</Typography>
+                </Grid>
+                <Grid item xs={6} className='spacingOrderBook'>
+                  <Typography variant='subheading' className={classes.root}>Created BlockNum</Typography>
                   <Typography>{global.selectedOrderInfo.blockNum}</Typography>
                 </Grid>
                 <div className="ui horizontal divider">
                   Trade
                 </div>
                 <Grid item xs={6}>
-                  <Typography variant='subheading' className={classes.root}>Runes Available</Typography>  
+                  <Typography variant='subheading' className={classes.root}>Runes Available</Typography>
                   <Typography>{walletAmount}</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography variant='subheading' className={classes.root}>Gas Available</Typography>  
+                  <Typography variant='subheading' className={classes.root}>Gas Available</Typography>
                   <Typography>{availableGasAmount}</Typography>
                 </Grid>
                 <div className="ui horizontal divider">
@@ -355,37 +343,37 @@ class OrderBook extends PureComponent {
                     step={0.00000001}
                     value={this.state.exchangeAmount}
                     aria-labelledby="label"
-                    onChange={ (e, val) => this.handleChange(e, val, price) }
+                    onChange={(e, val) => this.handleChange(e, val, price)}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Input className='inputWidth inputOrderSpacing' type="number" step="0.00000001" min="0" max={amountToken} value={this.state.exchangeAmount} onChange={ (event) => { this.changeAmount(event, price, walletAmount, amountToken, maxSlider); } } name="amount" />
+                  <Input className='inputWidth inputOrderSpacing' type="number" step="0.00000001" min="0" max={amountToken} value={this.state.exchangeAmount} onChange={(event) => { this.changeAmount(event, price, walletAmount, amountToken, maxSlider); }} name="amount" />
                 </Grid>
                 <Grid item xs={12}>
-                  {this.state.hasError && <span>Please select an address</span>} 
+                  {this.state.hasError && <span>Please select an address</span>}
                   {this.state.total && <span className='messageStyle'>Buy <span className='fat'>{this.state.exchangeAmount}</span> {token} for <span className='fat'>{this.state.total}</span> RUNES</span>}
                 </Grid>
                 <Grid item xs={12}>
                   <div>
-                    <button 
+                    <button
                       className="ui positive button buyButton"
-                      onClick={ () =>{                      
-                        if (this.props.store.wallet.currentAddressSelected === '')  {
-                          this.addressCheck();                        
-                        }
-                        else {
+                      onClick={() => {
+                        if (this.props.store.wallet.currentAddressSelected === '') {
+                          this.addressCheck();
+                        } else {
                           const bign = Math.round(exchangeAmount);
-                          wallet.prepareExecuteOrderExchange(global.selectedOrderInfo.orderId, bign.toString()); 
-                        }                      
-                      }}>
-                        Buy
+                          wallet.prepareExecuteOrderExchange(global.selectedOrderInfo.orderId, bign.toString());
+                        }
+                      }}
+                    >
+                      Buy
                     </button>
                     <ExecuteOrderTxConfirmDialog onExecuteOrder={this.onExecuteOrder} id={messages.executeOrderConfirmMsgSendMsg.id} />
                   </div>
                 </Grid>
               </Grid>
             </div>
-          </DialogContent>            
+          </DialogContent>
         </Dialog>
       </div>
     );

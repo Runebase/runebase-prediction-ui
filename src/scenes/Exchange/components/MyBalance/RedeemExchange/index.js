@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import { 
-  TextField, 
-  Dialog, 
-  DialogActions, 
-  DialogContent, 
-  DialogContentText, 
-  DialogTitle, 
+import {
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
@@ -26,7 +26,7 @@ const messages = defineMessages({
 @observer
 export default class RedeemExchange extends Component {
   constructor(props) {
-    super(props); 
+    super(props);
     this.state = {
       open: false,
       open2: false,
@@ -36,49 +36,49 @@ export default class RedeemExchange extends Component {
       address: '',
       available: '',
     };
-  }  
-  
+  }
+
   handleClickOpenRedeemChoice = () => {
     if (this.props.store.wallet.currentAddressSelected === '') {
-      this.setState({ 
+      this.setState({
         open: false,
-        open2: false, 
+        open2: false,
         openError: true,
       });
       return;
     }
-    this.setState({ 
+    this.setState({
       open: true,
-      open2: false, 
+      open2: false,
     });
   };
 
   handleClickOpenRedeemDialog = (event) => {
     /* Needs Fix -> If Address Has enough tokens or runes */
     if (event.target.value === this.props.store.wallet.market) {
-      this.setState({ 
+      this.setState({
         tokenChoice: this.props.store.wallet.market,
-        available: this.props.store.wallet.currentAddressBalanceToken, 
+        available: this.props.store.wallet.currentAddressBalanceToken,
       });
     }
     if (event.target.value === 'RUNES') {
-      this.setState({ 
+      this.setState({
         tokenChoice: 'RUNES',
         available: this.props.store.wallet.currentAddressBalanceRunes,
       });
     }
-    this.setState({ 
+    this.setState({
       open: false,
-      open2: true, 
+      open2: true,
       address: this.props.store.wallet.currentAddressSelected,
     });
   };
 
   handleClose = () => {
-    this.setState({ 
+    this.setState({
       open: false,
       open2: false,
-      openError: false, 
+      openError: false,
     });
   };
 
@@ -102,27 +102,18 @@ export default class RedeemExchange extends Component {
   }
   render() {
     const { store: { wallet } } = this.props;
-    const stylist = {
-      largeIcon: {
-        width: 70,
-        height: 70,
-      },
-      heightRow: {
-        height: 75,
-      },
-    };
-    return (      
-      <div>          
-        
-        <div style={{ float: 'right' }}>        
+    return (
+      <div>
+
+        <div style={{ float: 'right' }}>
           <button
             className="ui negative button noMargin"
             onClick={this.handleClickOpenRedeemChoice}
           >
-            <span className='verticalTextButton rightPadMidBut'>Withdraw</span> 
+            <span className='verticalTextButton rightPadMidBut'>Withdraw</span>
             <AccountBalance className='verticalTextButton'></AccountBalance>
             <FastForward className='verticalTextButton'></FastForward>
-          </button> 
+          </button>
         </div>
         <Dialog
           open={this.state.openError}
@@ -135,10 +126,10 @@ export default class RedeemExchange extends Component {
               Please select an address first.
             </DialogContentText>
           </DialogContent>
-          <DialogActions>            
+          <DialogActions>
             <Button onClick={this.handleClose}>Close</Button>
           </DialogActions>
-        </Dialog>      
+        </Dialog>
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
@@ -193,7 +184,7 @@ export default class RedeemExchange extends Component {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={ () =>  wallet.prepareRedeemExchange(this.state.address, this.state.amount, this.state.tokenChoice) } color="primary">
+            <Button onClick={() => wallet.prepareRedeemExchange(this.state.address, this.state.amount, this.state.tokenChoice)} color="primary">
               Withdraw
             </Button>
             <Button onClick={this.handleClose} color="primary">

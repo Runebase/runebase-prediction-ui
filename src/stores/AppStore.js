@@ -28,8 +28,6 @@ import BuyHistoryStore from './BuyHistoryStore';
 import SellHistoryStore from './SellHistoryStore';
 import PriceChartStore from './PriceChartStore';
 
-
-
 class AppStore {
   @observable loading = true;
   @observable sortBy = 'ASC' // TODO: have each store have their own sortBy
@@ -69,7 +67,7 @@ class AppStore {
     this.walletUnlockDialog = new WalletUnlockDialogStore(this);
     this.pendingTxsSnackbar = new PendingTxsSnackbarStore(this);
     this.refreshing = new RefreshingStore();
-    this.eventPage = new EventPageStore(this);    
+    this.eventPage = new EventPageStore(this);
 
     runInAction(() => {
       this.priceChartStore = new PriceChartStore(this);

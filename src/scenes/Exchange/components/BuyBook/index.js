@@ -6,7 +6,7 @@ import { defineMessages } from 'react-intl';
 import theme from '../../../../config/theme';
 import OrderBook from './OrderBook';
 import _Loading from '../../../../components/Loading';
-import './style.css';
+import styles from './style.css';
 
 
 const messages = defineMessages({
@@ -21,18 +21,16 @@ const messages = defineMessages({
 export default class BuyBook extends Component {
   componentDidMount() {
     this.props.store.buyStore.init();
-
   }
-
   handleNext = async () => {
     this.props.store.buyStore.skip = this.props.store.buyStore.skip + 5;
     await this.props.store.buyStore.getBuyOrderInfo();
   }
-  handlePrevious = async () => {    
+  handlePrevious = async () => {
     this.props.store.buyStore.skip = this.props.store.buyStore.skip - 5;
     await this.props.store.buyStore.getBuyOrderInfo();
   }
-  
+
   render() {
     const { classes } = this.props;
     const { buyStore, wallet } = this.props.store;
@@ -44,12 +42,12 @@ export default class BuyBook extends Component {
         <Events buyStore={buyStore} />
         <div className='centerText'>
           <button
-            disabled={!buyStore.hasLess} 
+            disabled={!buyStore.hasLess}
             onClick={this.handlePrevious}
           >
             Previous Page
           </button>
-          <button 
+          <button
             onClick={this.handleNext}
             disabled={!buyStore.hasMore}
           >
@@ -61,7 +59,7 @@ export default class BuyBook extends Component {
   }
 }
 
-const Events = observer(({ buyStore: { buyOrderInfo, loadMoreEvents, loading, loadingMore } }) => {
+const Events = observer(({ buyStore: { buyOrderInfo, loading } }) => {
   if (loading) return <Loading />;
   const events = (buyOrderInfo || []).map((event, i) => <OrderBook key={i} index={i} event={event} />); // eslint-disable-line
   return (
@@ -69,8 +67,8 @@ const Events = observer(({ buyStore: { buyOrderInfo, loadMoreEvents, loading, lo
   );
 });
 
-const Loading = withStyles()(({ classes }) => <Row><_Loading className={classes.loading} text={messages.loadAllEventsMsg} /></Row>);
+const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text={messages.loadAllEventsMsg} /></Row>);
 
-const Row = withStyles()(({ classes, ...props }) => (
+const Row = withStyles(styles)(({ classes, ...props }) => (
   <div className={classes.row} {...props} />
 ));

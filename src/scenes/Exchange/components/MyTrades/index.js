@@ -1,23 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { withStyles, Card } from '@material-ui/core';
-import { defineMessages } from 'react-intl';
-import _Loading from '../../../../components/Loading';
+import { Card } from '@material-ui/core';
 import MyTradesView from './MyTradesView';
-import styles from './styles';
-
-
-const messages = defineMessages({
-  loadAllNewOrdersMsg: {
-    id: 'load.allNewOrders',
-    defaultMessage: 'loading',
-  },
-});
 
 @inject('store')
 @observer
 export default class MyTrades extends Component {
-
   handleNext = async () => {
     this.props.store.myTradeStore.skip = this.props.store.myTradeStore.skip + 10;
     await this.props.store.myTradeStore.getMyTradeInfo();
@@ -28,8 +16,7 @@ export default class MyTrades extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { myTradeStore, wallet } = this.props.store;
+    const { myTradeStore } = this.props.store;
     return (
       <Fragment>
         <Card className='dashboardOrderBookTitle'>
@@ -38,12 +25,12 @@ export default class MyTrades extends Component {
         <Trades myTradeStore={myTradeStore} />
         <div className='centerText'>
           <button
-            disabled={!myTradeStore.hasLess} 
+            disabled={!myTradeStore.hasLess}
             onClick={this.handlePrevious}
           >
             Previous Page
           </button>
-          <button 
+          <button
             onClick={this.handleNext}
             disabled={!myTradeStore.hasMore}
           >

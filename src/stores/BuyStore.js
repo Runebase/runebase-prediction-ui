@@ -69,7 +69,7 @@ export default class {
     if (buyOrders.length === limit) this.hasMoreBuyOrders = true;
     if (this.skip === 0) this.hasLessBuyOrders = false;
     if (this.skip > 0) this.hasLessBuyOrders = true;
-    this.onBuyOrderInfo(buyOrders); 
+    this.onBuyOrderInfo(buyOrders);
   }
 
   @action
@@ -77,10 +77,10 @@ export default class {
     if (buyOrderInfo.error) {
       console.error(buyOrderInfo.error.message); // eslint-disable-line no-console
     } else {
-      const result = _.uniqBy(buyOrderInfo, 'orderId').map((newOrder) => new NewOrder(newOrder, this.app));    
+      const result = _.uniqBy(buyOrderInfo, 'orderId').map((newOrder) => new NewOrder(newOrder, this.app));
       const resultOrder = _.orderBy(result, ['price'], 'desc');
       this.buyOrderInfo = resultOrder;
-    }    
+    }
   }
 
   subscribeBuyOrderInfo = () => {

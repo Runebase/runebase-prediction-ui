@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { withStyles, Card } from '@material-ui/core';
 import { defineMessages } from 'react-intl';
 
-import theme from '../../../../config/theme';
 import OrderBook from './OrderBook';
 import _Loading from '../../../../components/Loading';
 import './style.css';
@@ -32,7 +31,6 @@ export default class SellBook extends Component {
   }
 
   render() {
-    const { classes } = this.props;
     const { sellStore, wallet } = this.props.store;
     return (
       <Fragment>
@@ -42,12 +40,12 @@ export default class SellBook extends Component {
         <SellOrders sellStore={sellStore} />
         <div className='centerText'>
           <button
-            disabled={!sellStore.hasLess} 
+            disabled={!sellStore.hasLess}
             onClick={this.handlePrevious}
           >
             Previous Page
           </button>
-          <button 
+          <button
             onClick={this.handleNext}
             disabled={!sellStore.hasMore}
           >
@@ -59,7 +57,7 @@ export default class SellBook extends Component {
   }
 }
 
-const SellOrders = observer(({ sellStore: { sellOrderInfo, loadMoreEvents, loading, loadingMore } }) => {
+const SellOrders = observer(({ sellStore: { sellOrderInfo, loading } }) => {
   if (loading) return <Loading />;
   const events = (sellOrderInfo || []).map((event, i) => <OrderBook key={i} index={i} event={event} />); // eslint-disable-line
   return (

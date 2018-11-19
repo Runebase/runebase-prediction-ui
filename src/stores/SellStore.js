@@ -59,15 +59,15 @@ export default class {
       this.loading = false;
     });
   }
-  
+
   @action
   getSellOrderInfo = async (limit = this.limit, skip = this.skip) => {
     this.skip = skip;
     const orderBy = { field: 'price', direction: 'ASC' };
     let sellOrders = [];
-    const filters = [{ orderType: "SELLORDER", tokenName: this.app.wallet.market, status: 'ACTIVE' }];
+    const filters = [{ orderType: 'SELLORDER', tokenName: this.app.wallet.market, status: 'ACTIVE' }];
     sellOrders = await queryAllNewOrders(filters, orderBy, limit, skip);
-    
+
     this.onSellOrderInfo(sellOrders);
     runInAction(() => {
       if (sellOrders.length < limit) this.hasMoreSellOrders = false;
@@ -79,14 +79,13 @@ export default class {
 
   @action
   onSellOrderInfo = (sellOrderInfo) => {
-
     if (sellOrderInfo.error) {
       console.error(sellOrderInfo.error.message); // eslint-disable-line no-console
     } else {
-      const result = _.uniqBy(sellOrderInfo, 'orderId').map((newOrder) => new NewOrder(newOrder, this.app));    
-      const resultOrder =  _.orderBy(result, ['price'], 'asc');
+      const result = _.uniqBy(sellOrderInfo, 'orderId').map((newOrder) => new NewOrder(newOrder, this.app));
+      const resultOrder = _.orderBy(result, ['price'], 'asc');
       this.sellOrderInfo = resultOrder;
-    }    
+    }
   }
 
   subscribeSellOrderInfo = () => {

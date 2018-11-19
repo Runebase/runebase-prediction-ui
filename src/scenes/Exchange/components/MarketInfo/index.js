@@ -21,7 +21,7 @@ export default class MarketInfo extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
   };
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       show: false,
@@ -32,12 +32,12 @@ export default class MarketInfo extends Component {
     this.props.store.wallet.changeAddress(key, event);
     this.setState({ show: false });
   }
-  
+
   handleToggle = (e) => {
     e.target.focus();
     this.setState({ show: !this.state.show });
   }
-  
+
   handleBlur = (e) => {
     if (e.nativeEvent.explicitOriginalTarget &&
         e.nativeEvent.explicitOriginalTarget === e.nativeEvent.originalTarget) {
@@ -45,7 +45,7 @@ export default class MarketInfo extends Component {
     }
 
     if (this.state.show) {
-      const timer = setTimeout(() => {
+      setTimeout(() => {
         this.setState({ show: false });
       }, 200);
     }
@@ -53,26 +53,20 @@ export default class MarketInfo extends Component {
 
   render() {
     const { classes, store: { wallet } } = this.props;
-    const stylist = {
-      heightRow: {
-        height: 75,
-      },
-    };;
-
     return (
-      <div>        
+      <div>
         <Grid container>
           <Grid item xs={3}>
             <Grid container>
               <Grid item xs={12}>
-                <FundExchange />                        
+                <FundExchange />
               </Grid>
             </Grid>
           </Grid>
           <Grid item xs={9}>
             <Grid container>
               <Grid item xs={12}>
-                <DropDownAddresses 
+                <DropDownAddresses
                   show={this.state.show}
                   handleToggle={this.handleToggle}
                   handleBlur={this.handleBlur}
@@ -84,14 +78,14 @@ export default class MarketInfo extends Component {
         </Grid>
         <Card className={classes.dashboardOrderBookTitle}>
           <p>My Wallet Balances</p>
-        </Card>        
-        <Grid container> 
+        </Card>
+        <Grid container>
           {(() => {
             if (wallet.currentAddressKey !== '') {
               return (
-                <Grid item xs={12}> 
-                  <Card className={classes.dashboardOrderBook}>                 
-                    <Grid container>                    
+                <Grid item xs={12}>
+                  <Card className={classes.dashboardOrderBook}>
+                    <Grid container>
                       <Grid item xs={3}>
                         <p>RUNES(GAS)</p>
                         <p>{wallet.addresses[wallet.currentAddressKey].runebase}</p>
@@ -103,9 +97,9 @@ export default class MarketInfo extends Component {
                       <Grid item xs={3}>
                         <p>FUN</p>
                         <p>{wallet.addresses[wallet.currentAddressKey].fun}</p>
-                      </Grid>                    
+                      </Grid>
                     </Grid>
-                  </Card>                  
+                  </Card>
                 </Grid>
               );
             }
@@ -115,20 +109,20 @@ export default class MarketInfo extends Component {
                   <Grid container>
                     <Grid item xs={12}>
                       <p>...</p>
-                    </Grid>                      
+                    </Grid>
                   </Grid>
                 </Card>
               </Grid>
-            );                        
-          })()}            
+            );
+          })()}
           <Grid item xs={12}>
             <div>{wallet.market}/RUNES</div>
           </Grid>
           <Grid item xs={12}>
             <div>Contract Address: {wallet.currentMarketContract}</div>
           </Grid>
-        </Grid>        
+        </Grid>
       </div>
     );
-  }  
+  }
 }

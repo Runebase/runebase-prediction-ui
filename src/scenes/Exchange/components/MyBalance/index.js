@@ -22,19 +22,19 @@ export default class myBalance extends Component {
   };
   render() {
     const { classes, store: { wallet } } = this.props;
-    const hasPred = (wallet.market === 'PRED') ? 'MarketBalanceActive' :'NotSoActive';
-    const hasFun = (wallet.market === 'FUN') ? 'MarketBalanceActive' :'NotSoActive';
+    const hasPred = (wallet.market === 'PRED') ? 'MarketBalanceActive' : 'NotSoActive';
+    const hasFun = (wallet.market === 'FUN') ? 'MarketBalanceActive' : 'NotSoActive';
 
     return (
       <div>
-        <Grid container>          
+        <Grid container>
           <Grid item xs={12}>
-            <RedeemExchange />                              
+            <RedeemExchange />
           </Grid>
           <Grid container>
             <Grid item xs={12}>
               <Card className='dashboardOrderBookTitle'>
-                <p>My Exchange Balances</p>                
+                <p>My Exchange Balances</p>
               </Card>
             </Grid>
             {(() => {
@@ -66,13 +66,13 @@ export default class myBalance extends Component {
                     <Grid container>
                       <Grid item xs={12}>
                         <p>...</p>
-                      </Grid>                      
+                      </Grid>
                     </Grid>
                   </Card>
                 </Grid>
-              );                        
-            })()}            
-          </Grid>         
+              );
+            })()}
+          </Grid>
         </Grid>
       </div>
     );

@@ -3,10 +3,8 @@ import { OracleStatus, Token } from 'constants';
 import _ from 'lodash';
 
 import SyncInfo from './models/SyncInfo';
-import Trade from './models/Trade';
-import NewOrder from './models/NewOrder';
 import Market from './models/Market';
-import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes, queryAllTrades, queryAllNewOrders, queryAllMarkets } from '../network/graphql/queries';
+import { querySyncInfo, queryAllTopics, queryAllOracles, queryAllVotes, queryAllNewOrders, queryAllMarkets } from '../network/graphql/queries';
 import getSubscription, { channels } from '../network/graphql/subscriptions';
 import apolloClient from '../network/graphql';
 import AppConfig from '../config/app';
@@ -28,7 +26,6 @@ const INIT_VALUES = {
   },
 };
 let syncInfoInterval;
-let syncChartInterval;
 let syncSelectedOrderInterval;
 let syncMarketInterval;
 
@@ -90,13 +87,10 @@ export default class GlobalStore {
     syncMarketInterval = setInterval(this.getMarketInfo, AppConfig.intervals.marketInfo);
   }
 
-
-
   /*
   *
   *
   */
-
   @action
   setSelectedOrderId = (orderId) => {
     this.selectedOrderId = orderId;
@@ -106,15 +100,15 @@ export default class GlobalStore {
   *
   *
   */
-
   @action
   onSelectedOrderInfo = (selectedOrderInfo) => {
     if (selectedOrderInfo.error) {
       console.error(selectedOrderInfo.error.message); // eslint-disable-line no-console
     } else {
-      this.selectedOrderInfo = selectedOrderInfo[0];
+      this.selectedOrderInfo = selectedOrderInfo[0]; // eslint-disable-line
     }
   }
+
   /*
   *
   *
@@ -130,6 +124,7 @@ export default class GlobalStore {
       this.onSelectedOrderInfo({ error });
     }
   }
+
   /*
   *
   *
@@ -156,17 +151,18 @@ export default class GlobalStore {
   *
   *
   */
-
   @action
   onMarketInfo = (marketInfo) => {
     if (marketInfo.error) {
       console.error(marketInfo.error.message); // eslint-disable-line no-console
     } else {
-      const result = _.uniqBy(marketInfo, 'market').map((market) => new Market(market, this.app));    
+      const result = _.uniqBy(marketInfo, 'market').map((market) => new Market(market, this.app));
       const resultOrder = _.orderBy(result, ['market'], 'desc');
+      console.log(resultOrder);
       this.marketInfo = resultOrder;
     }
   }
+
   /*
   *
   *
@@ -176,12 +172,15 @@ export default class GlobalStore {
     try {
       const orderBy = { field: 'market', direction: 'DESC' };
       const filters = [];
+      console.log('getmarketinfo');
       const marketInfo = await queryAllMarkets(filters, orderBy, 0, 0);
+      console.log(marketInfo);
       this.onMarketInfo(marketInfo);
     } catch (error) {
       this.onMarketInfo({ error });
     }
   }
+
   /*
   *
   *
@@ -208,7 +207,6 @@ export default class GlobalStore {
   *
   *
   */
-
   @action
   onSyncInfo = (syncInfo) => {
     if (syncInfo.error) {

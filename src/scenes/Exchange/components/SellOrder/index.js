@@ -35,27 +35,27 @@ export default class SellOrder extends Component {
   }
   changeAmount = (event, tokenAmount) => {
     const regex = /^\d+(\.\d{1,8})?$/;
-    const validateTotal = event.target.value * this.state.price;    
+    const validateTotal = event.target.value * this.state.price;
     if (event.target.value === '' || regex.test(event.target.value)) {
       this.setState({
         amount: event.target.value,
         total: event.target.value * this.state.price,
         hasError: false,
       });
-    }    
+    }
     if (tokenAmount < validateTotal) {
       const newAmount = tokenAmount / this.state.price;
       this.setState({
         amount: newAmount,
-        total: newAmount * this.state.price, 
-        hasError: false,      
+        total: newAmount * this.state.price,
+        hasError: false,
       });
     }
     if (this.props.store.wallet.currentAddressSelected === '') {
       this.setState({
-        hasError: true,        
+        hasError: true,
       });
-    }    
+    }
   }
   changePrice = (event, tokenAmount) => {
     const regex = /^\d+(\.\d{1,8})?$/;
@@ -71,55 +71,55 @@ export default class SellOrder extends Component {
       const newPrice = tokenAmount / this.state.amount;
       this.setState({
         price: newPrice,
-        total: newPrice * this.state.amount, 
-        hasError: false,      
+        total: newPrice * this.state.amount,
+        hasError: false,
       });
     }
     if (this.props.store.wallet.currentAddressSelected === '') {
       this.setState({
-        hasError: true,        
+        hasError: true,
       });
-    }      
+    }
   }
-  total = () => this.amount * this.price;  
-  
+  total = () => this.amount * this.price;
+
 
   render() {
     const { classes, store: { wallet } } = this.props;
     const market = wallet.currentMarket.toLowerCase();
     let tokenAmount;
     if (wallet.currentAddressKey !== '') {
-      switch(market){
+      switch (market) {
         case 'pred':
           tokenAmount = wallet.addresses[wallet.currentAddressKey].exchangepred;
           break;
         case 'fun':
           tokenAmount = wallet.addresses[wallet.currentAddressKey].exchangefun;
-          break;  
+          break;
         default:
           tokenAmount = 0;
-          break; 
-      } 
+          break;
+      }
     }
-    return (      
-      <Grid item xs={6}>          
+    return (
+      <Grid item xs={6}>
         <Card className={classes.dashboardOrderBookTitle}>
           <p>Create Sell Order ({wallet.currentMarket})</p>
-        </Card>         
+        </Card>
         <Card className={classes.dashboardOrderBook}>
           <Grid container className={classes.dashboardOrderBookWrapper}>
             <Grid item xs={12}>
               <Form className={classes.tokenSelect} onSubmit={this.handleSubmit}>
                 <h3>{wallet.currentMarket}/RUNES</h3>
-                {(() => {          
+                {(() => {
                   if (wallet.currentAddressKey !== '') {
-                    return (<p>{tokenAmount} {wallet.market}</p>);           
+                    return (<p>{tokenAmount} {wallet.market}</p>);
                   }
                   return (
                     <p>...</p>
-                  );                        
+                  );
                 })()}
-                {this.state.hasError && <span>Please select an address</span>} 
+                {this.state.hasError && <span>Please select an address</span>}
                 <Grid container>
                   <Grid item xs={2}>
                     <InputLabel className='inputLabels'>
@@ -127,7 +127,7 @@ export default class SellOrder extends Component {
                     </InputLabel>
                   </Grid>
                   <Grid item xs={8}>
-                    <Input className='inputWidth' type="number" step="0.00000001" min="0" value={this.state.amount} onChange={ (event) => { this.changeAmount(event, tokenAmount); } } name="amount" />
+                    <Input className='inputWidth' type="number" step="0.00000001" min="0" value={this.state.amount} onChange={(event) => { this.changeAmount(event, tokenAmount); }} name="amount" />
                   </Grid>
                   <Grid item xs={2}>
                     <InputLabel className='inputLabels'>
@@ -142,7 +142,7 @@ export default class SellOrder extends Component {
                     </FormLabel>
                   </Grid>
                   <Grid item xs={8}>
-                    <Input className='inputWidth' type="number" step="0.00000001" min="0" value={this.state.price} onChange={ (event) => { this.changePrice(event, tokenAmount); } } name="price" />
+                    <Input className='inputWidth' type="number" step="0.00000001" min="0" value={this.state.price} onChange={(event) => { this.changePrice(event, tokenAmount); }} name="price" />
                   </Grid>
                   <Grid item xs={2} >
                     <InputLabel className='inputLabels'>
@@ -165,7 +165,7 @@ export default class SellOrder extends Component {
                     </FormLabel>
                   </Grid>
                 </Grid>
-                <OrderExchange tokenAmount={tokenAmount} {...this.state} />          
+                <OrderExchange tokenAmount={tokenAmount} {...this.state} />
               </Form>
             </Grid>
           </Grid>

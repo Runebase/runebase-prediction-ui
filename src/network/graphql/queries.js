@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import gql from 'graphql-tag';
-
 import client from './';
 import GraphParser from './parser';
 import { TYPE, isValidEnum, getTypeDef } from './schema';
@@ -8,7 +7,6 @@ import { TYPE, isValidEnum, getTypeDef } from './schema';
 if (process.env.REACT_APP_ENV === 'dev') {
   window.queries = '';
 }
-
 
 class GraphQuery {
   constructor(queryName, type) {
@@ -126,7 +124,6 @@ class GraphQuery {
     });
     return GraphParser.getParser(this.type)(res.data[this.queryName]);
   }
-
 }
 /*
 * Queries allOrders from GraphQL with optional filters.
@@ -153,7 +150,7 @@ export function queryAllNewOrders(filters, orderBy, limit, skip) {
 /*
 * Queries allTrades from GraphQL with optional filters.
 *
-* 
+*
 */
 export function queryAllTrades(filters, orderBy, limit, skip) {
   const request = new GraphQuery('allTrades', TYPE.trade);
@@ -175,7 +172,7 @@ export function queryAllTrades(filters, orderBy, limit, skip) {
 /*
 * Queries allMarkets from GraphQL with optional filters.
 *
-* 
+*
 */
 export function queryAllMarkets(filters, orderBy, limit, skip) {
   const request = new GraphQuery('allMarkets', TYPE.market);

@@ -81,12 +81,12 @@ export default class {
     if (sellHistoryInfo.error) {
       console.error(sellHistoryInfo.error.message); // eslint-disable-line no-console
     } else {
-      const result = _.uniqBy(sellHistoryInfo, 'txid').map((trade) => new Trade(trade, this.app)); 
+      const result = _.uniqBy(sellHistoryInfo, 'txid').map((trade) => new Trade(trade, this.app));
       const resultOrder = _.orderBy(result, ['date'], 'desc');
       this.sellHistoryInfo = resultOrder;
-    }    
+    }
   }
-  
+
 
   subscribeSellHistoryInfo = () => {
     const self = this;

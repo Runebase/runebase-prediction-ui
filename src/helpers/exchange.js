@@ -1,31 +1,29 @@
-import _ from 'lodash';
-
 export function getImage3(token) {
   let image;
-  switch(token) {
+  switch (token) {
     case 'PRED':
       image = '../../../images/PRED.png';
       break;
-  	case 'FUN':
+    case 'FUN':
       image = '../../../images/FUN.png';
-  	  break;
-  	default:
-      image = ``;
-  } 
+      break;
+    default:
+      image = '';
+  }
   return image;
 }
 
 export function getImage2(token) {
   let image;
-  switch(token) {
+  switch (token) {
     case 'PRED':
       image = '../../images/PRED.png';
       break;
-  	case 'FUN':
+    case 'FUN':
       image = '../../images/FUN.png';
-  	  break;
-  	default:
-      image = ``;
-  } 
+      break;
+    default:
+      image = '';
+  }
   return image;
 }

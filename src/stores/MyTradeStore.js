@@ -72,23 +72,19 @@ export default class {
       this.onMyTradeInfo(myTradeInfo);
     } catch (error) {
       this.onMyTradeInfo({ error });
-    }    
-
+    }
   }
-
-
 
   @action
   onMyTradeInfo = (myTradeInfo) => {
     if (myTradeInfo.error) {
       console.error(myTradeInfo.error.message); // eslint-disable-line no-console
     } else {
-      const result = _.uniqBy(myTradeInfo, 'txid').map((trade) => new Trade(trade, this.app)); 
+      const result = _.uniqBy(myTradeInfo, 'txid').map((trade) => new Trade(trade, this.app));
       const resultOrder = _.orderBy(result, ['date'], 'desc');
       this.myTradeInfo = resultOrder;
-    }    
+    }
   }
-  
 
   subscribeMyTradeInfo = () => {
     const self = this;

@@ -18,7 +18,6 @@ import BuyHistory from './components/BuyHistory';
 @inject('store')
 @observer
 export default class Exchange extends Component {
-
   render() {
     const { loading } = this.props.store.global;
     if (loading) return <Loading />;
@@ -26,10 +25,10 @@ export default class Exchange extends Component {
       <Fragment>
         <Grid container>
           <Grid item xs={4}>
-            <MyBalance />  
-            <Markets />  
+            <MyBalance />
+            <Markets />
             <MyOrderBook />
-            <MyTrades />          
+            <MyTrades />
           </Grid>
           <Grid item xs={8}>
             <Grid container>
@@ -37,11 +36,11 @@ export default class Exchange extends Component {
                 <MarketInfo />
               </Grid>
               <Grid item xs={12}>
-                <PriceChart 
+                <PriceChart
                   id="chart"
                 />
               </Grid>
-            </Grid>            
+            </Grid>
             <Grid container>
               <BuyOrder />
               <SellOrder />

@@ -58,7 +58,6 @@ export default class {
     });
   }
 
-
   getFulfilledOrderInfo = async (limit = this.limit, skip = this.skip) => {
     if (this.app.wallet.currentAddressSelected !== '') {
       const orderBy = { field: 'time', direction: this.app.sortBy };
@@ -73,18 +72,15 @@ export default class {
     }
   }
 
-
-
   @action
   onFulfilledOrderInfo = (fulfilledOrderInfo) => {
     if (fulfilledOrderInfo.error) {
       console.error(fulfilledOrderInfo.error.message); // eslint-disable-line no-console
     } else {
-      const result = _.uniqBy(fulfilledOrderInfo, 'txid').map((newOrder) => new NewOrder(newOrder, this.app));    
+      const result = _.uniqBy(fulfilledOrderInfo, 'txid').map((newOrder) => new NewOrder(newOrder, this.app));
       const resultOrder = _.orderBy(result, ['time'], 'desc');
       this.fulfilledOrderInfo = resultOrder;
-
-    }    
+    }
   }
 
   subscribeFulfilledOrderInfo = () => {

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import { 
-  TextField, 
-  Dialog, 
-  DialogActions, 
-  DialogContent, 
-  DialogContentText, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
@@ -27,7 +26,7 @@ const messages = defineMessages({
 @observer
 export default class FundExchange extends Component {
   constructor(props) {
-    super(props); 
+    super(props);
     this.state = {
       open: false,
       open2: false,
@@ -37,53 +36,53 @@ export default class FundExchange extends Component {
       address: '',
       available: '',
     };
-  }  
-  
+  }
+
   handleClickOpenDepositChoice = () => {
     if (this.props.store.wallet.currentAddressSelected === '') {
-      this.setState({ 
+      this.setState({
         open: false,
-        open2: false, 
+        open2: false,
         openError: true,
       });
       return;
     }
-    this.setState({ 
+    this.setState({
       open: true,
-      open2: false, 
+      open2: false,
     });
   };
 
-  handleClickOpenDepositDialog = (event) => {    
+  handleClickOpenDepositDialog = (event) => {
     if (event.target.value === 'RUNES') {
-      this.setState({ 
+      this.setState({
         tokenChoice: 'RUNES',
         available: this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].runebase,
       });
     }
     if (event.target.value === 'PRED') {
-      this.setState({ 
+      this.setState({
         tokenChoice: 'PRED',
         available: this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].pred,
       });
     }
     if (event.target.value === 'FUN') {
-      this.setState({ 
+      this.setState({
         tokenChoice: 'FUN',
         available: this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].fun,
       });
     }
 
-    this.setState({ 
+    this.setState({
       open: false,
-      open2: true, 
+      open2: true,
       address: this.props.store.wallet.currentAddressSelected,
     });
   };
 
   handleClose = () => {
     this.props.store.wallet.hasEnoughGasCoverage = false;
-    this.setState({ 
+    this.setState({
       open: false,
       open2: false,
       openError: false,
@@ -95,7 +94,7 @@ export default class FundExchange extends Component {
   };
 
   handleChange = name => event => {
-    const regex = /^\d+(\.\d{1,8})?$/;     
+    const regex = /^\d+(\.\d{1,8})?$/;
     if (event.target.value === '' || regex.test(event.target.value)) {
       this.setState({
         [name]: event.target.value,
@@ -105,7 +104,7 @@ export default class FundExchange extends Component {
       this.setState({
         [name]: this.state.available - 2,
       });
-    }    
+    }
   };
   onWithdraw = () => {
     this.setState({
@@ -124,16 +123,7 @@ export default class FundExchange extends Component {
 
   render() {
     const { store: { wallet } } = this.props;
-    const stylist = {
-      largeIcon: {
-        width: 70,
-        height: 70,
-      },
-      heightRow: {
-        height: 75,
-      },
-    };
-    return (      
+    return (
       <div>
         <button
           className="ui positive button"
@@ -141,9 +131,9 @@ export default class FundExchange extends Component {
         >
           <FastRewind className='verticalTextButton'></FastRewind>
           <AccountBalanceWallet className='verticalTextButton'></AccountBalanceWallet>
-          <span className='verticalTextButton leftPadMidBut'>Deposit</span>  
-        </button>    
-        
+          <span className='verticalTextButton leftPadMidBut'>Deposit</span>
+        </button>
+
         <Dialog
           open={this.state.openError}
           onClose={this.handleClose}
@@ -155,10 +145,10 @@ export default class FundExchange extends Component {
               Please select an address first.
             </DialogContentText>
           </DialogContent>
-          <DialogActions>            
+          <DialogActions>
             <Button onClick={this.handleClose}>Close</Button>
           </DialogActions>
-        </Dialog>      
+        </Dialog>
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
@@ -185,7 +175,7 @@ export default class FundExchange extends Component {
           <DialogTitle id="form-dialog-title2">Deposit</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              How much {this.state.tokenChoice} would you like to deposit?              
+              How much {this.state.tokenChoice} would you like to deposit?
             </DialogContentText>
               Current Address:
             <DialogContentText>
@@ -214,7 +204,7 @@ export default class FundExchange extends Component {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={ () =>  wallet.prepareDepositExchange(this.state.address, this.state.amount, this.state.tokenChoice) } color="primary">
+            <Button onClick={() => wallet.prepareDepositExchange(this.state.address, this.state.amount, this.state.tokenChoice)} color="primary">
               Deposit
             </Button>
             <Button onClick={this.handleClose} color="primary">
@@ -231,15 +221,15 @@ export default class FundExchange extends Component {
           <DialogTitle id="form-dialog-title2">Warning</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              You need to leave atleast 2 RUNES in your wallet to cover GAS fees.              
-            </DialogContentText>       
+              You need to leave atleast 2 RUNES in your wallet to cover GAS fees.
+            </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
           </DialogActions>
-        </Dialog>        
+        </Dialog>
         <FundExchangeTxConfirmDialog onWithdraw={this.onWithdraw} id={messages.txConfirmMsgSendMsg.id} />
         {wallet.txSentDialogOpen && (
           <TxSentDialog

@@ -81,11 +81,11 @@ class GraphParser {
       price: entry.price,
       orderId: entry.orderId,
       time: entry.time,
-      amount: entry.amount,     
+      amount: entry.amount,
       blockNum: entry.blockNum,
     }));
   }
-  
+
 
   static parseBuyOrder(data) {
     return data.map((entry) => ({

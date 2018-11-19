@@ -1,26 +1,26 @@
 /*
 * Model for Markets
-* 
-* 
+*
+*
 */
 export default class Market {
   market = ''
   tokenName = ''
   price = ''
-  change = ''  
+  change = ''
   volume = ''
 
   // for invalid option
   localizedInvalid = {};
 
-  constructor(Market, app) {
-    Object.assign(this, Market);
+  constructor(market, app) {
+    Object.assign(this, market);
     this.app = app;
-    this.market = Market.market;
-    this.tokenName = Market.tokenName;
-    this.price = Market.price;
-    this.change = Market.change;    
-    this.volume = Market.volume;    
+    this.market = market.market;
+    this.tokenName = market.tokenName;
+    this.price = market.price;
+    this.change = market.change;
+    this.volume = market.volume;
     this.localizedInvalid = {
       en: 'Invalid',
       zh: '无效',

@@ -68,7 +68,7 @@ const INIT_VALUE = {
   unlockDialogOpen: false,
   changePassphraseResult: undefined,
   txConfirmDialogOpen: false,
-  redeemConfirmDialogOpen: false,  
+  redeemConfirmDialogOpen: false,
   cancelOrderConfirmDialogOpen: false,
   executeOrderConfirmDialogOpen: false,
   buyOrderConfirmDialogOpen: false,
@@ -86,14 +86,14 @@ const INIT_VALUE_DIALOG = {
   },
 };
 
-export default class {  
+export default class {
   @observable hasEnoughGasCoverage = INIT_VALUE.hasEnoughGasCoverage;
   @observable txSentDialogOpen = INIT_VALUE.txSentDialogOpen;
   @observable exchangeAddress = INIT_VALUE.exchangeAddress;
   @observable currentAddressBalanceRunes = INIT_VALUE.currentAddressBalanceRunes;
   @observable currentAddressBalanceToken = INIT_VALUE.currentAddressBalanceToken;
   @observable currentAddressSelected = INIT_VALUE.currentAddressSelected;
-  @observable currentAddressKey = INIT_VALUE.currentAddressKey;   
+  @observable currentAddressKey = INIT_VALUE.currentAddressKey;
   @observable market = INIT_VALUE.market;
   @observable marketContract = INIT_VALUE.marketContract;
   @observable addressesHasCoin = INIT_VALUE.addressesHasCoin;
@@ -210,12 +210,12 @@ export default class {
     this.currentAddressBalanceRunes = '';
     this.currentAddressBalanceToken = '';
     this.addressList = [];
-    this.market = market;  
+    this.market = market;
     market = market.toLowerCase();
     addresses.forEach((address) => {
       if (address[market] || address.runebase) {
         this.accountData = [address.address, market, address[market], address.runebase];
-        this.addressList.push( this.accountData );
+        this.addressList.push(this.accountData);
       }
     });
     try {
@@ -229,14 +229,14 @@ export default class {
       runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.createTransferTx);
       });
-    }   
+    }
   }
 
   @action changeAddress = (key, event) => {
     this.currentAddressKey = key;
     if (event.currentTarget.attributes.getNamedItem('address').value != null) {
-      this.currentAddressSelected = event.currentTarget.attributes.getNamedItem('address').value;      
-    }    
+      this.currentAddressSelected = event.currentTarget.attributes.getNamedItem('address').value;
+    }
     try {
       runInAction(() => {
         this.app.buyStore.getBuyOrderInfo();
@@ -347,11 +347,11 @@ export default class {
       runInAction(() => {
         this.txid = orderExchange.txid;
         this.txSentDialogOpen = true;
-        this.app.pendingTxsSnackbar.init();  
-        this.app.activeOrderStore.getActiveOrderInfo();    
+        this.app.pendingTxsSnackbar.init();
+        this.app.activeOrderStore.getActiveOrderInfo();
       });
     } catch (error) {
-      runInAction(() => {        
+      runInAction(() => {
         this.app.ui.setError(error.message, Routes.api.createTransferTx);
       });
     }
@@ -480,11 +480,11 @@ export default class {
     if (tokenChoice === 'RUNES' && calc < 2) {
       this.hasEnoughGasCoverage = true;
       console.log(this.hasEnoughGasCoverage);
-    }else if (tokenChoice !== 'RUNES' && this.addresses[this.currentAddressKey].runebase < 2) {
+    } else if (tokenChoice !== 'RUNES' && this.addresses[this.currentAddressKey].runebase < 2) {
       this.hasEnoughGasCoverage = true;
       console.log('this.hasEnoughGasCoverage');
       console.log(this.hasEnoughGasCoverage);
-    }else{
+    } else {
       try {
         console.log('fuckelse');
         const { data: { result } } = await axios.post(Routes.api.transactionCost, {
@@ -504,7 +504,7 @@ export default class {
           this.app.ui.setError(error.message, Routes.api.transactionCost);
         });
       }
-    }    
+    }
   }
 
   @action
@@ -518,7 +518,7 @@ export default class {
     }
     this.createTransferTransactionExchange(this.walletAddress, this.exchangeAddress, this.tokenChoice, amount);
     runInAction(() => {
-      onWithdraw();      
+      onWithdraw();
       this.txConfirmDialogOpen = false;
       Tracking.track('myWallet-withdraw');
     });
@@ -539,7 +539,7 @@ export default class {
         this.app.ui.setError(error.message, Routes.api.createTransferTx);
       });
     }
-  }  
+  }
 
   @computed get currentAddressSelecteds() {
     return this.currentAddressSelected;

@@ -22,7 +22,6 @@
     "d3": "^5.7.0",
     "eslint-config-react-tools": "^1.1.6",
     "file-system": "^2.2.2",
-    "forex.analytics": "0.0.15",
     "globalize": "^1.2.3",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",

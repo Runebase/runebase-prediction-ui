@@ -1,7 +1,7 @@
 /*
 * Model for NewOrders
-* 
-* 
+*
+*
 */
 export default class NewOrder {
   txid = ''

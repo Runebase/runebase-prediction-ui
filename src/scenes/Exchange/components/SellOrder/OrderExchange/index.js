@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import {  
-  Dialog, 
-  DialogActions, 
-  DialogContent, 
-  DialogContentText, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@material-ui/core';
 import { injectIntl, defineMessages } from 'react-intl';
 import { inject, observer } from 'mobx-react';
@@ -28,21 +28,21 @@ export default class OrderExchange extends Component {
     this.state = { openError: false };
   }
   onOrder = () => {
-    this.setState({ 
+    this.setState({
       openError: false,
     });
   }
   addressCheck = () => {
     if (this.props.store.wallet.currentAddressSelected === '') {
-      this.setState({ 
+      this.setState({
         openError: true,
       });
     }
   }
 
   handleClose = () => {
-    this.setState({ 
-      openError: false, 
+    this.setState({
+      openError: false,
     });
   };
 
@@ -52,25 +52,24 @@ export default class OrderExchange extends Component {
 
   render() {
     const { store: { wallet } } = this.props;
-    const isEnabled = 
+    const isEnabled =
       this.props.amount < this.props.tokenAmount &&
       this.props.tokenAmount > 0 &&
       this.props.amount > 0;
 
-    return (      
+    return (
       <div>
-
         <Button
-          disabled={!isEnabled} 
-          onClick={ () =>{                      
-            if (this.props.store.wallet.currentAddressSelected === '')  {
-              this.addressCheck();                        
-            }
-            else {
+          disabled={!isEnabled}
+          onClick={() => {
+            if (this.props.store.wallet.currentAddressSelected === '') {
+              this.addressCheck();
+            } else {
               wallet.prepareSellOrderExchange(this.props.price, this.props.amount, wallet.currentMarket, this.props.orderType);
-            }                      
+            }
           }}
-          color="primary">
+          color="primary"
+        >
           Sell {wallet.currentMarket}
         </Button>
         <SellOrderExchangeTxConfirmDialog onOrder={this.onOrder} id={messages.sellOrderConfirmMsgSendMsg.id} />
@@ -85,7 +84,7 @@ export default class OrderExchange extends Component {
               Please select an address first.
             </DialogContentText>
           </DialogContent>
-          <DialogActions>            
+          <DialogActions>
             <Button onClick={this.handleClose}>Close</Button>
           </DialogActions>
         </Dialog>
@@ -95,7 +94,7 @@ export default class OrderExchange extends Component {
             open={wallet.txSentDialogOpen}
             onClose={this.closeAll}
           />
-        )} 
+        )}
       </div>
     );
   }

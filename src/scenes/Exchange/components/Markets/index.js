@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { injectIntl, defineMessages  } from 'react-intl';
+import { injectIntl, defineMessages } from 'react-intl';
 import { withStyles } from '@material-ui/core';
 import MarketView from './MarketView';
 import _Loading from '../../../../components/Loading';
@@ -16,14 +16,13 @@ const messages = defineMessages({
 @inject('store')
 @observer
 export default class Markets extends Component {
-
   render() {
     const { global } = this.props.store;
 
     return (
       <Fragment>
         <Events global={global} />
-      </Fragment>      
+      </Fragment>
     );
   }
 }

@@ -58,7 +58,6 @@ export default class {
     });
   }
 
-
   getCanceledOrderInfo = async (limit = this.limit, skip = this.skip) => {
     if (this.app.wallet.currentAddressSelected !== '') {
       const orderBy = { field: 'time', direction: this.app.sortBy };
@@ -73,18 +72,15 @@ export default class {
     }
   }
 
-
-
   @action
   onCanceledOrderInfo = (canceledOrderInfo) => {
     if (canceledOrderInfo.error) {
       console.error(canceledOrderInfo.error.message); // eslint-disable-line no-console
     } else {
-      const result = _.uniqBy(canceledOrderInfo, 'txid').map((newOrder) => new NewOrder(newOrder, this.app));    
+      const result = _.uniqBy(canceledOrderInfo, 'txid').map((newOrder) => new NewOrder(newOrder, this.app));
       const resultOrder = _.orderBy(result, ['time'], 'desc');
       this.canceledOrderInfo = resultOrder;
-
-    }    
+    }
   }
 
   subscribeCanceledOrderInfo = () => {

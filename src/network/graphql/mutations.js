@@ -151,7 +151,7 @@ export function createTransferTx(senderAddress, receiverAddress, token, amount) 
     receiverAddress,
     token,
     amount,
-  };  
+  };
 
   return new GraphMutation('transfer', args, TYPE.transaction).execute();
 }
@@ -167,18 +167,18 @@ export function createTransferExchange(senderAddress, receiverAddress, token, am
   return new GraphMutation('transferExchange', args, TYPE.transaction).execute();
 }
 
-export function createRedeemExchange(senderAddress, receiverAddress, token, amount) {  
+export function createRedeemExchange(senderAddress, receiverAddress, token, amount) {
   const args = {
     senderAddress,
     receiverAddress,
     token,
     amount,
-  };  
+  };
 
   return new GraphMutation('redeemExchange', args, TYPE.transaction).execute();
 }
 
-export function createOrderExchange(senderAddress, receiverAddress, token, amount, price, orderType) {  
+export function createOrderExchange(senderAddress, receiverAddress, token, amount, price, orderType) {
   const args = {
     senderAddress,
     receiverAddress,
@@ -186,12 +186,12 @@ export function createOrderExchange(senderAddress, receiverAddress, token, amoun
     amount,
     price,
     orderType,
-  };  
+  };
 
   return new GraphMutation('orderExchange', args, TYPE.transaction).execute();
 }
 
-export function createCancelOrderExchange(senderAddress, orderId) {  
+export function createCancelOrderExchange(senderAddress, orderId) {
   const args = {
     senderAddress,
     orderId,
@@ -199,7 +199,7 @@ export function createCancelOrderExchange(senderAddress, orderId) {
   return new GraphMutation('cancelOrderExchange', args, TYPE.transaction).execute();
 }
 
-export function createExecuteOrderExchange(senderAddress, orderId, exchangeAmount) {  
+export function createExecuteOrderExchange(senderAddress, orderId, exchangeAmount) {
   const args = {
     senderAddress,
     orderId,
