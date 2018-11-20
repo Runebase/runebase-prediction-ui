@@ -204,7 +204,7 @@ class OrderBook extends PureComponent {
                       </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>status</Typography>
-                        <Typography className='listInfo'>{status}</Typography>
+                        <Typography className={`fat ${status}COLOR`}>{status}</Typography>
                       </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>amount</Typography>
@@ -220,7 +220,7 @@ class OrderBook extends PureComponent {
                       </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>type</Typography>
-                        <Typography className='listInfo'>{type}</Typography>
+                        <Typography className={`fat ${type}COLOR`}>{type}</Typography>
                       </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>price</Typography>
@@ -276,16 +276,17 @@ class OrderBook extends PureComponent {
                     <Grid item xs={3} className='inheritHeight ordersRoundBox'>
                       <Typography variant='title' className='ordersPropertyLabel'>amount</Typography>
                       <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{amountToken}</Typography>
+                      <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{global.selectedOrderInfo.token}</Typography>
                     </Grid>
                     <Grid item xs={3} className='inheritHeight ordersRoundBox'>
                       <Typography variant='title' className='ordersPropertyLabel'>price</Typography>
-                      <div className='verticalCenter'>
-                        <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{global.selectedOrderInfo.price}</Typography>
-                      </div>
+                      <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{global.selectedOrderInfo.price}</Typography>
+                      <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>RUNES</Typography>
                     </Grid>
                     <Grid item xs={3} className='inheritHeight ordersRoundBox'>
                       <Typography variant='title' className='ordersPropertyLabel'>total</Typography>
                       <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{total}</Typography>
+                      <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>RUNES</Typography>
                     </Grid>
                     <Grid item xs={3} className='inheritHeight ordersRoundBox'>
                       <Typography variant='title' className='ordersPropertyLabel'>filled</Typography>

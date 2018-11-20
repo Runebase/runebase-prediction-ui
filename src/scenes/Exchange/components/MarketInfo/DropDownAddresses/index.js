@@ -19,13 +19,13 @@ export default class DropDownAddresses extends Component {
     } = this.props;
 
     return (
-      <div className="dropdown-container">
-        <label className="arrow" htmlFor="selectAddress">
+      <div className='dropdown-container'>
+        <label className='arrow' htmlFor='selectAddress'>
           <input
             id='selectAddress'
-            type="button"
+            type='button'
             value={wallet.currentAddressSelected !== '' ? wallet.currentAddressSelected : 'Please Select An Address'}
-            className="dropdown-btn"
+            className='dropdown-btn'
             onClick={handleToggle}
             onBlur={handleBlur}
           />
@@ -43,14 +43,18 @@ export default class DropDownAddresses extends Component {
                   pred={addressData.pred}
                   fun={addressData.fun}
                 >
-                  {addressData.address}
+                  <Grid container className='centerText'>
+                    <Grid item xs={12}>
+                      {addressData.address}
+                    </Grid>
+                  </Grid>
                   <Divider horizontal>Wallet</Divider>
                   <Grid container className='centerText'>
                     <Grid item xs={3}>
                       <div className='fullWidth'>
                         RUNES
                       </div>
-                      <div className='fullWidth'>
+                      <div className='fullWidth fat'>
                         {addressData.runebase}
                       </div>
                     </Grid>
@@ -58,7 +62,7 @@ export default class DropDownAddresses extends Component {
                       <div className='fullWidth'>
                         PRED
                       </div>
-                      <div className='fullWidth'>
+                      <div className='fullWidth fat'>
                         {addressData.pred}
                       </div>
                     </Grid>
@@ -66,7 +70,7 @@ export default class DropDownAddresses extends Component {
                       <div className='fullWidth'>
                         FUN
                       </div>
-                      <div className='fullWidth'>
+                      <div className='fullWidth fat'>
                         {addressData.fun}
                       </div>
                     </Grid>
@@ -77,7 +81,7 @@ export default class DropDownAddresses extends Component {
                       <div className='fullWidth'>
                         RUNES
                       </div>
-                      <div className='fullWidth'>
+                      <div className='fullWidth fat'>
                         {addressData.exchangerunes}
                       </div>
                     </Grid>
@@ -85,7 +89,7 @@ export default class DropDownAddresses extends Component {
                       <div className='fullWidth'>
                         PRED
                       </div>
-                      <div className='fullWidth'>
+                      <div className='fullWidth fat'>
                         {addressData.exchangepred}
                       </div>
                     </Grid>
@@ -93,7 +97,7 @@ export default class DropDownAddresses extends Component {
                       <div className='fullWidth'>
                         FUN
                       </div>
-                      <div className='fullWidth'>
+                      <div className='fullWidth fat'>
                         {addressData.exchangefun}
                       </div>
                     </Grid>

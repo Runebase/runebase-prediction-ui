@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 
 import {
+  Typography,
   Card,
   Grid,
   withStyles,
@@ -41,19 +42,19 @@ export default class myBalance extends Component {
               if (wallet.currentAddressKey !== '') {
                 return (
                   <Grid item xs={12}>
-                    <Card className='dashboardOrderBook'>
-                      <Grid container>
+                    <Card className='dashboardOrderBook fat'>
+                      <Grid container className='marginTopBot'>
                         <Grid item xs={3}>
-                          <p>RUNES</p>
-                          <p>{wallet.addresses[wallet.currentAddressKey].exchangerunes}</p>
+                          <Typography variant="subtitle2">RUNES</Typography>
+                          <Typography variant="subtitle2">{wallet.addresses[wallet.currentAddressKey].exchangerunes}</Typography>
                         </Grid>
-                        <Grid item xs={3} className={hasPred}>
-                          <p>PRED</p>
-                          <p>{wallet.addresses[wallet.currentAddressKey].exchangepred}</p>
+                        <Grid item xs={3}>
+                          <Typography variant="subtitle2" className={`${hasPred}`}>PRED</Typography >
+                          <Typography variant="subtitle2" className={`${hasPred}`}>{wallet.addresses[wallet.currentAddressKey].exchangepred}</Typography>
                         </Grid>
-                        <Grid item xs={3} className={hasFun}>
-                          <p>FUN</p>
-                          <p>{wallet.addresses[wallet.currentAddressKey].exchangefun}</p>
+                        <Grid item xs={3}>
+                          <Typography variant="subtitle2" className={`${hasFun}`}>FUN</Typography>
+                          <Typography variant="subtitle2" className={`${hasFun}`}>{wallet.addresses[wallet.currentAddressKey].exchangefun}</Typography>
                         </Grid>
                       </Grid>
                     </Card>
@@ -65,7 +66,7 @@ export default class myBalance extends Component {
                   <Card className={classes.dashboardOrderBook}>
                     <Grid container>
                       <Grid item xs={12}>
-                        <p>...</p>
+                        <p className='textCenter'>...</p>
                       </Grid>
                     </Grid>
                   </Card>

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { inject, observer } from 'mobx-react';
 import {
+  Typography,
   Grid,
   FormLabel,
   InputLabel,
@@ -113,7 +114,7 @@ export default class SellOrder extends Component {
                 <h3>{wallet.currentMarket}/RUNES</h3>
                 {(() => {
                   if (wallet.currentAddressKey !== '') {
-                    return (<p>{tokenAmount} {wallet.market}</p>);
+                    return (<Typography variant="subtitle2" className='fat'>{tokenAmount} {wallet.market}</Typography>);
                   }
                   return (
                     <p>...</p>

@@ -26,16 +26,16 @@ class SellHistoryView extends PureComponent {
 
   renderTrade(from, to, boughtTokens, amountToken, totalToken, totalToken2, tokenName, orderType) {
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'SELLORDER') {
-      return (<Typography className='sold'>Sell {amountToken} {tokenName} for {totalToken} RUNES 1</Typography>);
+      return (<Typography className='sold fat'>Sell {amountToken} {tokenName} for {totalToken} RUNES</Typography>);
     }
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'BUYORDER') {
-      return (<Typography className='bought'>Buy {amountToken} {tokenName} for {totalToken2} RUNES 2</Typography>);
+      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken2} RUNES</Typography>);
     }
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'SELLORDER') {
-      return (<Typography className='bought'>Buy {amountToken} {tokenName} for {totalToken} RUNES 3</Typography>);
+      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken} RUNES</Typography>);
     }
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'BUYORDER') {
-      return (<Typography className='sold'>Sell {totalToken2} {tokenName} for {amountToken} RUNES 4</Typography>);
+      return (<Typography className='sold fat'>Sell {totalToken2} {tokenName} for {amountToken} RUNES</Typography>);
     }
   }
   render() {
@@ -45,7 +45,7 @@ class SellHistoryView extends PureComponent {
     const totalToken2 = parseFloat((amountToken / price).toFixed(8));
 
     return (
-      <div className={`classes.root ${status}`}>
+      <div className={`classes.root ${orderType}`}>
         <Grid container className='myTradeContainer'>
           <Grid item xs={12}>
             <p>{date}</p>
@@ -54,7 +54,7 @@ class SellHistoryView extends PureComponent {
             {this.renderTrade(from, to, boughtTokens, amountToken, totalToken, totalToken2, tokenName, orderType)}
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="caption" gutterBottom>{txid}</Typography>
+            <Typography variant="caption" gutterBottom><a href={`https://explorer.runebase.io/tx/${txid}`}>{txid}</a></Typography>
           </Grid>
         </Grid>
       </div>

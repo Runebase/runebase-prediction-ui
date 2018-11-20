@@ -3,6 +3,7 @@ import { injectIntl } from 'react-intl';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import {
+  Typography,
   Card,
   Grid,
   withStyles,
@@ -34,6 +35,7 @@ export default class MarketInfo extends Component {
   }
 
   handleToggle = (e) => {
+    console.log(this.props.store.wallet.addresses);
     e.target.focus();
     this.setState({ show: !this.state.show });
   }
@@ -45,7 +47,7 @@ export default class MarketInfo extends Component {
     }
 
     if (this.state.show) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         this.setState({ show: false });
       }, 200);
     }
@@ -85,18 +87,18 @@ export default class MarketInfo extends Component {
               return (
                 <Grid item xs={12}>
                   <Card className={classes.dashboardOrderBook}>
-                    <Grid container>
+                    <Grid container className='marginTopBot fat'>
                       <Grid item xs={3}>
-                        <p>RUNES(GAS)</p>
-                        <p>{wallet.addresses[wallet.currentAddressKey].runebase}</p>
+                        <Typography variant="subtitle2">RUNES(GAS)</Typography>
+                        <Typography variant="subtitle2">{wallet.addresses[wallet.currentAddressKey].runebase}</Typography>
                       </Grid>
                       <Grid item xs={3}>
-                        <p>PRED</p>
-                        <p>{wallet.addresses[wallet.currentAddressKey].pred}</p>
+                        <Typography variant="subtitle2">PRED</Typography>
+                        <Typography variant="subtitle2">{wallet.addresses[wallet.currentAddressKey].pred}</Typography>
                       </Grid>
                       <Grid item xs={3}>
-                        <p>FUN</p>
-                        <p>{wallet.addresses[wallet.currentAddressKey].fun}</p>
+                        <Typography variant="subtitle2">FUN</Typography>
+                        <Typography variant="subtitle2">{wallet.addresses[wallet.currentAddressKey].fun}</Typography>
                       </Grid>
                     </Grid>
                   </Card>

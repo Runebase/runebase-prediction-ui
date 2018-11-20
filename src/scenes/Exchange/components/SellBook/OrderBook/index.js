@@ -202,7 +202,7 @@ class OrderBook extends PureComponent {
                       </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>status</Typography>
-                        <Typography className='listInfo'>{status}</Typography>
+                        <Typography className={`fat ${status}COLOR`}>{status}</Typography>
                       </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>amount</Typography>
@@ -218,7 +218,7 @@ class OrderBook extends PureComponent {
                       </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>type</Typography>
-                        <Typography className='listInfo'>{type}</Typography>
+                        <Typography className={`fat ${type}COLOR`}>{type}</Typography>
                       </Grid>
                       <Grid item xs={4}>
                         <Typography className='listLabel'>price</Typography>

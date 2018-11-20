@@ -10,3 +10,6 @@
 .bought{
  color: green;
 }
+.breakWord{
+ word-wrap: break-word !important;
+}

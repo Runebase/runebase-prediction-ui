@@ -1,23 +1,28 @@
 .MarketBalanceActive{
-	box-shadow: inset 8px 0 10px -6px blue, inset -8px 0 10px -6px blue;  
+ color: #585AFA; 
+ font-weight: 900; 
 }
 .dashboardOrderBook{
-	border: 1px solid #000;
-	background: #F9F9F9;
-	text-align: center;
+ border: 1px solid #000;
+ background: #F9F9F9;
+ text-align: center;
 }
 .dashboardOrderBookTitle{
-	padding: 12px;
-	border: 1px solid #000;
-	background: #585AFA;
-	text-align: center;
+ padding: 12px;
+ border: 1px solid #000;
+ background: #585AFA;
+ text-align: center;
 }
 .dashboardActionsSort{
-	vertical-align: middle;
-	padding: 12px;
+ vertical-align: middle;
+ padding: 12px;
 }
 .dashboardOrderBookWrapper{
-	margin-bottom: 12px;
+ margin-bottom: 12px;
+}
+.marginTopBot{
+ margin-top: 12px;
+ margin-bottom: 12px
 }
 
 

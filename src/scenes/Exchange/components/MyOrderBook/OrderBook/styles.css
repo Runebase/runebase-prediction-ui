@@ -78,3 +78,19 @@ i.huge.icon, i.huge.icons{
   height: inherit; 
   height: 100%;
 }
+
+.SELLORDERCOLOR{
+ color: darkorange;
+}
+.BUYORDERCOLOR{
+ color: blue;
+}
+.PENDINGCOLOR{
+ color: saddlebrown;
+}
+.ACTIVECOLOR{
+ color: green;
+}
+.CONFIRMEDCOLOR{
+ color: green;
+}

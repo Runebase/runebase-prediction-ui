@@ -97,28 +97,28 @@ export default class OrderBook extends PureComponent {
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Grid container className='centerText' wrap="nowrap">
               <Grid item xs={2} zeroMinWidth>
-                <Typography noWrap>orderId</Typography>
-                <Typography noWrap>{orderId}</Typography>
+                <Typography>orderId</Typography>
+                <Typography className='fat'>{orderId}</Typography>
               </Grid>
               <Grid item xs={2}>
-                <Typography noWrap>token</Typography>
-                <Typography noWrap>{token}</Typography>
+                <Typography>token</Typography>
+                <Typography className='fat'>{token}</Typography>
               </Grid>
               <Grid item xs={2}>
-                <Typography noWrap>amount</Typography>
-                <Typography noWrap>{amountToken}</Typography>
+                <Typography>amount</Typography>
+                <Typography className='fat'>{amountToken}</Typography>
               </Grid>
               <Grid item xs={2}>
-                <Typography noWrap>price</Typography>
-                <Typography noWrap>{price}</Typography>
+                <Typography>price</Typography>
+                <Typography className='fat'>{price}</Typography>
               </Grid>
               <Grid item xs={2}>
-                <Typography noWrap>type</Typography>
-                <Typography noWrap>{type}</Typography>
+                <Typography>type</Typography>
+                <Typography className={`fat ${type}COLOR`}>{type}</Typography>
               </Grid>
               <Grid item xs={2}>
-                <Typography noWrap>status</Typography>
-                <Typography noWrap>{status}</Typography>
+                <Typography>status</Typography>
+                <Typography className={`fat ${status}COLOR`}>{status}</Typography>
               </Grid>
             </Grid>
           </ExpansionPanelSummary>
@@ -128,17 +128,17 @@ export default class OrderBook extends PureComponent {
               <Grid item xs={12}>
                 <Grid container justify="center">
                   <Grid item xs={3}>
-                    <p>{token}/RUNES</p>
+                    <p className='fat'>{token}/RUNES</p>
                     <div className='fullwidth'>
                       <TokenImage token={token} />
                     </div>
                   </Grid>
                   <Grid item xs={3} className='inheritHeight'>
-                    <p>{type}</p>
+                    <p className='fat'>{type}</p>
                     <OrderTypeIcon orderType={type} />
                   </Grid>
                   <Grid item xs={3} className='inheritHeight'>
-                    <p>{status}</p>
+                    <p className='fat'>{status}</p>
                     <StatusIcon status={status} />
                   </Grid>
                 </Grid>
@@ -148,16 +148,17 @@ export default class OrderBook extends PureComponent {
                   <Grid item xs={3} className='inheritHeight ordersRoundBox'>
                     <Typography variant='title' className='ordersPropertyLabel'>amount</Typography>
                     <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{amountToken}</Typography>
+                    <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{token}</Typography>
                   </Grid>
                   <Grid item xs={3} className='inheritHeight ordersRoundBox'>
                     <Typography variant='title' className='ordersPropertyLabel'>price</Typography>
-                    <div className='verticalCenter'>
-                      <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{price}</Typography>
-                    </div>
+                    <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{price}</Typography>
+                    <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>RUNES</Typography>
                   </Grid>
                   <Grid item xs={3} className='inheritHeight ordersRoundBox'>
                     <Typography variant='title' className='ordersPropertyLabel'>total</Typography>
                     <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>{total}</Typography>
+                    <Typography variant='subheading' className='ordersPropertyContent inheritHeight'>RUNES</Typography>
                   </Grid>
                   <Grid item xs={3} className='inheritHeight ordersRoundBox'>
                     <Typography variant='title' className='ordersPropertyLabel'>filled</Typography>
@@ -166,7 +167,7 @@ export default class OrderBook extends PureComponent {
                         <Grid item xs={12}>
                           <Typography variant='subheading'>{filled}</Typography>
                         </Grid>
-                        <span className='divider'></span>
+                        <span className='filledDivider'></span>
                         <Grid item xs={12}>
                           <Typography variant='subheading'>{startAmountToken}</Typography>
                         </Grid>
@@ -192,20 +193,18 @@ export default class OrderBook extends PureComponent {
                 <Typography variant='subheading'>created blockNum</Typography>
                 <Typography>{blockNum}</Typography>
               </Grid>
-              <Grid item xs={12}>
-                <div>
-                  <Button onClick={() => wallet.prepareCancelOrderExchange(orderId)} color="primary">
-                    Cancel Order
-                  </Button>
-                  <CancelOrderTxConfirmDialog onCancelOrder={this.onCancelOrder} id={messages.cancelOrderConfirmMsgSendMsg.id} />
-                </div>
-              </Grid>
-            </Grid>
-            <Grid container>
-
-            </Grid>
-            <Grid container>
-
+              {status !== 'CANCELED' && status !== 'FULFILLED' ? (
+                <Grid item xs={12}>
+                  <div>
+                    <Button onClick={() => wallet.prepareCancelOrderExchange(orderId)} color="primary">
+                      Cancel Order
+                    </Button>
+                    <CancelOrderTxConfirmDialog onCancelOrder={this.onCancelOrder} id={messages.cancelOrderConfirmMsgSendMsg.id} />
+                  </div>
+                </Grid>
+              ) : (
+                <div></div>
+              )}
             </Grid>
           </ExpansionPanelDetails>
         </ExpansionPanel>

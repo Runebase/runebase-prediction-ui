@@ -9,8 +9,7 @@ import {
   Typography,
   withStyles } from '@material-ui/core';
 
-import styles from './styles';
-import './styles.css';
+import styles from './styles.css';
 
 @injectIntl
 @inject('store')
@@ -26,16 +25,16 @@ class MyTradesView extends PureComponent {
 
   renderTrade(from, to, boughtTokens, myaddress, amountToken, totalToken, totalToken2, tokenName, orderType) {
     if (to === myaddress && boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'SELLORDER') {
-      return (<Typography className='sold'>Sell {amountToken} {tokenName} for {totalToken} RUNES 1</Typography>);
+      return (<Typography className='sold fat'>Sell {amountToken} {tokenName} for {totalToken} RUNES</Typography>);
     }
     if (to === myaddress && boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'BUYORDER') {
-      return (<Typography className='bought'>Buy {amountToken} {tokenName} for {totalToken2} RUNES 2</Typography>);
+      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken2} RUNES</Typography>);
     }
     if (from === myaddress && boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'SELLORDER') {
-      return (<Typography className='bought'>Buy {amountToken} {tokenName} for {totalToken} RUNES 3</Typography>);
+      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken} RUNES</Typography>);
     }
     if (from === myaddress && boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'BUYORDER') {
-      return (<Typography className='sold'>Sell {totalToken2} {tokenName} for {amountToken} RUNES 4</Typography>);
+      return (<Typography className='sold fat'>Sell {totalToken2} {tokenName} for {amountToken} RUNES</Typography>);
     }
   }
   render() {
@@ -47,19 +46,19 @@ class MyTradesView extends PureComponent {
     const myaddress = wallet.addresses[wallet.currentAddressKey].address;
 
     return (
-      <div className={`classes.root ${status}`}>
+      <div className={`${status}`}>
         <Grid container className='myTradeContainer'>
-          <Grid item xs={8}>
+          <Grid item xs={8} className='breakWord'>
             <p>{date}</p>
           </Grid>
-          <Grid item xs={4}>
-            <p>{status}</p>
+          <Grid item xs={4} className='breakWord'>
+            <p className={`fat ${status}COLOR`}>{status}</p>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} className='fat'>
             {this.renderTrade(from, to, boughtTokens, myaddress, amountToken, totalToken, totalToken2, tokenName, orderType)}
           </Grid>
-          <Grid item xs={12}>
-            <Typography variant="caption" gutterBottom>{txid}</Typography>
+          <Grid item xs={12} className='breakWord'>
+            <Typography variant="caption" gutterBottom><a href={`https://explorer.runebase.io/tx/${txid}`}>{txid}</a></Typography>
           </Grid>
         </Grid>
       </div>
