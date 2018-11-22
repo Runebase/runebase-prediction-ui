@@ -9,6 +9,7 @@ export const TYPE = {
   newOrder: 'NewOrder',
   trade: 'Trade',
   market: 'Market',
+  fundRedeem: 'FundRedeem',
 };
 
 const TYPE_DEF = {
@@ -118,13 +119,26 @@ const TYPE_DEF = {
     to
     status
     soldTokens
-    boughtTokens    
+    boughtTokens
     tokenName
-    orderType    
+    orderType
     price
     orderId
     time
-    amount   
+    amount
+    blockNum
+  `,
+
+  FundRedeem: `
+    txid
+    type
+    token
+    tokenName
+    status
+    owner
+    time
+    date
+    amount
     blockNum
   `,
 

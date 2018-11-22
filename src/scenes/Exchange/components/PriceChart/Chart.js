@@ -115,7 +115,7 @@ class CandleStickChartWithMACDIndicator extends PureComponent {
           <MouseCoordinateY
             at='right'
             orient='right'
-            displayFormat={format('.2f')}
+            displayFormat={format('.8f')}
             {...mouseEdgeAppearance}
           />
 
@@ -137,6 +137,7 @@ class CandleStickChartWithMACDIndicator extends PureComponent {
             strokeOpacity={1}
             strokeWidth={3}
             arrowWidth={2}
+            displayFormat={format('.8f')}
           />
 
           <OHLCTooltip origin={[-40, 0]} />

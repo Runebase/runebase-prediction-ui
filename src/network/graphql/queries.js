@@ -170,6 +170,28 @@ export function queryAllTrades(filters, orderBy, limit, skip) {
 }
 
 /*
+* Queries allFundRedeems from GraphQL with optional filters.
+*
+*
+*/
+export function queryAllFundRedeems(filters, orderBy, limit, skip) {
+  const request = new GraphQuery('allFundRedeems', TYPE.fundRedeem);
+  if (!_.isEmpty(filters)) {
+    request.setFilters(filters);
+  }
+  if (!_.isEmpty(orderBy)) {
+    request.setOrderBy(orderBy);
+  }
+  if (_.isFinite(limit) && limit > 0) {
+    request.addParam('limit', limit);
+  }
+  if (_.isFinite(skip) && skip >= 0) {
+    request.addParam('skip', skip);
+  }
+  return request.execute();
+}
+
+/*
 * Queries allMarkets from GraphQL with optional filters.
 *
 *

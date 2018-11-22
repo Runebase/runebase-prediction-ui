@@ -32,8 +32,8 @@ export default class Exchange extends Component {
             <Markets />
             <MyOrderBook />
             <MyTrades />
-            {/*
             <FundRedeemHistory />
+            {/*
             <MarketMaker />
             <FailedActions />
             */}

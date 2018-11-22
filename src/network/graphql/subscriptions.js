@@ -73,6 +73,13 @@ const subscriptions = {
       }
     }
   `,
+  onFundRedeemInfo: `
+    subscription OnFundRedeemInfo {
+      onFundRedeemInfo {
+        ${getTypeDef('FundRedeem')}
+      }
+    }
+  `,
   onSelectedOrderInfo: `
     subscription OnSelectedOrderInfo {
       onSelectedOrderInfo {
@@ -89,6 +96,7 @@ function getSubscription(name) {
 export default getSubscription;
 export const channels = {
   ON_SYNC_INFO: 'onSyncInfo',
+  ON_FUNDREDEEM_INFO: 'onFundRedeemInfo',
   ON_MYORDER_INFO: 'onMyOrderInfo',
   ON_ACTIVEORDER_INFO: 'onActiveOrderInfo',
   ON_FULFILLEDORDER_INFO: 'onFulfilledOrderInfo',

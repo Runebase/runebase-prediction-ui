@@ -27,6 +27,7 @@ import CanceledOrderStore from './CanceledOrderStore';
 import BuyHistoryStore from './BuyHistoryStore';
 import SellHistoryStore from './SellHistoryStore';
 import PriceChartStore from './PriceChartStore';
+import FundRedeemHistoryStore from './FundRedeemHistoryStore';
 
 class AppStore {
   @observable loading = true;
@@ -54,6 +55,7 @@ class AppStore {
   fulfilledOrderStore = {}
   canceledOrderStore = {}
   priceChartStore = {}
+  FundRedeemHistoryStore = {}
 
   constructor() {
     // block content until all stores are initialized
@@ -70,6 +72,7 @@ class AppStore {
     this.eventPage = new EventPageStore(this);
 
     runInAction(() => {
+      this.fundRedeemHistoryStore = new FundRedeemHistoryStore(this);
       this.priceChartStore = new PriceChartStore(this);
       this.buyStore = new BuyStore(this);
       this.sellStore = new SellStore(this);

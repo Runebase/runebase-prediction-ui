@@ -473,20 +473,13 @@ export default class {
     this.confirmAmount = confirmAmount;
     this.tokenChoice = tokenChoice;
     const calc = (this.addresses[this.currentAddressKey].runebase - confirmAmount);
-    console.log(calc);
-    console.log(tokenChoice);
-    console.log(this.addresses[this.currentAddressKey].runebase);
-    console.log(confirmAmount);
+
     if (tokenChoice === 'RUNES' && calc < 2) {
       this.hasEnoughGasCoverage = true;
-      console.log(this.hasEnoughGasCoverage);
     } else if (tokenChoice !== 'RUNES' && this.addresses[this.currentAddressKey].runebase < 2) {
       this.hasEnoughGasCoverage = true;
-      console.log('this.hasEnoughGasCoverage');
-      console.log(this.hasEnoughGasCoverage);
     } else {
       try {
-        console.log('fuckelse');
         const { data: { result } } = await axios.post(Routes.api.transactionCost, {
           type: TransactionType.TRANSFER,
           token: tokenChoice,

@@ -11,8 +11,24 @@ class GraphParser {
       NewOrder: this.parseNewOrder,
       Trade: this.parseTrade,
       Market: this.parseMarket,
+      FundRedeem: this.parseFundRedeem,
     };
     return PARSER_MAPPINGS[requestName];
+  }
+
+  static parseFundRedeem(data) {
+    return data.map((entry) => ({
+      txid: entry.txid,
+      type: entry.type,
+      token: entry.token,
+      tokenName: entry.tokenName,
+      status: entry.status,
+      owner: entry.owner,
+      time: entry.time,
+      date: entry.date,
+      amount: entry.amount,
+      blockNum: entry.blockNum,
+    }));
   }
 
   static parseTopic(data) {
