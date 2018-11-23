@@ -60,15 +60,17 @@ export default class {
 
   getFundRedeemInfo = async (limit = this.limit, skip = this.skip) => {
     try {
-      const orderBy = { field: 'date', direction: 'DESC' };
-      let fundRedeemInfo = [];
-      const filters = [{ owner: this.app.wallet.addresses[this.app.wallet.currentAddressKey].address }];
-      fundRedeemInfo = await queryAllFundRedeems(filters, orderBy, limit, skip);
-      if (fundRedeemInfo.length < limit) this.hasMoreFundRedeems = false;
-      if (fundRedeemInfo.length === limit) this.hasMoreFundRedeems = true;
-      if (this.skip === 0) this.hasLessFundRedeems = false;
-      if (this.skip > 0) this.hasLessFundRedeems = true;
-      this.onFundRedeemInfo(fundRedeemInfo);
+      if (this.app.wallet.currentAddressKey !== '') {
+        const orderBy = { field: 'time', direction: 'DESC' };
+        let fundRedeemInfo = [];
+        const filters = [{ owner: this.app.wallet.addresses[this.app.wallet.currentAddressKey].address }];
+        fundRedeemInfo = await queryAllFundRedeems(filters, orderBy, limit, skip);
+        if (fundRedeemInfo.length < limit) this.hasMoreFundRedeems = false;
+        if (fundRedeemInfo.length === limit) this.hasMoreFundRedeems = true;
+        if (this.skip === 0) this.hasLessFundRedeems = false;
+        if (this.skip > 0) this.hasLessFundRedeems = true;
+        this.onFundRedeemInfo(fundRedeemInfo);
+      }
     } catch (error) {
       this.onFundRedeemInfo({ error });
     }
@@ -80,7 +82,7 @@ export default class {
       console.error(fundRedeemInfo.error.message); // eslint-disable-line no-console
     } else {
       const result = _.uniqBy(fundRedeemInfo, 'txid').map((fundRedeem) => new FundRedeem(fundRedeem, this.app));
-      const resultOrder = _.orderBy(result, ['date'], 'desc');
+      const resultOrder = _.orderBy(result, ['time'], 'desc');
       this.fundRedeemInfo = resultOrder;
     }
   }

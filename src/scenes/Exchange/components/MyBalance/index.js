@@ -45,16 +45,16 @@ export default class myBalance extends Component {
                     <Card className='dashboardOrderBook fat'>
                       <Grid container className='marginTopBot'>
                         <Grid item xs={3}>
-                          <Typography variant="subtitle2">RUNES</Typography>
-                          <Typography variant="subtitle2">{wallet.addresses[wallet.currentAddressKey].exchangerunes}</Typography>
+                          <Typography variant="body2">RUNES</Typography>
+                          <Typography variant="body2">{wallet.addresses[wallet.currentAddressKey].exchangerunes}</Typography>
                         </Grid>
                         <Grid item xs={3}>
-                          <Typography variant="subtitle2" className={`${hasPred}`}>PRED</Typography >
-                          <Typography variant="subtitle2" className={`${hasPred}`}>{wallet.addresses[wallet.currentAddressKey].exchangepred}</Typography>
+                          <Typography variant="body2" className={`${hasPred}`}>PRED</Typography >
+                          <Typography variant="body2" className={`${hasPred}`}>{wallet.addresses[wallet.currentAddressKey].exchangepred}</Typography>
                         </Grid>
                         <Grid item xs={3}>
-                          <Typography variant="subtitle2" className={`${hasFun}`}>FUN</Typography>
-                          <Typography variant="subtitle2" className={`${hasFun}`}>{wallet.addresses[wallet.currentAddressKey].exchangefun}</Typography>
+                          <Typography variant="body2" className={`${hasFun}`}>FUN</Typography>
+                          <Typography variant="body2" className={`${hasFun}`}>{wallet.addresses[wallet.currentAddressKey].exchangefun}</Typography>
                         </Grid>
                       </Grid>
                     </Card>

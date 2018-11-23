@@ -114,7 +114,7 @@ export default class BuyOrder extends Component {
                 <h3>{wallet.currentMarket}/RUNES</h3>
                 {(() => {
                   if (wallet.currentAddressKey !== '') {
-                    return (<Typography variant="subtitle2" className='fat'>{tokenAmount} RUNES</Typography>);
+                    return (<Typography variant="body2" className='fat'>{tokenAmount} RUNES</Typography>);
                   }
                   return (
                     <p>...</p>

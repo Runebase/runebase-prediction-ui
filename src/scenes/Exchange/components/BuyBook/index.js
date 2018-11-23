@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { withStyles, Card } from '@material-ui/core';
 import { defineMessages } from 'react-intl';
 
-import theme from '../../../../config/theme';
 import OrderBook from './OrderBook';
 import _Loading from '../../../../components/Loading';
 import styles from './style.css';
@@ -20,7 +19,7 @@ const messages = defineMessages({
 @observer
 export default class BuyBook extends Component {
   componentDidMount() {
-    this.props.store.buyStore.init();
+    this.props.store.buyStore.getBuyOrderInfo();
   }
   handleNext = async () => {
     this.props.store.buyStore.skip = this.props.store.buyStore.skip + 5;
@@ -32,7 +31,6 @@ export default class BuyBook extends Component {
   }
 
   render() {
-    const { classes } = this.props;
     const { buyStore, wallet } = this.props.store;
     return (
       <Fragment>

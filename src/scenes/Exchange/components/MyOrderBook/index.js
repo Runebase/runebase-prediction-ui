@@ -1,13 +1,21 @@
 import React, { Component, Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { Card, Tab, Tabs, AppBar } from '@material-ui/core';
+import { Card, Tab, Tabs, AppBar, withStyles } from '@material-ui/core';
+import { defineMessages } from 'react-intl';
 import SwipeableViews from 'react-swipeable-views';
+import _Loading from '../../../../components/Loading';
 import OrderBook from './OrderBook';
 import styles from './styles.css';
 
+const messages = defineMessages({
+  loadAllOrdersMsg: {
+    id: 'load.allOrders',
+    defaultMessage: 'loading',
+  },
+});
+
 @inject('store')
 @observer
-
 export default class MyOrderBook extends Component {
   constructor(props) {
     super(props);
@@ -145,6 +153,7 @@ export default class MyOrderBook extends Component {
 }
 
 const Orders = observer(({ activeOrderStore: { activeOrderInfo, loading } }) => {
+  if (loading) return <Loading />;
   const activeOrders = (activeOrderInfo || []).map((order, i) => <OrderBook key={i} index={i} order={order} />); // eslint-disable-line
   return (
     activeOrders
@@ -152,6 +161,7 @@ const Orders = observer(({ activeOrderStore: { activeOrderInfo, loading } }) => 
 });
 
 const OrdersFulFilled = observer(({ fulfilledOrderStore: { fulfilledOrderInfo, loading } }) => {
+  if (loading) return <Loading />;
   const filledOrders = (fulfilledOrderInfo || []).map((order, i) => <OrderBook key={i} index={i} order={order} />); // eslint-disable-line
   return (
     filledOrders
@@ -159,9 +169,15 @@ const OrdersFulFilled = observer(({ fulfilledOrderStore: { fulfilledOrderInfo, l
 });
 
 const OrdersCanceled = observer(({ canceledOrderStore: { canceledOrderInfo, loading } }) => {
+  if (loading) return <Loading />;
   const canceledOrders = (canceledOrderInfo || []).map((order, i) => <OrderBook key={i} index={i} order={order} />); // eslint-disable-line
   return (
     canceledOrders
   );
 });
 
+const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text={messages.loadAllOrdersMsg} /></Row>);
+
+const Row = withStyles(styles)(({ classes, ...props }) => (
+  <div className={classes.row} {...props} />
+));

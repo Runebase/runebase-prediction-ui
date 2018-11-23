@@ -5,7 +5,7 @@ import { defineMessages } from 'react-intl';
 
 import OrderBook from './OrderBook';
 import _Loading from '../../../../components/Loading';
-import './style.css';
+import styles from './style.css';
 
 
 const messages = defineMessages({
@@ -19,7 +19,7 @@ const messages = defineMessages({
 @observer
 export default class SellBook extends Component {
   componentDidMount() {
-    this.props.store.sellStore.init();
+    this.props.store.sellStore.getSellOrderInfo();
   }
   handleNext = async () => {
     this.props.store.sellStore.skip = this.props.store.sellStore.skip + 5;
@@ -65,9 +65,9 @@ const SellOrders = observer(({ sellStore: { sellOrderInfo, loading } }) => {
   );
 });
 
-const Loading = withStyles()(({ classes }) => <Row><_Loading className={classes.loading} text={messages.loadAllNewOrdersMsg} /></Row>);
+const Loading = withStyles(styles)(({ classes }) => <Row><_Loading className={classes.loading} text={messages.loadAllNewOrdersMsg} /></Row>);
 
-const Row = withStyles()(({ classes, ...props }) => (
+const Row = withStyles(styles)(({ classes, ...props }) => (
   <div className={classes.row} {...props} />
 ));
 

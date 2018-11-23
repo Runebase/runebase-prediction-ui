@@ -1,6 +1,5 @@
 import { observable, action, runInAction, computed, reaction } from 'mobx';
-import _ from 'lodash';
-import { Routes, TransactionStatus } from 'constants';
+import { Routes } from 'constants';
 import { getChartData } from '../helpers/utility';
 
 const INIT_VALUES = {

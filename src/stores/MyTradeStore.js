@@ -60,16 +60,17 @@ export default class {
 
   getMyTradeInfo = async (limit = this.limit, skip = this.skip) => {
     try {
-      const orderBy = { field: 'date', direction: 'DESC' };
-      let myTradeInfo = [];
-      const filters = [{ from: this.app.wallet.addresses[this.app.wallet.currentAddressKey].address }, { to: this.app.wallet.addresses[this.app.wallet.currentAddressKey].address }]; /* Filter From and To,  unique by txid */
-      myTradeInfo = await queryAllTrades(filters, orderBy, limit, skip);
-
-      if (myTradeInfo.length < limit) this.hasMoreMyTrades = false;
-      if (myTradeInfo.length === limit) this.hasMoreMyTrades = true;
-      if (this.skip === 0) this.hasLessMyTrades = false;
-      if (this.skip > 0) this.hasLessMyTrades = true;
-      this.onMyTradeInfo(myTradeInfo);
+      if (this.app.wallet.currentAddressKey !== '') {
+        const orderBy = { field: 'time', direction: 'DESC' };
+        let myTradeInfo = [];
+        const filters = [{ from: this.app.wallet.addresses[this.app.wallet.currentAddressKey].address }, { to: this.app.wallet.addresses[this.app.wallet.currentAddressKey].address }]; /* Filter From and To,  unique by txid */
+        myTradeInfo = await queryAllTrades(filters, orderBy, limit, skip);
+        if (myTradeInfo.length < limit) this.hasMoreMyTrades = false;
+        if (myTradeInfo.length === limit) this.hasMoreMyTrades = true;
+        if (this.skip === 0) this.hasLessMyTrades = false;
+        if (this.skip > 0) this.hasLessMyTrades = true;
+        this.onMyTradeInfo(myTradeInfo);
+      }
     } catch (error) {
       this.onMyTradeInfo({ error });
     }
@@ -81,7 +82,7 @@ export default class {
       console.error(myTradeInfo.error.message); // eslint-disable-line no-console
     } else {
       const result = _.uniqBy(myTradeInfo, 'txid').map((trade) => new Trade(trade, this.app));
-      const resultOrder = _.orderBy(result, ['date'], 'desc');
+      const resultOrder = _.orderBy(result, ['time'], 'desc');
       this.myTradeInfo = resultOrder;
     }
   }

@@ -20,6 +20,7 @@ import { Clear } from '@material-ui/icons';
 import { TxSentDialog } from 'components';
 import ExecuteOrderTxConfirmDialog from '../ExecuteOrderTxConfirmDialog';
 import { TokenImage, OrderTypeIcon, StatusIcon } from '../../../helpers';
+import { satoshiToDecimal, decimalToSatoshi } from '../../../../../helpers/utility';
 
 
 import styles from './styles';
@@ -137,13 +138,13 @@ class OrderBook extends PureComponent {
     const { classes, fullScreen } = this.props;
     const { store: { wallet, global } } = this.props;
     const { orderId, txid, buyToken, sellToken, amount, startAmount, owner, blockNum, time, price, token, type, status } = this.props.event;
-    const amountTokenLabel = amount / 1e8;
-    const amountToken = global.selectedOrderInfo.amount / 1e8;
-    const startAmountToken = global.selectedOrderInfo.startAmount / 1e8;
-    const filled = (global.selectedOrderInfo.startAmount - global.selectedOrderInfo.amount) / 1e8;
+    const amountTokenLabel = satoshiToDecimal(amount);
+    const amountToken = satoshiToDecimal(global.selectedOrderInfo.amount);
+    const startAmountToken = satoshiToDecimal(global.selectedOrderInfo.startAmount);
+    const filled = satoshiToDecimal((global.selectedOrderInfo.startAmount - global.selectedOrderInfo.amount));
     let total = amountToken * global.selectedOrderInfo.price;
     total = total.toFixed(8).replace(/\.?0+$/, '');
-    const exchangeAmount = this.state.exchangeAmount * 1e8;
+    const exchangeAmount = decimalToSatoshi(this.state.exchangeAmount);
     let walletAmount;
     let availableGasAmount;
     let maxSlider;

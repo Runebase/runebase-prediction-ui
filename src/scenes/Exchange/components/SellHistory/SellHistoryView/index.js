@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import 'semantic-ui-css/semantic.min.css';
 import { inject } from 'mobx-react';
 import { injectIntl } from 'react-intl';
@@ -8,22 +7,13 @@ import {
   Grid,
   Typography,
   withStyles } from '@material-ui/core';
-
-import styles from './styles';
-import './styles.css';
+import styles from './styles.css';
+import { satoshiToDecimal } from '../../../../../helpers/utility';
 
 @injectIntl
 @inject('store')
 @withStyles(styles, { withTheme: true })
 class SellHistoryView extends PureComponent {
-  static propTypes = {
-    orderId: PropTypes.string,
-  };
-
-  static defaultProps = {
-    orderId: undefined,
-  };
-
   renderTrade(from, to, boughtTokens, amountToken, totalToken, totalToken2, tokenName, orderType) {
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'SELLORDER') {
       return (<Typography className='sold fat'>Sell {amountToken} {tokenName} for {totalToken} RUNES</Typography>);
@@ -39,10 +29,10 @@ class SellHistoryView extends PureComponent {
     }
   }
   render() {
-    const { orderId, txid, status, from, to, time, boughtTokens, soldTokens, amount, blockNum, price, tokenName, orderType, date } = this.props.event;
-    const amountToken = parseFloat((amount / 1e8));
-    const totalToken = parseFloat((amountToken * price));
-    const totalToken2 = parseFloat((amountToken / price).toFixed(8));
+    const { txid, from, to, boughtTokens, amount, price, tokenName, orderType, date } = this.props.event;
+    const amountToken = satoshiToDecimal(amount);
+    const totalToken = amountToken * price;
+    const totalToken2 = (amountToken / price).toFixed(8);
 
     return (
       <div className={`classes.root ${orderType}`}>

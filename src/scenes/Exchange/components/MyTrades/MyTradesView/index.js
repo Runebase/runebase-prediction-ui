@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import 'semantic-ui-css/semantic.min.css';
 import { inject } from 'mobx-react';
 import { injectIntl } from 'react-intl';
@@ -8,21 +7,13 @@ import {
   Grid,
   Typography,
   withStyles } from '@material-ui/core';
-
+import { satoshiToDecimal, decimalToSatoshi } from '../../../../../helpers/utility';
 import styles from './styles.css';
 
 @injectIntl
 @inject('store')
 @withStyles(styles, { withTheme: true })
 class MyTradesView extends PureComponent {
-  static propTypes = {
-    orderId: PropTypes.string,
-  };
-
-  static defaultProps = {
-    orderId: undefined,
-  };
-
   renderTrade(from, to, boughtTokens, myaddress, amountToken, totalToken, totalToken2, tokenName, orderType) {
     if (to === myaddress && boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'SELLORDER') {
       return (<Typography className='sold fat'>Sell {amountToken} {tokenName} for {totalToken} RUNES</Typography>);
@@ -39,9 +30,9 @@ class MyTradesView extends PureComponent {
   }
   render() {
     const { store: { wallet } } = this.props;
-    const { orderId, txid, status, from, to, time, boughtTokens, soldTokens, amount, blockNum, price, tokenName, orderType, date } = this.props.event;
-    const amountToken = parseFloat((amount / 1e8));
-    const totalToken = parseFloat((amountToken * price));
+    const { txid, status, from, to, boughtTokens, amount, price, tokenName, orderType, date } = this.props.event;
+    const amountToken = satoshiToDecimal(amount);
+    const totalToken = (amountToken * price).toFixed(8);
     const totalToken2 = parseFloat((amountToken / price).toFixed(8));
     const myaddress = wallet.addresses[wallet.currentAddressKey].address;
 

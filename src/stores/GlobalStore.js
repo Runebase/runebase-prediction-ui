@@ -116,10 +116,12 @@ export default class GlobalStore {
   @action
   getSelectedOrderInfo = async () => {
     try {
-      const orderBy = { field: 'price', direction: 'ASC' };
-      const filters = [{ orderId: this.selectedOrderId }];
-      const selectedOrderInfo = await queryAllNewOrders(filters, orderBy, 0, 0);
-      this.onSelectedOrderInfo(selectedOrderInfo);
+      if (this.selectedOrderId !== 0) {
+        const orderBy = { field: 'price', direction: 'ASC' };
+        const filters = [{ orderId: this.selectedOrderId }];
+        const selectedOrderInfo = await queryAllNewOrders(filters, orderBy, 0, 0);
+        this.onSelectedOrderInfo(selectedOrderInfo);
+      }
     } catch (error) {
       this.onSelectedOrderInfo({ error });
     }
@@ -194,7 +196,7 @@ export default class GlobalStore {
         if (errors && errors.length > 0) {
           self.onMarketInfo({ error: errors[0] });
         } else {
-          self.onMarketInfo(data.onMarketInfo);
+          self.onMarketInfo(data);
         }
       },
       error(err) {

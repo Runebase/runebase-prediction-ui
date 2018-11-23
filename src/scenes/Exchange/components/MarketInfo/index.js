@@ -89,16 +89,16 @@ export default class MarketInfo extends Component {
                   <Card className={classes.dashboardOrderBook}>
                     <Grid container className='marginTopBot fat'>
                       <Grid item xs={3}>
-                        <Typography variant="subtitle2">RUNES(GAS)</Typography>
-                        <Typography variant="subtitle2">{wallet.addresses[wallet.currentAddressKey].runebase}</Typography>
+                        <Typography variant="body2">RUNES(GAS)</Typography>
+                        <Typography variant="body2">{wallet.addresses[wallet.currentAddressKey].runebase}</Typography>
                       </Grid>
                       <Grid item xs={3}>
-                        <Typography variant="subtitle2">PRED</Typography>
-                        <Typography variant="subtitle2">{wallet.addresses[wallet.currentAddressKey].pred}</Typography>
+                        <Typography variant="body2">PRED</Typography>
+                        <Typography variant="body2">{wallet.addresses[wallet.currentAddressKey].pred}</Typography>
                       </Grid>
                       <Grid item xs={3}>
-                        <Typography variant="subtitle2">FUN</Typography>
-                        <Typography variant="subtitle2">{wallet.addresses[wallet.currentAddressKey].fun}</Typography>
+                        <Typography variant="body2">FUN</Typography>
+                        <Typography variant="body2">{wallet.addresses[wallet.currentAddressKey].fun}</Typography>
                       </Grid>
                     </Grid>
                   </Card>

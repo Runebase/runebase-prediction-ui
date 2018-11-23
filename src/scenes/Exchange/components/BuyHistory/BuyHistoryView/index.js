@@ -10,6 +10,7 @@ import {
   withStyles } from '@material-ui/core';
 import styles from './styles';
 import './styles.css';
+import { satoshiToDecimal } from '../../../../../helpers/utility';
 
 @injectIntl
 @inject('store')
@@ -25,22 +26,22 @@ class BuyHistoryView extends PureComponent {
 
   renderTrade(from, to, boughtTokens, amountToken, totalToken, totalToken2, tokenName, orderType) {
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'SELLORDER') {
-      return (<Typography className='sold fat'>Sell {amountToken} {tokenName} for {totalToken} RUNES</Typography>);
+      return (<Typography className='sold fat'>Sell {amountToken} {tokenName} for {totalToken} RUNES4</Typography>);
     }
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'BUYORDER') {
-      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken2} RUNES</Typography>);
+      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken2} RUNES5</Typography>);
     }
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'SELLORDER') {
-      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken} RUNES</Typography>);
+      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken} RUNES6</Typography>);
     }
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'BUYORDER') {
-      return (<Typography className='sold fat'>Sell {totalToken2} {tokenName} for {amountToken} RUNES</Typography>);
+      return (<Typography className='sold fat'>Sell {totalToken2} {tokenName} for {amountToken} RUNES8</Typography>);
     }
   }
   render() {
     const { orderId, txid, status, from, to, time, boughtTokens, soldTokens, amount, blockNum, price, tokenName, orderType, date } = this.props.event;
-    const amountToken = parseFloat((amount / 1e8));
-    const totalToken = parseFloat((amountToken * price));
+    const amountToken = satoshiToDecimal(amount);
+    const totalToken = amountToken * price;
     const totalToken2 = parseFloat((amountToken / price).toFixed(8));
 
     return (

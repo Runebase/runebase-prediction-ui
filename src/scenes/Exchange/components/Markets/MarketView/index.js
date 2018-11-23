@@ -58,8 +58,8 @@ export default class MarketView extends PureComponent {
               <div className="like-table">
                 <div className="like-table-row">
                   <div className="like-table-cell valign-middle">
-                    <Typography variant="subtitle2" className='textCenter'>Price</Typography>
-                    <Typography variant="subtitle2" className='textCenter fat'>{price}</Typography>
+                    <Typography variant="body2" className='textCenter'>Price</Typography>
+                    <Typography variant="body2" className='textCenter fat'>{price}</Typography>
                   </div>
                 </div>
               </div>
@@ -68,8 +68,8 @@ export default class MarketView extends PureComponent {
               <div className="like-table">
                 <div className="like-table-row">
                   <div className="like-table-cell valign-middle">
-                    <Typography variant="subtitle2" className='textCenter'>Change</Typography>
-                    <Typography variant="subtitle2" className={`textCenter fat ${changeClass}`}>{change}%</Typography>
+                    <Typography variant="body2" className='textCenter'>Change</Typography>
+                    <Typography variant="body2" className={`textCenter fat ${changeClass}`}>{change}%</Typography>
                   </div>
                 </div>
               </div>
@@ -78,8 +78,8 @@ export default class MarketView extends PureComponent {
               <div className="like-table">
                 <div className="like-table-row">
                   <div className="like-table-cell valign-middle">
-                    <Typography variant="subtitle2" className='textCenter'>Volume</Typography>
-                    <Typography variant="subtitle2" className='textCenter fat'>{fixedVolume}</Typography>
+                    <Typography variant="body2" className='textCenter'>Volume</Typography>
+                    <Typography variant="body2" className='textCenter fat'>{fixedVolume}</Typography>
                   </div>
                 </div>
               </div>

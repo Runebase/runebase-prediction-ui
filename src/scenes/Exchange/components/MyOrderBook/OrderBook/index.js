@@ -19,6 +19,7 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CancelOrderTxConfirmDialog from '../CancelOrderTxConfirmDialog';
 import { TokenImage, OrderTypeIcon, StatusIcon } from '../../../helpers';
+import { satoshiToDecimal } from '../../../../../helpers/utility';
 
 
 import styles from './styles';
@@ -71,9 +72,9 @@ export default class OrderBook extends PureComponent {
     const { classes } = this.props;
     const { store: { wallet } } = this.props;
     const { orderId, txid, amount, startAmount, owner, blockNum, time, price, token, type, status } = this.props.order;
-    const amountToken = amount / 1e8;
-    const startAmountToken = startAmount / 1e8;
-    const filled = startAmount - amount;
+    const amountToken = satoshiToDecimal(amount);
+    const startAmountToken = satoshiToDecimal(startAmount);
+    const filled = parseFloat((startAmountToken - amountToken).toFixed(8));
     let total = amountToken * price;
     total = total.toFixed(8);
     return (
