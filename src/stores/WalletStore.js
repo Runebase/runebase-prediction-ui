@@ -152,7 +152,7 @@ export default class {
     this.tokenChoice = tokenChoice;
     try {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
-        type: TransactionType.TRANSFER,
+        type: TransactionType.WITHDRAWEXCHANGE,
         token: tokenChoice,
         amount: tokenChoice === 'PRED' || tokenChoice === 'FUN' ? decimalToSatoshi(confirmAmount) : Number(confirmAmount),
         senderAddress: walletAddress,
@@ -279,7 +279,7 @@ export default class {
     this.price = price;
     try {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
-        type: TransactionType.TRANSFER,
+        type: TransactionType.BUYORDER,
         token: tokenChoice,
         amount: tokenChoice === 'PRED' || tokenChoice === 'FUN' ? decimalToSatoshi(confirmAmount) : Number(confirmAmount),
         senderAddress: this.walletAddress,
@@ -308,7 +308,7 @@ export default class {
     this.price = price;
     try {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
-        type: TransactionType.TRANSFER,
+        type: TransactionType.SELLORDER,
         token: tokenChoice,
         amount: tokenChoice === 'PRED' || tokenChoice === 'FUN' ? decimalToSatoshi(confirmAmount) : Number(confirmAmount),
         senderAddress: this.walletAddress,
@@ -365,7 +365,7 @@ export default class {
     this.orderId = orderId;
     try {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
-        type: TransactionType.TRANSFER,
+        type: TransactionType.CANCELORDER,
         token: 'RUNES',
         amount: 1,
         senderAddress: this.walletAddress,
@@ -420,7 +420,7 @@ export default class {
     this.exchangeAmount = exchangeAmount;
     try {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
-        type: TransactionType.TRANSFER,
+        type: TransactionType.EXECUTEORDER,
         token: 'RUNES',
         amount: 1,
         senderAddress: this.walletAddress,
@@ -481,7 +481,7 @@ export default class {
     } else {
       try {
         const { data: { result } } = await axios.post(Routes.api.transactionCost, {
-          type: TransactionType.TRANSFER,
+          type: TransactionType.DEPOSITEXCHANGE,
           token: tokenChoice,
           amount: tokenChoice === 'PRED' || tokenChoice === 'FUN' ? decimalToSatoshi(confirmAmount) : Number(confirmAmount),
           senderAddress: walletAddress,
@@ -696,7 +696,7 @@ export default class {
     this.walletAddress = walletAddress;
     try {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
-        type: TransactionType.TRANSFER,
+        type: TransactionType.WITHDRAWEXCHANGE,
         token: this.selectedToken,
         amount: this.selectedToken === Token.PRED || this.selectedToken === Token.FUN ? decimalToSatoshi(this.withdrawAmount) : Number(this.withdrawAmount),
         optionIdx: undefined,

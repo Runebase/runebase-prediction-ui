@@ -32,7 +32,7 @@ class MyTradesView extends PureComponent {
     const { store: { wallet } } = this.props;
     const { txid, status, from, to, boughtTokens, amount, price, tokenName, orderType, date } = this.props.event;
     const amountToken = satoshiToDecimal(amount);
-    const totalToken = (amountToken * price).toFixed(8);
+    const totalToken = parseFloat((amountToken * price).toFixed(8));
     const totalToken2 = parseFloat((amountToken / price).toFixed(8));
     const myaddress = wallet.addresses[wallet.currentAddressKey].address;
 

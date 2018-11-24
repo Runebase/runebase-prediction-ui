@@ -4,6 +4,7 @@
 *
 */
 export default class Trade {
+  type = ''
   from = ''
   to = ''
   status = ''
@@ -23,6 +24,7 @@ export default class Trade {
   constructor(trade, app) {
     Object.assign(this, trade);
     this.app = app;
+    this.type = trade.type;
     this.from = trade.from;
     this.to = trade.to;
     this.status = trade.status;

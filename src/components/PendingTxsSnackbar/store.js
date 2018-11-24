@@ -1,9 +1,9 @@
 import { observable, action, reaction, runInAction } from 'mobx';
 import _ from 'lodash';
 import { TransactionType, TransactionStatus } from 'constants';
-import { Transaction } from 'models';
+import { Transaction, NewOrder, Trade, FundRedeem } from 'models';
 
-import { queryAllTransactions } from '../../network/graphql/queries';
+import { queryAllTransactions, queryAllNewOrders, queryAllTrades, queryAllFundRedeems } from '../../network/graphql/queries';
 
 
 const INIT_VALUES = {
@@ -17,6 +17,13 @@ const INIT_VALUES = {
   pendingWithdraws: 0,
   pendingTransfers: 0,
   pendingResetApproves: 0,
+
+  pendingBuyOrders: 0,
+  pendingSellOrders: 0,
+  pendingCancelOrders: 0,
+  pendingExecuteOrders: 0,
+  pendingWithdrawExchanges: 0,
+  pendingDepositExchanges: 0,
 };
 
 export default class PendingTxsSnackbarStore {
@@ -32,6 +39,12 @@ export default class PendingTxsSnackbarStore {
   pendingTransfers = INIT_VALUES.pendingTransfers
   pendingResetApproves = INIT_VALUES.pendingResetApproves
 
+  pendingBuyOrders = INIT_VALUES.pendingBuyOrders
+  pendingSellOrders = INIT_VALUES.pendingSellOrders
+  pendingCancelOrders = INIT_VALUES.pendingCancelOrders
+  pendingExecuteOrders = INIT_VALUES.pendingExecuteOrders
+  pendingWithdrawExchanges = INIT_VALUES.pendingWithdrawExchanges
+  pendingDepositExchanges = INIT_VALUES.pendingDepositExchanges
   constructor(app) {
     this.app = app;
 
@@ -63,11 +76,22 @@ export default class PendingTxsSnackbarStore {
   queryPendingTransactions = async () => {
     try {
       const filters = [{ status: TransactionStatus.PENDING }];
+      const filtersCancel = [{ status: 'PENDINGCANCEL' }];
+      const resultCancelOrders = await queryAllNewOrders(filtersCancel);
       const result = await queryAllTransactions(filters);
+      const resultOrders = await queryAllNewOrders(filters);
+      const resultTrades = await queryAllTrades(filters);
+      const resultFundRedeems = await queryAllFundRedeems(filters);
+
       const txs = _.map(result, (tx) => new Transaction(tx));
+      const orders = _.map(resultOrders, (order) => new NewOrder(order));
+      const cancelOrders = _.map(resultCancelOrders, (cancelOrder) => new NewOrder(cancelOrder));
+      const trades = _.map(resultTrades, (trade) => new Trade(trade));
+      const fundRedeems = _.map(resultFundRedeems, (fundRedeem) => new FundRedeem(fundRedeem));
+
 
       runInAction(() => {
-        this.count = txs.length;
+        this.count = txs.length + orders.length + trades.length + fundRedeems.length + cancelOrders.length;
         this.pendingCreateEvents = _.filter(
           txs,
           (tx) => tx.type === TransactionType.APPROVE_CREATE_EVENT || tx.type === TransactionType.CREATE_EVENT
@@ -82,6 +106,13 @@ export default class PendingTxsSnackbarStore {
           tx.type === TransactionType.WITHDRAW || tx.type === TransactionType.WITHDRAW_ESCROW);
         this.pendingTransfers = _.filter(txs, { type: TransactionType.TRANSFER });
         this.pendingResetApproves = _.filter(txs, { type: TransactionType.RESET_APPROVE });
+
+        this.pendingBuyOrders = _.filter(orders, { type: TransactionType.BUYORDER });
+        this.pendingSellOrders = _.filter(orders, { type: TransactionType.SELLORDER });
+        this.pendingCancelOrders = _.filter(cancelOrders, { type: TransactionType.CANCELORDER });
+        this.pendingExecuteOrders = _.filter(trades, { type: TransactionType.EXECUTEORDER });
+        this.pendingWithdrawExchanges = _.filter(fundRedeems, { type: TransactionType.WITHDRAWEXCHANGE });
+        this.pendingDepositExchanges = _.filter(fundRedeems, { type: TransactionType.DEPOSITEXCHANGE });
       });
     } catch (error) {
       console.error(error); // eslint-disable-line

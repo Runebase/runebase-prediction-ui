@@ -71,7 +71,7 @@ export default class RedeemConfirmDialog extends Component {
     return (
       <Dialog open={open}>
         <DialogTitle>
-          <FormattedMessage id="redeemConfirm.title" defaultMessage="Please Confirm Your Transaction" />
+          <FormattedMessage id="redeemConfirm.title" defaultMessage="Please Confirm Your Withdrawal" />
         </DialogTitle>
         <DialogContent>
           {confirmMessage}

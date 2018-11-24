@@ -34,6 +34,12 @@ export default class PendingTxsSnackbar extends Component {
       pendingWithdraws,
       pendingTransfers,
       pendingResetApproves,
+      pendingBuyOrders,
+      pendingSellOrders,
+      pendingCancelOrders,
+      pendingExecuteOrders,
+      pendingWithdrawExchanges,
+      pendingDepositExchanges,
     } = this.props.store.pendingTxsSnackbar;
     const { classes, intl } = this.props;
 
@@ -46,6 +52,13 @@ export default class PendingTxsSnackbar extends Component {
       'str.withdraw': pendingWithdraws,
       'str.transferTokens': pendingTransfers,
       'tx.resetApproval': pendingResetApproves,
+
+      'str.buyOrder': pendingBuyOrders,
+      'str.sellOrder': pendingSellOrders,
+      'str.cancelOrder': pendingCancelOrders,
+      'str.executeOrder': pendingExecuteOrders,
+      'str.withdrawExchange': pendingWithdrawExchanges,
+      'str.depositExchange': pendingDepositExchanges,
     };
 
     if (count === 0) {

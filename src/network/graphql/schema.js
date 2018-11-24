@@ -114,6 +114,7 @@ const TYPE_DEF = {
 
   Trade: `
     txid
+    type
     date
     from
     to
@@ -467,8 +468,8 @@ const ENUMS = {
     'WITHDRAW',
     'WITHDRAWESCROW',
     'TRANSFER',
-    'FUNDEXCHANGE',
-    'REDEEMEXCHANGE',
+    'DEPOSITEXCHANGE',
+    'WITHDRAWEXCHANGE',
     'RESETAPPROVE',
     'CANCELORDER',
     'BUYORDER',

@@ -142,8 +142,9 @@ export default class RedeemExchange extends Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button value='RUNES' onClick={this.handleClickOpenRedeemDialog}>withdraw RUNES</Button>
-            <Button value={this.props.store.wallet.market} onClick={this.handleClickOpenRedeemDialog}>withdraw {this.props.store.wallet.market}</Button>
+            <Button value='RUNES' onClick={this.handleClickOpenRedeemDialog}>RUNES</Button>
+            <Button value='PRED' onClick={this.handleClickOpenRedeemDialog}>PRED</Button>
+            <Button value='FUN' onClick={this.handleClickOpenRedeemDialog}>FUN</Button>
             <Button onClick={this.handleClose}>Close</Button>
           </DialogActions>
         </Dialog>
