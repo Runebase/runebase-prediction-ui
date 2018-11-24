@@ -15,8 +15,6 @@ import SellBook from './components/SellBook';
 import SellHistory from './components/SellHistory';
 import BuyHistory from './components/BuyHistory';
 import FundRedeemHistory from './components/FundRedeemHistory';
-import MarketMaker from './components/MarketMaker';
-import FailedActions from './components/FailedActions';
 
 @inject('store')
 @observer
@@ -33,10 +31,6 @@ export default class Exchange extends Component {
             <MyOrderBook />
             <MyTrades />
             <FundRedeemHistory />
-            {/*
-            <MarketMaker />
-            <FailedActions />
-            */}
           </Grid>
           <Grid item xs={8}>
             <Grid container>

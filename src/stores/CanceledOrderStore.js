@@ -16,7 +16,6 @@ const INIT_VALUES = {
   skip: 0, // skip
 };
 
-let syncCanceledOrderInterval;
 export default class {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
@@ -45,7 +44,7 @@ export default class {
     // Call BuyOrders once to init the wallet addresses used by other stores
     this.getCanceledOrderInfo();
     this.subscribeCanceledOrderInfo();
-    syncCanceledOrderInterval = setInterval(this.getCanceledOrderInfo, AppConfig.intervals.canceledOrderInfo);
+    setInterval(this.getCanceledOrderInfo, AppConfig.intervals.canceledOrderInfo);
   }
 
   @action

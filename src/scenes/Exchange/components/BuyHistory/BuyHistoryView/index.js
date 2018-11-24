@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import 'semantic-ui-css/semantic.min.css';
 import { inject } from 'mobx-react';
 import { injectIntl } from 'react-intl';
@@ -16,30 +15,22 @@ import { satoshiToDecimal } from '../../../../../helpers/utility';
 @inject('store')
 @withStyles(styles, { withTheme: true })
 class BuyHistoryView extends PureComponent {
-  static propTypes = {
-    orderId: PropTypes.string,
-  };
-
-  static defaultProps = {
-    orderId: undefined,
-  };
-
   renderTrade(from, to, boughtTokens, amountToken, totalToken, totalToken2, tokenName, orderType) {
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'SELLORDER') {
-      return (<Typography className='sold fat'>Sell {amountToken} {tokenName} for {totalToken} RUNES4</Typography>);
+      return (<Typography className='sold fat'>Sell {amountToken} {tokenName} for {totalToken} RUNES</Typography>);
     }
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'BUYORDER') {
-      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken2} RUNES5</Typography>);
+      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken2} RUNES</Typography>);
     }
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'SELLORDER') {
-      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken} RUNES6</Typography>);
+      return (<Typography className='bought fat'>Buy {amountToken} {tokenName} for {totalToken} RUNES</Typography>);
     }
     if (boughtTokens !== '0000000000000000000000000000000000000000' && orderType === 'BUYORDER') {
-      return (<Typography className='sold fat'>Sell {totalToken2} {tokenName} for {amountToken} RUNES8</Typography>);
+      return (<Typography className='sold fat'>Sell {totalToken2} {tokenName} for {amountToken} RUNES</Typography>);
     }
   }
   render() {
-    const { orderId, txid, status, from, to, time, boughtTokens, soldTokens, amount, blockNum, price, tokenName, orderType, date } = this.props.event;
+    const { txid, from, to, boughtTokens, amount, price, tokenName, orderType, date } = this.props.event;
     const amountToken = satoshiToDecimal(amount);
     const totalToken = amountToken * price;
     const totalToken2 = parseFloat((amountToken / price).toFixed(8));

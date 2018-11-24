@@ -16,7 +16,6 @@ const INIT_VALUES = {
   skip: 0, // skip
 };
 
-let syncSellHistoryInterval;
 export default class {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
@@ -45,7 +44,7 @@ export default class {
     // Call mytrades once to init the wallet addresses used by other stores
     this.getSellHistoryInfo();
     this.subscribeSellHistoryInfo();
-    syncSellHistoryInterval = setInterval(this.getSellHistoryInfo, AppConfig.intervals.sellHistoryInfo);
+    setInterval(this.getSellHistoryInfo, AppConfig.intervals.sellHistoryInfo);
   }
 
   @action
@@ -60,11 +59,10 @@ export default class {
 
   getSellHistoryInfo = async (limit = this.limit, skip = this.skip) => {
     try {
-      const orderBy = { field: 'date', direction: 'DESC' };
+      const orderBy = { field: 'time', direction: 'DESC' };
       let sellHistoryInfo = [];
       const filters = [{ tokenName: this.app.wallet.currentMarket, orderType: 'SELLORDER' }]; /* Filter From and To,  unique by txid */
       sellHistoryInfo = await queryAllTrades(filters, orderBy, limit, skip);
-      console.log(sellHistoryInfo);
       if (sellHistoryInfo.length < limit) this.hasMoreSellHistory = false;
       if (sellHistoryInfo.length === limit) this.hasMoreSellHistory = true;
       if (this.skip === 0) this.hasLessSellHistory = false;
@@ -82,7 +80,7 @@ export default class {
       console.error(sellHistoryInfo.error.message); // eslint-disable-line no-console
     } else {
       const result = _.uniqBy(sellHistoryInfo, 'txid').map((trade) => new Trade(trade, this.app));
-      const resultOrder = _.orderBy(result, ['date'], 'desc');
+      const resultOrder = _.orderBy(result, ['time'], 'desc');
       this.sellHistoryInfo = resultOrder;
     }
   }

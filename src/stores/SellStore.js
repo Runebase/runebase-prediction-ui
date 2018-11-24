@@ -16,9 +16,6 @@ const INIT_VALUES = {
   skip: 0, // skip
 };
 
-let syncSellOrderInterval;
-
-
 export default class {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
@@ -47,7 +44,7 @@ export default class {
     // Call BuyOrders once to init the wallet addresses used by other stores
     this.getSellOrderInfo();
     this.subscribeSellOrderInfo();
-    syncSellOrderInterval = setInterval(this.getSellOrderInfo, AppConfig.intervals.sellOrderInfo);
+    setInterval(this.getSellOrderInfo, AppConfig.intervals.sellOrderInfo);
   }
 
   @action

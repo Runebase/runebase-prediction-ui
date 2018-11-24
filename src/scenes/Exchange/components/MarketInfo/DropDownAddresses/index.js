@@ -42,6 +42,7 @@ export default class DropDownAddresses extends Component {
                   runes={addressData.runebase}
                   pred={addressData.pred}
                   fun={addressData.fun}
+                  role='presentation'
                 >
                   <Grid container className='centerText'>
                     <Grid item xs={12}>

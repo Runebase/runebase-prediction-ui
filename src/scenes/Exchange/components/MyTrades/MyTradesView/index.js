@@ -7,7 +7,7 @@ import {
   Grid,
   Typography,
   withStyles } from '@material-ui/core';
-import { satoshiToDecimal, decimalToSatoshi } from '../../../../../helpers/utility';
+import { satoshiToDecimal } from '../../../../../helpers/utility';
 import styles from './styles.css';
 
 @injectIntl

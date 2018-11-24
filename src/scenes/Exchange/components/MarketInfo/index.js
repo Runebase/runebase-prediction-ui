@@ -35,7 +35,6 @@ export default class MarketInfo extends Component {
   }
 
   handleToggle = (e) => {
-    console.log(this.props.store.wallet.addresses);
     e.target.focus();
     this.setState({ show: !this.state.show });
   }
@@ -47,7 +46,7 @@ export default class MarketInfo extends Component {
     }
 
     if (this.state.show) {
-      const timer = setTimeout(() => {
+      setTimeout(() => {
         this.setState({ show: false });
       }, 200);
     }

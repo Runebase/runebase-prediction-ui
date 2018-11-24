@@ -1,6 +1,6 @@
 import { observable, action, runInAction, computed, reaction } from 'mobx';
 import _ from 'lodash';
-import { Routes, TransactionStatus } from 'constants';
+import { Routes } from 'constants';
 import { queryAllNewOrders } from '../network/graphql/queries';
 import NewOrder from './models/NewOrder';
 import AppConfig from '../config/app';
@@ -16,7 +16,6 @@ const INIT_VALUES = {
   skip: 0, // skip
 };
 
-let syncActiveOrderInterval;
 export default class {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
@@ -42,10 +41,9 @@ export default class {
         }
       }
     );
-    // Call BuyOrders once to init the wallet addresses used by other stores
     this.getActiveOrderInfo();
     this.subscribeActiveOrderInfo();
-    syncActiveOrderInterval = setInterval(this.getActiveOrderInfo, AppConfig.intervals.activeOrderInfo);
+    setInterval(this.getActiveOrderInfo, AppConfig.intervals.activeOrderInfo);
     if (this.app.wallet.currentAddressSelected === '') {
       this.hasLessActiveOrders = false;
       this.hasMoreActiveOrders = false;
@@ -67,7 +65,6 @@ export default class {
     if (this.app.wallet.currentAddressSelected !== '') {
       const orderBy = { field: 'time', direction: this.app.sortBy };
       let activeOrders = [];
-      const pending = 'PENDING';
       const filters = [
         { owner: this.app.wallet.currentAddressSelected, status: 'ACTIVE' },
         { owner: this.app.wallet.currentAddressSelected, status: 'PENDING' },

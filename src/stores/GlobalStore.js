@@ -26,8 +26,6 @@ const INIT_VALUES = {
   },
 };
 let syncInfoInterval;
-let syncSelectedOrderInterval;
-let syncMarketInterval;
 
 export default class GlobalStore {
   @observable selectedOrderId = INIT_VALUES.selectedOrderId
@@ -83,8 +81,6 @@ export default class GlobalStore {
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
     syncInfoInterval = setInterval(this.getSyncInfo, AppConfig.intervals.syncInfo);
-    syncSelectedOrderInterval = setInterval(this.getSelectedOrderInfo, AppConfig.intervals.selectedOrderInfo);
-    syncMarketInterval = setInterval(this.getMarketInfo, AppConfig.intervals.marketInfo);
   }
 
   /*
@@ -160,7 +156,6 @@ export default class GlobalStore {
     } else {
       const result = _.uniqBy(marketInfo, 'market').map((market) => new Market(market, this.app));
       const resultOrder = _.orderBy(result, ['market'], 'desc');
-      console.log(resultOrder);
       this.marketInfo = resultOrder;
     }
   }
@@ -174,9 +169,7 @@ export default class GlobalStore {
     try {
       const orderBy = { field: 'market', direction: 'DESC' };
       const filters = [];
-      console.log('getmarketinfo');
       const marketInfo = await queryAllMarkets(filters, orderBy, 0, 0);
-      console.log(marketInfo);
       this.onMarketInfo(marketInfo);
     } catch (error) {
       this.onMarketInfo({ error });

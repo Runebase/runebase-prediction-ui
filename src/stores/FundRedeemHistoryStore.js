@@ -16,7 +16,6 @@ const INIT_VALUES = {
   skip: 0, // skip
 };
 
-let syncFundRedeemInterval;
 export default class {
   @observable loaded = INIT_VALUES.loaded
   @observable loadingMore = INIT_VALUES.loadingMore
@@ -45,7 +44,7 @@ export default class {
     // Call mytrades once to init the wallet addresses used by other stores
     this.getFundRedeemInfo();
     this.subscribeFundRedeemInfo();
-    syncFundRedeemInterval = setInterval(this.getFundRedeemInfo, AppConfig.intervals.fundRedeemInfo);
+    setInterval(this.getFundRedeemInfo, AppConfig.intervals.fundRedeemInfo);
   }
 
   @action

@@ -18,7 +18,6 @@ import {
   DialogTitle } from '@material-ui/core';
 import Slider from '@material-ui/lab/Slider';
 import { Clear } from '@material-ui/icons';
-import { TxSentDialog } from 'components';
 import ExecuteOrderTxConfirmDialog from '../ExecuteOrderTxConfirmDialog';
 import { TokenImage, OrderTypeIcon, StatusIcon } from '../../../helpers';
 import { satoshiToDecimal, decimalToSatoshi } from '../../../../../helpers/utility';
@@ -61,7 +60,7 @@ class OrderBook extends PureComponent {
       await this.props.store.global.getSelectedOrderInfo();
       this.setState({ open: true });
     } catch (error) {
-      console.log('error');
+      console.log(error); /* eslint-disable-line */
     }
   };
 
@@ -138,7 +137,7 @@ class OrderBook extends PureComponent {
   render() {
     const { classes, fullScreen } = this.props;
     const { store: { wallet, global } } = this.props;
-    const { orderId, txid, buyToken, sellToken, amount, startAmount, owner, blockNum, time, price, token, type, status } = this.props.event;
+    const { orderId, amount, price, token, type, status } = this.props.event;
     const amountTokenLabel = satoshiToDecimal(amount);
     const amountToken = global.selectedOrderInfo.amount / 1e8;
     const startAmountToken = satoshiToDecimal(global.selectedOrderInfo.startAmount);

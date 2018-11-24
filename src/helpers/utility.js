@@ -48,7 +48,7 @@ const messages = defineMessages({
 */
 
 function parseData(parse) {
-  return function (d) {
+  return function parsedDate(d) {
     d.date = parse(d.date);
     d.open = +d.open;
     d.high = +d.high;
