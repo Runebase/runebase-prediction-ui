@@ -35,9 +35,8 @@ export default class SellOrder extends Component {
     };
   }
   changeAmount = (event, tokenAmount) => {
-    const regex = /^\d+(\.\d{1,8})?$/;
     const validateTotal = event.target.value * this.state.price;
-    if (event.target.value === '' || regex.test(event.target.value)) {
+    if (event.target.value === '' || /^\d+(\.\d{1,8})?$/.test(event.target.value)) {
       this.setState({
         amount: event.target.value,
         total: event.target.value * this.state.price,
@@ -59,9 +58,8 @@ export default class SellOrder extends Component {
     }
   }
   changePrice = (event, tokenAmount) => {
-    const regex = /^\d+(\.\d{1,8})?$/;
     const validateTotal = event.target.value * this.state.amount;
-    if (event.target.value === '' || regex.test(event.target.value)) {
+    if (event.target.value === '' || /^\d+(\.\d{1,8})?$/.test(event.target.value)) {
       this.setState({
         price: event.target.value,
         total: event.target.value * this.state.amount,
@@ -88,6 +86,7 @@ export default class SellOrder extends Component {
   render() {
     const { classes, store: { wallet } } = this.props;
     const market = wallet.currentMarket.toLowerCase();
+    const isEnabled = wallet.currentAddressSelected !== '';
     let tokenAmount;
     if (wallet.currentAddressKey !== '') {
       switch (market) {
@@ -128,7 +127,7 @@ export default class SellOrder extends Component {
                     </InputLabel>
                   </Grid>
                   <Grid item xs={8}>
-                    <Input className='inputWidth' type="number" step="0.00000001" min="0" value={this.state.amount} onChange={(event) => { this.changeAmount(event, tokenAmount); }} name="amount" />
+                    <Input disabled={!isEnabled} className='inputWidth' type="number" step="0.00000001" min="0" value={this.state.amount} onChange={(event) => { this.changeAmount(event, tokenAmount); }} name="amount" />
                   </Grid>
                   <Grid item xs={2}>
                     <InputLabel className='inputLabels'>
@@ -143,7 +142,7 @@ export default class SellOrder extends Component {
                     </FormLabel>
                   </Grid>
                   <Grid item xs={8}>
-                    <Input className='inputWidth' type="number" step="0.00000001" min="0" value={this.state.price} onChange={(event) => { this.changePrice(event, tokenAmount); }} name="price" />
+                    <Input disabled={!isEnabled} className='inputWidth' type="number" step="0.00000001" min="0" value={this.state.price} onChange={(event) => { this.changePrice(event, tokenAmount); }} name="price" />
                   </Grid>
                   <Grid item xs={2} >
                     <InputLabel className='inputLabels'>

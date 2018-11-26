@@ -74,6 +74,14 @@ const INIT_VALUE = {
   buyOrderConfirmDialogOpen: false,
   sellOrderConfirmDialogOpen: false,
   hasEnoughGasCoverage: false,
+
+  hasRunes: false,
+  hasPred: false,
+  hasFun: false,
+
+  hasExchangeRunes: false,
+  hasExchangePred: false,
+  hasExchangeFun: false,
 };
 
 const INIT_VALUE_DIALOG = {
@@ -87,6 +95,13 @@ const INIT_VALUE_DIALOG = {
 };
 
 export default class {
+  @observable hasRunes = INIT_VALUE.hasRunes;
+  @observable hasPred = INIT_VALUE.hasPred;
+  @observable hasFun = INIT_VALUE.hasFun;
+  @observable hasExchangeRunes = INIT_VALUE.hasExchangeRunes;
+  @observable hasExchangePred = INIT_VALUE.hasExchangePred;
+  @observable hasExchangeFun = INIT_VALUE.hasExchangeFun;
+
   @observable hasEnoughGasCoverage = INIT_VALUE.hasEnoughGasCoverage;
   @observable txSentDialogOpen = INIT_VALUE.txSentDialogOpen;
   @observable exchangeAddress = INIT_VALUE.exchangeAddress;

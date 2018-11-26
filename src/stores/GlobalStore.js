@@ -81,6 +81,8 @@ export default class GlobalStore {
     // Start syncInfo long polling
     // We use this to update the percentage of the loading screen
     syncInfoInterval = setInterval(this.getSyncInfo, AppConfig.intervals.syncInfo);
+    setInterval(this.getSelectedOrderInfo, AppConfig.intervals.selectedOrderInfo);
+    setInterval(this.getMarketInfo, AppConfig.intervals.marketInfo);
   }
 
   /*

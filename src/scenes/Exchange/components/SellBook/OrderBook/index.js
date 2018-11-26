@@ -47,8 +47,8 @@ class OrderBook extends PureComponent {
     super(props);
     this.state = {
       openError: false,
-      exchangeAmount: 0,
-      total: 0,
+      exchangeAmount: '',
+      total: '',
       open: false,
     };
   }
@@ -107,35 +107,35 @@ class OrderBook extends PureComponent {
   };
 
   changeAmount = (event, price, walletAmount, amountToken, maxSlider) => {
-    const regex = /^[0-9]+(\.\d{1,8})?$/;
     let total;
     total = event.target.value * price;
-    if (this.props.store.wallet.currentAddressSelected === '') {
+    if (event.target.value === '' || /^\d+(\.\d{1,8})?$/.test(event.target.value)) {
       this.setState({
-        hasError: true,
+        exchangeAmount: event.target.value,
+        total: total.toFixed(8),
       });
-    } else {
-      if (event.target.value === '' || regex.test(event.target.value)) {
-        this.setState({
-          exchangeAmount: event.target.value,
-          total: total.toFixed(8),
-          hasError: false,
-        });
-      }
-      if (total > walletAmount) {
-        total = maxSlider * price;
-        this.setState({
-          exchangeAmount: maxSlider.toFixed(8),
-          total: total.toFixed(8),
-          hasError: false,
-        });
-      }
+    }
+    if (total > walletAmount) {
+      total = maxSlider * price;
+      this.setState({
+        exchangeAmount: maxSlider.toFixed(8),
+        total: total.toFixed(8),
+      });
+    }
+    if (event.target.value > maxSlider) {
+      total = maxSlider * price;
+      this.setState({
+        exchangeAmount: maxSlider,
+        total: total.toFixed(8),
+      });
     }
   }
 
   render() {
     const { classes, fullScreen } = this.props;
     const { store: { wallet, global } } = this.props;
+    const isEnabled = wallet.currentAddressSelected !== '';
+    const isEnabledButton = wallet.currentAddressSelected !== '' && this.state.exchangeAmount > 0;
     const { orderId, amount, price, token, type, status } = this.props.event;
     const amountTokenLabel = satoshiToDecimal(amount);
     const amountToken = satoshiToDecimal(global.selectedOrderInfo.amount);
@@ -316,7 +316,7 @@ class OrderBook extends PureComponent {
                 </Grid>
                 <Grid item xs={6} className='spacingOrderBook'>
                   <Typography variant='subheading' className={classes.root}>Created Time</Typography>
-                  <Typography>{global.selectedOrderInfo.time}</Typography>
+                  <Typography>{global.selectedOrderInfo.date}</Typography>
                 </Grid>
                 <Grid item xs={6} className='spacingOrderBook'>
                   <Typography variant='subheading' className={classes.root}>Created BlockNum</Typography>
@@ -338,6 +338,7 @@ class OrderBook extends PureComponent {
                 <Typography variant='subheading' className={classes.root}>Amount</Typography>
                 <Grid item xs={12}>
                   <Slider
+                    disabled={!isEnabled}
                     className='sliderAmount'
                     max={maxSlider}
                     step={0.00000001}
@@ -347,15 +348,15 @@ class OrderBook extends PureComponent {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Input className='inputWidth inputOrderSpacing' type="number" step="0.00000001" min="0" max={amountToken} value={this.state.exchangeAmount} onChange={(event) => { this.changeAmount(event, price, walletAmount, amountToken, maxSlider); }} name="amount" />
+                  <Input disabled={!isEnabled} className='inputWidth inputOrderSpacing' type="number" step="0.00000001" min="0" max={amountToken} value={this.state.exchangeAmount} onChange={(event) => { this.changeAmount(event, price, walletAmount, amountToken, maxSlider); }} name="amount" />
                 </Grid>
                 <Grid item xs={12}>
-                  {this.state.hasError && <span>Please select an address</span>}
                   {this.state.total && <span className='messageStyle'>Buy <span className='fat'>{this.state.exchangeAmount}</span> {token} for <span className='fat'>{this.state.total}</span> RUNES</span>}
                 </Grid>
                 <Grid item xs={12}>
                   <div>
                     <button
+                      disabled={!isEnabledButton}
                       className="ui positive button buyButton"
                       onClick={() => {
                         if (this.props.store.wallet.currentAddressSelected === '') {

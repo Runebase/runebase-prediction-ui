@@ -108,29 +108,27 @@ class OrderBook extends PureComponent {
   };
 
   changeAmount = (event, price, walletAmount, amountToken, maxSlider) => {
-    const regex = /^[0-9]+(\.\d{1,8})?$/;
     let total;
     total = event.target.value * price;
-    if (this.props.store.wallet.currentAddressSelected === '') {
+    if (event.target.value === '' || /^\d+(\.\d{1,8})?$/.test(event.target.value)) {
       this.setState({
-        hasError: true,
+        exchangeAmount: event.target.value,
+        total: total.toFixed(8),
       });
-    } else {
-      if (event.target.value === '' || regex.test(event.target.value)) {
-        this.setState({
-          exchangeAmount: event.target.value,
-          total: total.toFixed(8),
-          hasError: false,
-        });
-      }
-      if (total > walletAmount) {
-        total = maxSlider * price;
-        this.setState({
-          exchangeAmount: maxSlider,
-          total: total.toFixed(8),
-          hasError: false,
-        });
-      }
+    }
+    if (total > walletAmount) {
+      total = maxSlider * price;
+      this.setState({
+        exchangeAmount: maxSlider,
+        total: total.toFixed(8),
+      });
+    }
+    if (event.target.value > maxSlider) {
+      total = maxSlider * price;
+      this.setState({
+        exchangeAmount: maxSlider,
+        total: total.toFixed(8),
+      });
     }
   }
 
@@ -138,6 +136,8 @@ class OrderBook extends PureComponent {
     const { classes, fullScreen } = this.props;
     const { store: { wallet, global } } = this.props;
     const { orderId, amount, price, token, type, status } = this.props.event;
+    const isEnabled = wallet.currentAddressSelected !== '';
+    const isEnabledButton = wallet.currentAddressSelected !== '' && this.state.exchangeAmount > 0;
     const amountTokenLabel = satoshiToDecimal(amount);
     const amountToken = global.selectedOrderInfo.amount / 1e8;
     const startAmountToken = satoshiToDecimal(global.selectedOrderInfo.startAmount);
@@ -340,6 +340,7 @@ class OrderBook extends PureComponent {
                 <Typography variant='subheading' className={classes.root}>Amount</Typography>
                 <Grid item xs={12}>
                   <Slider
+                    disabled={!isEnabled}
                     className='sliderAmount'
                     max={maxSlider}
                     step={0.00000001}
@@ -349,15 +350,15 @@ class OrderBook extends PureComponent {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Input className='inputWidth inputOrderSpacing' type="number" step="0.00000001" min="0" max={amountToken} value={this.state.exchangeAmount} onChange={(event) => { this.changeAmount(event, price, walletAmount, amountToken, maxSlider); }} name="amount" />
+                  <Input disabled={!isEnabled} className='inputWidth inputOrderSpacing' type="number" step="0.00000001" min="0" max={amountToken} value={this.state.exchangeAmount} onChange={(event) => { this.changeAmount(event, price, walletAmount, amountToken, maxSlider); }} name="amount" />
                 </Grid>
                 <Grid item xs={12}>
-                  {this.state.hasError && <span>Please select an address</span>}
                   {this.state.total && <span className='messageStyle'>Sell<span className='fat'>{this.state.exchangeAmount}</span> {token} for <span className='fat'>{this.state.total}</span> RUNES</span>}
                 </Grid>
                 <Grid item xs={12}>
                   <div>
                     <button
+                      disabled={!isEnabledButton}
                       className="ui negative button buyButton"
                       onClick={() => {
                         if (this.props.store.wallet.currentAddressSelected === '') {

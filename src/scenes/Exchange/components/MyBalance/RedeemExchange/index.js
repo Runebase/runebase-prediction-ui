@@ -27,6 +27,9 @@ const messages = defineMessages({
 export default class RedeemExchange extends Component {
   constructor(props) {
     super(props);
+    this.hasExchangeRunes = false;
+    this.hasExchangePred = false;
+    this.hasExchangeFun = false;
     this.state = {
       open: false,
       open2: false,
@@ -39,6 +42,9 @@ export default class RedeemExchange extends Component {
   }
 
   handleClickOpenRedeemChoice = () => {
+    this.hasExchangeRunes = this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].exchangerunes > 0;
+    this.hasExchangePred = this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].exchangepred > 0;
+    this.hasExchangeFun = this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].exchangefun > 0;
     if (this.props.store.wallet.currentAddressSelected === '') {
       this.setState({
         open: false,
@@ -54,17 +60,22 @@ export default class RedeemExchange extends Component {
   };
 
   handleClickOpenRedeemDialog = (event) => {
-    /* Needs Fix -> If Address Has enough tokens or runes */
-    if (event.target.value === this.props.store.wallet.market) {
-      this.setState({
-        tokenChoice: this.props.store.wallet.market,
-        available: this.props.store.wallet.currentAddressBalanceToken,
-      });
-    }
     if (event.target.value === 'RUNES') {
       this.setState({
         tokenChoice: 'RUNES',
-        available: this.props.store.wallet.currentAddressBalanceRunes,
+        available: this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].exchangerunes,
+      });
+    }
+    if (event.target.value === 'PRED') {
+      this.setState({
+        tokenChoice: 'PRED',
+        available: this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].exchangepred,
+      });
+    }
+    if (event.target.value === 'FUN') {
+      this.setState({
+        tokenChoice: 'FUN',
+        available: this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].exchangefun,
       });
     }
     this.setState({
@@ -79,34 +90,45 @@ export default class RedeemExchange extends Component {
       open: false,
       open2: false,
       openError: false,
+      amount: '',
     });
   };
 
   handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
+    if (event.target.value === '' || /^\d+(\.\d{1,8})?$/.test(event.target.value)) {
+      this.setState({
+        [name]: event.target.value,
+      });
+    }
+    if (event.target.value > this.state.available) {
+      this.setState({
+        [name]: this.state.available,
+      });
+    }
   };
   onRedeem = () => {
     this.setState({
       open: false,
       open2: false,
+      amount: '',
     });
   }
   closeAll = () => {
     this.setState({
       open: false,
       open2: false,
+      amount: '',
     });
     this.props.store.wallet.closeTxDialog();
   }
   render() {
     const { store: { wallet } } = this.props;
+    const isEnabledRedeem = wallet.currentAddressSelected !== '';
     return (
       <div>
-
         <div style={{ float: 'right' }}>
           <button
+            disabled={!isEnabledRedeem}
             className="ui negative button noMargin"
             onClick={this.handleClickOpenRedeemChoice}
           >
@@ -120,7 +142,7 @@ export default class RedeemExchange extends Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Withdraw</DialogTitle>
+          <DialogTitle id="form-dialog-title">Withdraw from Exchange Contract</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Please select an address first.
@@ -135,16 +157,13 @@ export default class RedeemExchange extends Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Withdraw from Exchange</DialogTitle>
+          <DialogTitle id="form-dialog-title">Withdraw from Exchange Contract</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              What would you like to withdraw?
-            </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button value='RUNES' onClick={this.handleClickOpenRedeemDialog}>RUNES</Button>
-            <Button value='PRED' onClick={this.handleClickOpenRedeemDialog}>PRED</Button>
-            <Button value='FUN' onClick={this.handleClickOpenRedeemDialog}>FUN</Button>
+            <Button value='RUNES' disabled={!this.hasExchangeRunes} onClick={this.handleClickOpenRedeemDialog}>RUNES</Button>
+            <Button value='PRED' disabled={!this.hasExchangePred} onClick={this.handleClickOpenRedeemDialog}>PRED</Button>
+            <Button value='FUN' disabled={!this.hasExchangeFun} onClick={this.handleClickOpenRedeemDialog}>FUN</Button>
             <Button onClick={this.handleClose}>Close</Button>
           </DialogActions>
         </Dialog>
@@ -153,11 +172,8 @@ export default class RedeemExchange extends Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title2"
         >
-          <DialogTitle id="form-dialog-title2">withdraw</DialogTitle>
+          <DialogTitle id="form-dialog-title2">Withdraw {this.state.tokenChoice} from Exchange Contract</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              How much {this.state.tokenChoice} would you like to withdraw?
-            </DialogContentText>
             <DialogContentText>
               Current Address:
             </DialogContentText>
@@ -175,7 +191,7 @@ export default class RedeemExchange extends Component {
               label="Amount"
               value={this.state.amount}
               onChange={this.handleChange('amount')}
-              type="number"
+              type='number'
               min={0}
               max={20}
               InputLabelProps={{

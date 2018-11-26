@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import {
+  TextField,
   Dialog,
   DialogActions,
   DialogContent,
@@ -27,6 +28,9 @@ const messages = defineMessages({
 export default class FundExchange extends Component {
   constructor(props) {
     super(props);
+    this.hasRunes = false;
+    this.hasPred = false;
+    this.hasFun = false;
     this.state = {
       open: false,
       open2: false,
@@ -39,6 +43,9 @@ export default class FundExchange extends Component {
   }
 
   handleClickOpenDepositChoice = () => {
+    this.hasRunes = this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].runebase > 0;
+    this.hasPred = this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].pred > 0;
+    this.hasFun = this.props.store.wallet.addresses[this.props.store.wallet.currentAddressKey].fun > 0;
     if (this.props.store.wallet.currentAddressSelected === '') {
       this.setState({
         open: false,
@@ -86,7 +93,7 @@ export default class FundExchange extends Component {
       open: false,
       open2: false,
       openError: false,
-      amount: 0,
+      amount: '',
       tokenChoice: '',
       address: '',
       available: '',
@@ -94,16 +101,22 @@ export default class FundExchange extends Component {
   };
 
   handleChange = name => event => {
-    const regex = /^\d+(\.\d{1,8})?$/;
-    if (event.target.value === '' || regex.test(event.target.value)) {
+    if (event.target.value === '' || /^\d+(\.\d{1,8})?$/.test(event.target.value)) {
       this.setState({
         [name]: event.target.value,
       });
     }
-    if (this.state.available > 2 && this.state.available < event.target.value) {
+    if (event.target.value > this.state.available) {
       this.setState({
-        [name]: this.state.available - 2,
+        [name]: this.state.available,
       });
+    }
+    if (this.state.tokenChoice === 'RUNES') {
+      if (this.state.available > 2 && this.state.available < event.target.value) {
+        this.setState({
+          [name]: this.state.available - 2,
+        });
+      }
     }
   };
   onWithdraw = () => {
@@ -123,9 +136,11 @@ export default class FundExchange extends Component {
 
   render() {
     const { store: { wallet } } = this.props;
+    const isEnabledFund = wallet.currentAddressSelected !== '';
     return (
       <div>
         <button
+          disabled={!isEnabledFund}
           className="ui positive button"
           onClick={this.handleClickOpenDepositChoice}
         >
@@ -139,7 +154,7 @@ export default class FundExchange extends Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Deposit</DialogTitle>
+          <DialogTitle id="form-dialog-title">Deposit to Exchange Contract</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Please select an address first.
@@ -154,16 +169,11 @@ export default class FundExchange extends Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Deposit</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              What would you like to deposit?
-            </DialogContentText>
-          </DialogContent>
+          <DialogTitle id="form-dialog-title">Deposit to Exchange Contract</DialogTitle>
           <DialogActions>
-            <Button value='RUNES' onClick={this.handleClickOpenDepositDialog}>Deposit RUNES</Button>
-            <Button value='PRED' onClick={this.handleClickOpenDepositDialog}>Deposit {this.props.store.wallet.market}</Button>
-            <Button value='FUN' onClick={this.handleClickOpenDepositDialog}>Deposit FUN</Button>
+            <Button value='RUNES' disabled={!this.hasRunes} onClick={this.handleClickOpenDepositDialog}>RUNES</Button>
+            <Button value='PRED' disabled={!this.hasPred} onClick={this.handleClickOpenDepositDialog}>PRED</Button>
+            <Button value='FUN' disabled={!this.hasFun} onClick={this.handleClickOpenDepositDialog}>FUN</Button>
             <Button onClick={this.handleClose}>Close</Button>
           </DialogActions>
         </Dialog>
@@ -172,13 +182,10 @@ export default class FundExchange extends Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title2"
         >
-          <DialogTitle id="form-dialog-title2">Deposit</DialogTitle>
+          <DialogTitle id="form-dialog-title2">Deposit {this.state.tokenChoice} to Exchange Contract</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              How much {this.state.tokenChoice} would you like to deposit?
-            </DialogContentText>
               Current Address:
-            <DialogContentText>
             </DialogContentText>
             <DialogContentText>
               {this.state.address}
@@ -189,7 +196,7 @@ export default class FundExchange extends Component {
             <DialogContentText>
               {this.state.available} {this.state.tokenChoice}
             </DialogContentText>
-            <input
+            <TextField
               id="standard-number"
               label="Amount"
               value={this.state.amount}
