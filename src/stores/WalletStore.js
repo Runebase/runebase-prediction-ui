@@ -69,19 +69,12 @@ const INIT_VALUE = {
   changePassphraseResult: undefined,
   txConfirmDialogOpen: false,
   redeemConfirmDialogOpen: false,
+  fundConfirmDialogOpen: false,
   cancelOrderConfirmDialogOpen: false,
   executeOrderConfirmDialogOpen: false,
   buyOrderConfirmDialogOpen: false,
   sellOrderConfirmDialogOpen: false,
   hasEnoughGasCoverage: false,
-
-  hasRunes: false,
-  hasPred: false,
-  hasFun: false,
-
-  hasExchangeRunes: false,
-  hasExchangePred: false,
-  hasExchangeFun: false,
 };
 
 const INIT_VALUE_DIALOG = {
@@ -95,13 +88,6 @@ const INIT_VALUE_DIALOG = {
 };
 
 export default class {
-  @observable hasRunes = INIT_VALUE.hasRunes;
-  @observable hasPred = INIT_VALUE.hasPred;
-  @observable hasFun = INIT_VALUE.hasFun;
-  @observable hasExchangeRunes = INIT_VALUE.hasExchangeRunes;
-  @observable hasExchangePred = INIT_VALUE.hasExchangePred;
-  @observable hasExchangeFun = INIT_VALUE.hasExchangeFun;
-
   @observable hasEnoughGasCoverage = INIT_VALUE.hasEnoughGasCoverage;
   @observable txSentDialogOpen = INIT_VALUE.txSentDialogOpen;
   @observable exchangeAddress = INIT_VALUE.exchangeAddress;
@@ -127,6 +113,7 @@ export default class {
   @observable buyOrderConfirmDialogOpen = INIT_VALUE.buyOrderConfirmDialogOpen;
   @observable sellOrderConfirmDialogOpen = INIT_VALUE.sellOrderConfirmDialogOpen;
   @observable redeemConfirmDialogOpen = INIT_VALUE.redeemConfirmDialogOpen;
+  @observable fundConfirmDialogOpen = INIT_VALUE.fundConfirmDialogOpen;
   @observable cancelOrderConfirmDialogOpen = INIT_VALUE.cancelOrderConfirmDialogOpen;
   @observable executeOrderConfirmDialogOpen = INIT_VALUE.executeOrderConfirmDialogOpen;
   @observable withdrawDialogError = INIT_VALUE_DIALOG.withdrawDialogError;
@@ -284,7 +271,7 @@ export default class {
   }
 
   @action
-  prepareBuyOrderExchange = async (price, confirmAmount, tokenChoice, orderType) => {
+  prepareBuyOrderExchange = async (price, confirmAmount, tokenChoice, orderType, total) => {
     this.txid = null;
     this.walletAddress = this.currentAddressSelected;
     this.toAddress = this.exchangeAddress;
@@ -292,6 +279,7 @@ export default class {
     this.tokenChoice = tokenChoice;
     this.orderType = orderType;
     this.price = price;
+    this.orderTotal = total;
     try {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
         type: TransactionType.BUYORDER,
@@ -307,13 +295,14 @@ export default class {
       });
     } catch (error) {
       runInAction(() => {
+        this.orderTotal = 0;
         this.app.ui.setError(error.message, Routes.api.transactionCost);
       });
     }
   }
 
   @action
-  prepareSellOrderExchange = async (price, confirmAmount, tokenChoice, orderType) => {
+  prepareSellOrderExchange = async (price, confirmAmount, tokenChoice, orderType, total) => {
     this.txid = null;
     this.walletAddress = this.currentAddressSelected;
     this.toAddress = this.exchangeAddress;
@@ -321,6 +310,7 @@ export default class {
     this.tokenChoice = tokenChoice;
     this.orderType = orderType;
     this.price = price;
+    this.orderTotal = total;
     try {
       const { data: { result } } = await axios.post(Routes.api.transactionCost, {
         type: TransactionType.SELLORDER,
@@ -336,6 +326,7 @@ export default class {
       });
     } catch (error) {
       runInAction(() => {
+        this.orderTotal = 0;
         this.app.ui.setError(error.message, Routes.api.transactionCost);
       });
     }
@@ -364,9 +355,11 @@ export default class {
         this.txSentDialogOpen = true;
         this.app.pendingTxsSnackbar.init();
         this.app.activeOrderStore.getActiveOrderInfo();
+        this.orderTotal = 0;
       });
     } catch (error) {
       runInAction(() => {
+        this.orderTotal = 0;
         this.app.ui.setError(error.message, Routes.api.createTransferTx);
       });
     }
@@ -505,7 +498,7 @@ export default class {
         const txFees = _.map(result, (item) => new TransactionCost(item));
         runInAction(() => {
           this.txFees = txFees;
-          this.txConfirmDialogOpen = true;
+          this.fundConfirmDialogOpen = true;
         });
       } catch (error) {
         runInAction(() => {
@@ -527,7 +520,7 @@ export default class {
     this.createTransferTransactionExchange(this.walletAddress, this.exchangeAddress, this.tokenChoice, amount);
     runInAction(() => {
       onWithdraw();
-      this.txConfirmDialogOpen = false;
+      this.fundConfirmDialogOpen = false;
       Tracking.track('myWallet-withdraw');
     });
   };

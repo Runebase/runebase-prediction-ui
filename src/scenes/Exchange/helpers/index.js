@@ -55,11 +55,11 @@ export class StatusIcon extends PureComponent {
     const { status } = this.props;
     const getStatusIcon = () => {
       switch (status) {
-        case 'PENDING': return <Icon className='fullHeight' color='saddlebrown' name='hourglass start' size='huge' />;
+        case 'PENDING': return <Icon className='fullHeight saddleBrown' name='hourglass start' size='huge' />;
         case 'ACTIVE': return <Done className='activeIcon' />;
         case 'FULFILLED': return <DoneAll className='activeIcon' />;
         case 'FAILED': return <Done className='activeIcon' />;
-        case 'PENDINGCANCEL': return <Icon className='fullHeight' color='darkorange' name='hourglass half' size='huge' />;
+        case 'PENDINGCANCEL': return <Icon className='fullHeight darkOrange' name='hourglass half' size='huge' />;
         case 'CANCELED': return <Clear className='cancelIcon' />;
         default: return <p>No status icon match</p>;
       }

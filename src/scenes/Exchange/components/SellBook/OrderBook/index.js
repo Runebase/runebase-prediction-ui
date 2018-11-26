@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import 'semantic-ui-css/semantic.min.css';
 import { inject } from 'mobx-react';
+import Moment from 'react-moment';
 import { injectIntl, defineMessages } from 'react-intl';
 import {
   withMobileDialog,
@@ -316,7 +317,11 @@ class OrderBook extends PureComponent {
                 </Grid>
                 <Grid item xs={6} className='spacingOrderBook'>
                   <Typography variant='subheading' className={classes.root}>Created Time</Typography>
-                  <Typography>{global.selectedOrderInfo.date}</Typography>
+                  <Typography>
+                    <Moment unix>
+                      {global.selectedOrderInfo.time}
+                    </Moment>
+                  </Typography>
                 </Grid>
                 <Grid item xs={6} className='spacingOrderBook'>
                   <Typography variant='subheading' className={classes.root}>Created BlockNum</Typography>

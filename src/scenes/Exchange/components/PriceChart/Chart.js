@@ -95,7 +95,7 @@ class CandleStickChartWithMACDIndicator extends PureComponent {
         height={600}
         width={width}
         ratio={ratio}
-        margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+        margin={{ left: 80, right: 90, top: 20, bottom: 30 }}
         type={type}
         seriesName='MSFT'
         data={data}
@@ -113,6 +113,7 @@ class CandleStickChartWithMACDIndicator extends PureComponent {
           <YAxis axisAt='right' orient='right' ticks={5} />
 
           <MouseCoordinateY
+            rectWidth={80}
             at='right'
             orient='right'
             displayFormat={format('.8f')}
@@ -127,6 +128,7 @@ class CandleStickChartWithMACDIndicator extends PureComponent {
           <CurrentCoordinate yAccessor={ema12.accessor()} fill={ema12.stroke()} />
 
           <EdgeIndicator
+            rectWidth={80}
             itemType='last'
             orient='right'
             edgeAt='right'

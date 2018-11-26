@@ -39,7 +39,7 @@ export default class BuyOrder extends Component {
     if (event.target.value === '' || /^\d+(\.\d{1,8})?$/.test(event.target.value)) {
       this.setState({
         amount: event.target.value,
-        total: event.target.value * this.state.price,
+        total: (event.target.value * this.state.price).toFixed(8),
         hasError: false,
       });
     }
@@ -47,7 +47,7 @@ export default class BuyOrder extends Component {
       const newAmount = tokenAmount / this.state.price;
       this.setState({
         amount: newAmount,
-        total: newAmount * this.state.price,
+        total: (newAmount * this.state.price).toFixed(8),
         hasError: false,
       });
     }
@@ -62,7 +62,7 @@ export default class BuyOrder extends Component {
     if (event.target.value === '' || /^\d+(\.\d{1,8})?$/.test(event.target.value)) {
       this.setState({
         price: event.target.value,
-        total: event.target.value * this.state.amount,
+        total: (event.target.value * this.state.amount).toFixed(8),
         hasError: false,
       });
     }
@@ -70,7 +70,7 @@ export default class BuyOrder extends Component {
       const newPrice = tokenAmount / this.state.amount;
       this.setState({
         price: newPrice,
-        total: newPrice * this.state.amount,
+        total: (newPrice * this.state.amount).toFixed(8),
         hasError: false,
       });
     }

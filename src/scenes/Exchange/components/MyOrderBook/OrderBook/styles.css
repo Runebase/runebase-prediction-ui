@@ -94,3 +94,9 @@ i.huge.icon, i.huge.icons{
 .CONFIRMEDCOLOR{
  color: green;
 }
+.saddleBrown{
+ color: saddlebrown !important;
+}
+.darkOrange{
+ color: darkorange !important;
+}

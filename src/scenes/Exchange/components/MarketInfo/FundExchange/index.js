@@ -16,8 +16,8 @@ import FundExchangeTxConfirmDialog from '../FundExchangeTxConfirmDialog';
 import './styles.css';
 
 const messages = defineMessages({
-  txConfirmMsgSendMsg: {
-    id: 'txConfirmMsg.send',
+  fundConfirmMsgSendMsg: {
+    id: 'fundConfirmMsg.send',
     defaultMessage: 'send to address {address}',
   },
 });
@@ -237,7 +237,7 @@ export default class FundExchange extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-        <FundExchangeTxConfirmDialog onWithdraw={this.onWithdraw} id={messages.txConfirmMsgSendMsg.id} />
+        <FundExchangeTxConfirmDialog onWithdraw={this.onWithdraw} id={messages.fundConfirmMsgSendMsg.id} />
         {wallet.txSentDialogOpen && (
           <TxSentDialog
             txid={wallet.txid}

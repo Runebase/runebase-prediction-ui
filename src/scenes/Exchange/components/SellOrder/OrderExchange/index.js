@@ -65,7 +65,7 @@ export default class OrderExchange extends Component {
             if (this.props.store.wallet.currentAddressSelected === '') {
               this.addressCheck();
             } else {
-              wallet.prepareSellOrderExchange(this.props.price, this.props.amount, wallet.currentMarket, this.props.orderType);
+              wallet.prepareSellOrderExchange(this.props.price, this.props.amount, wallet.currentMarket, this.props.orderType, this.props.total);
             }
           }}
           color="primary"

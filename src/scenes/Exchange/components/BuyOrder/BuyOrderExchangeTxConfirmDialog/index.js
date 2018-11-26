@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { BuyOrderConfirmDialog } from 'components';
 
 const BuyOrderTxConfirmDialog = inject('store')(injectIntl(observer(({ store: { wallet },  intl, id, onOrder}) => {
-  return (    
+  return (
     <BuyOrderConfirmDialog
       onClose={() => wallet.buyOrderConfirmDialogOpen = false}
       onConfirm={wallet.confirmOrderExchange.bind(this, onOrder)}
@@ -13,6 +13,8 @@ const BuyOrderTxConfirmDialog = inject('store')(injectIntl(observer(({ store: { 
       open={wallet.buyOrderConfirmDialogOpen}
       txToken={wallet.selectedToken}
       txAmount={wallet.depositAmount}
+      txPrice={wallet.price}
+      txTotal={wallet.orderTotal}
       txDesc={intl.formatMessage({ id }, { address: wallet.toAddress })}
     />
   );

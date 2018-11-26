@@ -17,10 +17,10 @@ export default class DropDownAddresses extends Component {
       handleBlur,
       handleSelectChange,
     } = this.props;
-
+    const addressSelectBoolean = wallet.currentAddressSelected === '';
     return (
       <div className='dropdown-container'>
-        <label className='arrow' htmlFor='selectAddress'>
+        <label className={`arrow ${addressSelectBoolean ? 'pulsate' : 'notPulsate'}`} htmlFor='selectAddress'>
           <input
             id='selectAddress'
             type='button'
