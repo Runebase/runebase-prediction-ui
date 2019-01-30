@@ -28,7 +28,7 @@ export default class {
   @action
   getChartInfo = async () => {
     this.app.ui.location = Routes.EXCHANGE;
-    const currentMarket = `http://localhost:8989/Test${this.app.wallet.currentMarket}.tsv`;
+    const currentMarket = `http://localhost:8989/${this.app.wallet.currentMarket}.tsv`;
     getChartData(currentMarket).then(data => {
       this.onChartInfo(data);
     });
