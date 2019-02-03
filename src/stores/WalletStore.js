@@ -50,8 +50,8 @@ const messages = defineMessages({
 const INIT_VALUE = {
   txSentDialogOpen: false,
   market: 'PRED',
-  exchangeAddress: '5dNoKDt3fQFKMXeUR21SoappnLg9YEggMU',
-  marketContract: '66cf6409b12e09d9d16395d2f0b224e56c3dc3a2',
+  exchangeAddress: 'RNLAUEZ7qmCVLYDbKYRhhj77KMoPUTgyGz',
+  marketContract: 'd271c668dbb500e0567ea2c18f6525da9443d7d4',
   accountData: [],
   addressesHasCoin: [],
   addressList: [],
@@ -208,6 +208,12 @@ export default class {
   @action changeMarket = (market, addresses) => {
     if (market === this.market) {
       return;
+    }
+    if (market === 'PRED') {
+      this.marketContract = 'd271c668dbb500e0567ea2c18f6525da9443d7d4';
+    }
+    if (market === 'FUN') {
+      this.marketContract = '84704b205c32d602bdb18a4fe14eb4dffc9cd10d';
     }
     this.currentAddressBalanceRunes = '';
     this.currentAddressBalanceToken = '';

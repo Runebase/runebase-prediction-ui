@@ -116,7 +116,6 @@ module.exports = {
             jQuery: "jquery"
         }),
     ],
-    ],
   },
   module: {
     strictExportPresence: true,
