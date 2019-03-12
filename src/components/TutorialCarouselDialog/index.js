@@ -95,8 +95,8 @@ export default class TutorialCarouselDialog extends Component {
             disableUnderline
           >
             <MenuItem value="en-US" className={classes.langugae}>English</MenuItem>
-            <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem>
-            <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem>
+            {/* <MenuItem value="zh-Hans-CN" className={classes.langugae}>中文</MenuItem> */}
+            {/* <MenuItem value="ko-KR" className={classes.langugae}>한국어</MenuItem> */}
           </Select>
           <div className={classes.contentWrapper}>
             <div className={classes.tutorialDialogContentWrapper}>

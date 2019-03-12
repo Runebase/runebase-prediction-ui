@@ -52,7 +52,7 @@ const SettingName = withStyles(styles)(injectIntl(({ classes, intl, message }) =
 const LanguageSelector = inject('store')(observer(({ store: { ui } }) => (
   <Select value={ui.locale} name="lang" onChange={(e) => ui.changeLocale(e.target.value)}>
     <MenuItem value="en-US">English</MenuItem>
-    <MenuItem value="zh-Hans-CN">中文</MenuItem>
-    <MenuItem value="ko-KR">한국어</MenuItem>
+    {/* <MenuItem value="zh-Hans-CN">中文</MenuItem> */}
+    {/* <MenuItem value="ko-KR">한국어</MenuItem> */}
   </Select>
 )));
