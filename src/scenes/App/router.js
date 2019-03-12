@@ -1,0 +1,95 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Switch, Route } from 'react-router-dom';
+import { Routes } from 'constants';
+
+import asyncComponent from '../../helpers/AsyncFunc';
+
+
+const AppRouter = ({ url }) => {
+  // Remove trailing '/' from url so that we can use `${url}/topic` below
+  if (url[url.length - 1] === '/') {
+    url = url.slice(0, url.length - 1); // eslint-disable-line
+  }
+
+  return (
+    <Switch>
+      <Route
+        exact
+        path={`${url}${Routes.ALL_EVENTS}`}
+        component={asyncComponent(() => import('../AllEvents'))}
+      />
+      <Route
+        exact
+        path={`${url}${Routes.RUNEBASE_PREDICTION}`}
+        component={asyncComponent(() => import('../RunebasePrediction'))}
+      />
+      <Route
+        exact
+        path={`${url}${Routes.PRED_COURT}`}
+        component={asyncComponent(() => import('../PredCourt'))}
+      />
+      <Route
+        exact
+        path={`${url}/oracle/:topicAddress/:address/:txid`}
+        component={asyncComponent(() => import('../Event'))}
+      />
+      <Route
+        exact
+        path={`${url}/oracle/:hashId`}
+        component={asyncComponent(() => import('../Event'))}
+      />
+      <Route
+        exact
+        path={`${url}/topic/:address`}
+        component={asyncComponent(() => import('../Event'))}
+      />
+      <Route
+        exact
+        path={`${url}${Routes.WALLET}`}
+        component={asyncComponent(() => import('../Wallet'))}
+      />
+      <Route
+        exact
+        path={`${url}${Routes.SETTINGS}`}
+        component={asyncComponent(() => import('../Settings'))}
+      />
+      <Route
+        exact
+        path={`${url}${Routes.SET}`}
+        component={asyncComponent(() => import('../Activities'))}
+      />
+      <Route
+        exact
+        path={`${url}${Routes.FINALIZE}`}
+        component={asyncComponent(() => import('../Activities'))}
+      />
+      <Route
+        exact
+        path={`${url}${Routes.WITHDRAW}`}
+        component={asyncComponent(() => import('../Activities'))}
+      />
+      <Route
+        exact
+        path={`${url}${Routes.ACTIVITY_HISTORY}`}
+        component={asyncComponent(() => import('../Activities'))}
+      />
+      <Route
+        exact
+        path={`${url}${Routes.FAVORITE}`}
+        component={asyncComponent(() => import('../Activities'))}
+      />
+      <Route
+        exact
+        path={`${url}${Routes.LEADERBOARD}`}
+        component={asyncComponent(() => import('../Leaderboard'))}
+      />
+    </Switch>
+  );
+};
+
+AppRouter.propTypes = {
+  url: PropTypes.string.isRequired,
+};
+
+export default AppRouter;
