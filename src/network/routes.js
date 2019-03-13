@@ -14,7 +14,7 @@ const HTTP_ROUTE = `${process.env.PROTOCOL_HTTP || 'https'}://${HOSTNAME}:${PORT
 const WS_ROUTE = `${process.env.PROTOCOL_WS || 'wss'}://${HOSTNAME}:${PORT}/graphql`;
 
 const BASE_RUNEBASE_WEB = `https://${HOSTNAME === HOSTNAME_MAINNET ? 'explorer' : 'testnet'}.runebase.io`;
-const BASE_INSIGHT = `${BASE_RUNEBASE_WEB}/insight-api`;
+const BASE_INSIGHT = `${BASE_RUNEBASE_WEB}/runebase-insight-api`;
 
 export default {
   graphql: {

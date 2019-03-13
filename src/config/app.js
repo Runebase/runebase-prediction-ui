@@ -16,7 +16,7 @@ module.exports = {
     'zh-Hans-CN': 'https://cn.runebaseprediction.network/faq',
   },
   urls: {
-    runebasechromeWebStore: 'https://chrome.google.com/webstore/detail/runebasechrome/hdmjdgjbehedbnjmljikggbmmbnbmlnd',
+    runebasechromeWebStore: 'https://chrome.google.com/webstore/detail/runebasechrome/gnfdbibmnlkehibhabjohlbiehhbhkhd',
   },
   debug: {
     // Set to false if in test environment and Insight API is down
